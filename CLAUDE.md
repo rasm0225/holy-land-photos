@@ -68,6 +68,16 @@ This improves SEO and makes content discoverable by Google Image Search, knowled
 ### Print View
 A print stylesheet is worth keeping — scholars and teachers print these pages. The current print view is poor. New implementation should produce clean, readable output: full-width image, caption, site description, attribution, and URL. No navigation chrome.
 
+### Photo Comments — Preserve HTML Formatting
+Photo comments are stored as HTML in the database (not plain text). They contain inline formatting such as `<em>` for scholarly terms (e.g. *Cryptoporticus*), inline links to related photos, and other markup. Always render comment fields as HTML — never escape them as plain text.
+
+### Section Intro Layout (confirmed pattern)
+Browse pages that have a section image (map or representative photo) use a two-column layout:
+- Image on the left, constrained with `max-height: 420px` and `object-fit: contain`
+- Descriptive text wrapping to the right
+- Stacks vertically on mobile (breakpoint: 680px)
+This is implemented via `.section-intro`, `.section-image`, and `.section-desc` in `style.css`.
+
 ### Open Questions — Design
 - [ ] Does Dr. Rasmussen want a visual refresh or a faithful recreation of the current aesthetic?
 - [ ] Color palette and typography preferences?
@@ -128,3 +138,8 @@ Decision to be made after reviewing the current infrastructure.
 - Always use `npm run dev` to start the dev server
 - QA sign-off from Peter required before any section is considered done
 - Match the original site's URLs where possible to preserve SEO and inbound links
+
+## QA Tools (confirmed working)
+- **metatags.io** — validates Open Graph and Twitter Card tags; confirms social share previews
+- **validator.schema.org** — validates Schema.org structured data markup
+Both were tested against the old site (failing) and the new mockups (passing). Run both on every new page template before sign-off.
