@@ -1,6 +1,17 @@
 #!/usr/bin/env python3
 """Generate all Smyrna/Izmir mockup pages. Run: python3 generate_mockups.py"""
-import os, html as _h
+import os, html as _h, re as _re
+
+def _desc_from_comments(html_str):
+    """Extract plain-text description from first <p> of comments (max 160 chars)."""
+    m = _re.search(r'<p>(.*?)</p>', html_str, _re.S)
+    if not m:
+        return ""
+    text = _re.sub(r'<[^>]+>', '', m.group(1)).replace('\n', ' ').strip()
+    text = _h.unescape(text)
+    if len(text) > 157:
+        text = text[:157].rsplit(' ', 1)[0] + '...'
+    return text
 
 ROOT     = os.path.dirname(os.path.abspath(__file__))
 MOCKUPS  = os.path.join(ROOT, "mockups")
@@ -223,10 +234,10 @@ text-decoration:none;color:var(--link);font-size:.8rem;transition:background .1s
 .main-content{padding:1.75rem 2.25rem 3rem}
 .page-title{font-size:1.65rem;font-weight:normal;color:var(--accent);
 margin-bottom:1.25rem;line-height:1.3}
-.section-image{margin-bottom:1.5rem;border-radius:var(--radius);overflow:hidden;
-box-shadow:var(--shadow);max-width:600px}
-.section-image img{width:100%}
-.section-desc{max-width:65ch}
+.section-intro{display:flex;gap:2rem;align-items:flex-start;margin-bottom:1.5rem}
+.section-image{flex-shrink:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.section-image img{display:block;width:100%;max-height:420px;object-fit:contain}
+.section-desc{flex:1;min-width:0;max-width:65ch}
 .section-desc p{margin-bottom:.85rem;font-size:1rem;line-height:1.78}
 .section-desc p:last-child{margin-bottom:0}
 .photo-title{font-size:1.65rem;font-weight:normal;color:var(--accent);
@@ -304,8 +315,21 @@ body{font-size:11pt;background:#fff}
 .photo-title,.page-title{font-size:16pt;color:#000}
 .photo-frame{box-shadow:none;cursor:default;max-width:100%}
 .photo-comments,.section-desc{max-width:100%}}
+.nav-toggle{display:none;flex-direction:column;justify-content:space-between;
+width:22px;height:16px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.nav-toggle span{display:block;height:2px;background:#C4B8AE;border-radius:2px;
+transition:transform .2s,opacity .2s}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 @media(max-width:680px){
-.topnav-links{display:none}
+.nav-toggle{display:flex}
+.topnav-links{display:none;position:absolute;top:46px;left:0;right:0;
+background:var(--nav-bg);flex-direction:column;z-index:100;border-top:1px solid #443A2E}
+.topnav-links.open{display:flex}
+.topnav-links li+li{border-left:none;border-top:1px solid #443A2E}
+.topnav-links a{line-height:1;padding:.85rem 1.5rem}
+.topnav{position:relative}
 .page-layout{grid-template-columns:1fr}
 .sidebar{border-right:none;border-bottom:1px solid var(--border);padding:1rem}
 .main-content{padding:1rem 1rem 2rem}
@@ -316,7 +340,7 @@ body{font-size:11pt;background:#fff}
 TOPNAV = """<nav class="topnav">
   <div class="topnav-inner">
     <a href="/" class="site-logo">Holy Land <span>Photos</span></a>
-    <ul class="topnav-links">
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button><ul class="topnav-links">
       <li><a href="/">Home</a></li>
       <li><a href="/page.asp?page_ID=8">Complete Site List</a></li>
       <li><a href="/search.asp">Search</a></li>
@@ -326,6 +350,8 @@ TOPNAV = """<nav class="topnav">
     </ul>
   </div>
 </nav>"""
+
+NAV_JS = '<script>document.querySelector(".nav-toggle").addEventListener("click",function(){var open=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!open);document.querySelector(".topnav-links").classList.toggle("open",!open)});</script>'
 
 HEADER = """<header class="site-header">
   <div class="site-header-inner">
@@ -404,6 +430,7 @@ def site_info_sidebar():
 
 def photo_page(num, img_id, title, modified, comments_html):
     et = _h.escape(title)
+    desc = _h.escape(_desc_from_comments(comments_html))
     prev, nxt = prev_next(img_id)
     pl = (f'<a href="{prev[1]}.html" aria-label="Previous">&larr; Prev</a>'
           if prev else '<span class="pg-disabled">&larr; Prev</span>')
@@ -414,11 +441,15 @@ def photo_page(num, img_id, title, modified, comments_html):
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{et} &mdash; Smyrna/Izmir &mdash; Holy Land Photos</title>
+  <meta name="description" content="{desc}">
   <meta property="og:type" content="article">
   <meta property="og:title" content="{et} &mdash; Smyrna/Izmir">
+  <meta property="og:description" content="{desc}">
   <meta property="og:image" content="https://img.holylandphotos.org/{img_id}.jpg?w=1200&amp;h=630&amp;mode=crop">
   <meta property="og:site_name" content="Holy Land Photos">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{et} &mdash; Smyrna/Izmir &mdash; Holy Land Photos">
+  <meta name="twitter:description" content="{desc}">
   <meta name="twitter:image" content="https://img.holylandphotos.org/{img_id}.jpg?w=1200&amp;h=630&amp;mode=crop">
   <script type="application/ld+json">
   {{"@context":"https://schema.org","@type":"ImageObject","name":"{title}",
@@ -490,18 +521,27 @@ def photo_page(num, img_id, title, modified, comments_html):
   </div>
 </div>
 <script>{JS}</script>
+{NAV_JS}
 </body></html>"""
 
-def browse_page(css_path, title, sidebar_html, section_img, desc_html):
+def browse_page(css_path, title, sidebar_html, section_img, desc_html, meta_desc=""):
     et = _h.escape(title)
+    md = _h.escape(meta_desc)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{et} &mdash; Holy Land Photos</title>
+  <meta name="description" content="{md}">
+  <meta property="og:type" content="website">
   <meta property="og:title" content="{et} &mdash; Holy Land Photos">
+  <meta property="og:description" content="{md}">
   <meta property="og:image" content="{section_img}">
   <meta property="og:site_name" content="Holy Land Photos">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{et} &mdash; Holy Land Photos">
+  <meta name="twitter:description" content="{md}">
+  <meta name="twitter:image" content="{section_img}">
   <link rel="stylesheet" href="{css_path}">
 </head>
 <body>
@@ -511,13 +551,16 @@ def browse_page(css_path, title, sidebar_html, section_img, desc_html):
   <aside class="sidebar">{sidebar_html}</aside>
   <main class="main-content">
     <h1 class="page-title">{et}</h1>
-    <div class="section-image">
-      <img src="{section_img}" alt="{et} map or overview">
+    <div class="section-intro">
+      <div class="section-image">
+        <img src="{section_img}" alt="{et} map or overview">
+      </div>
+      <div class="section-desc">{desc_html}</div>
     </div>
-    <div class="section-desc">{desc_html}</div>
   </main>
 </div>
 {FOOTER}
+{NAV_JS}
 </body></html>"""
 
 # ── Browse sidebar helpers ────────────────────────────────────────────────────
@@ -615,19 +658,23 @@ def main():
     pages = [
         ("turkey.html",        "Turkey",
          TURKEY_SIDEBAR, "http://s3.amazonaws.com/hlp-section-images/TurkeyWCE.jpg",
-         TURKEY_DESC),
+         TURKEY_DESC,
+         "Browse biblical and archaeological photo sites across Turkey, including Ephesus, Pergamum, Sardis, Smyrna, and many more. Free high-resolution downloads."),
         ("western-turkey.html","Western Turkey",
          WESTERN_SIDEBAR, "http://s3.amazonaws.com/hlp-section-images/WesternTurkeyMap3.jpg",
-         WESTERN_DESC),
+         WESTERN_DESC,
+         "Western Turkey covers sites west of a north\u2013south line from Istanbul to Pamukkale, including the seven churches of Revelation. Free high-resolution biblical photos."),
         ("aegean.html",        "Central & Southern Aegean",
          AEGEAN_SIDEBAR, "http://s3.amazonaws.com/hlp-section-images/AegeanSCMap2.jpg",
-         AEGEAN_DESC),
+         AEGEAN_DESC,
+         "The Central & Southern Aegean region includes Ephesus, Laodicea, Miletus, Smyrna, and other significant biblical and archaeological sites in western Turkey."),
         ("smyrna.html",        "Smyrna/Izmir",
          site_info_sidebar(), "http://s3.amazonaws.com/hlp-section-images/SmyrnaMap.jpg",
-         SMYRNA_DESC),
+         SMYRNA_DESC,
+         "Smyrna (modern Izmir) was the second of the seven churches of Revelation. Browse photos of the agora, citadel, and ancient city remains. Free high-resolution downloads."),
     ]
-    for filename, title, sidebar, img, desc in pages:
-        html = browse_page("style.css", title, sidebar, img, desc)
+    for filename, title, sidebar, img, desc, meta_desc in pages:
+        html = browse_page("style.css", title, sidebar, img, desc, meta_desc)
         with open(os.path.join(MOCKUPS, filename), "w") as f:
             f.write(html)
         print(filename)

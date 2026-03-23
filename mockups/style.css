@@ -66,7 +66,6 @@ margin-bottom:1.25rem;line-height:1.3}
 .section-desc{flex:1;min-width:0;max-width:65ch}
 .section-desc p{margin-bottom:.85rem;font-size:1rem;line-height:1.78}
 .section-desc p:last-child{margin-bottom:0}
-@media(max-width:680px){.section-intro{flex-direction:column}}
 .photo-title{font-size:1.65rem;font-weight:normal;color:var(--accent);
 margin-bottom:.3rem;line-height:1.3}
 .photo-location{font-family:system-ui,sans-serif;font-size:.83rem;
