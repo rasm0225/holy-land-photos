@@ -284,6 +284,13 @@ font-family:system-ui,sans-serif}
 padding-top:1rem;border-top:1px solid var(--border);max-width:65ch}
 .photo-meta a{color:var(--text-light)}
 .photo-meta a:hover{color:var(--accent)}
+.thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem}
+.thumb-card{text-decoration:none;color:var(--link);display:block;border-radius:var(--radius);
+overflow:hidden;border:1px solid var(--border);background:#fff;transition:box-shadow .15s}
+.thumb-card:hover{box-shadow:var(--shadow);border-color:var(--accent)}
+.thumb-card img{width:100%;height:210px;object-fit:cover;display:block}
+.thumb-card-title{font-family:system-ui,sans-serif;font-size:.8rem;padding:.45rem .6rem;color:var(--text)}
+.thumb-card:hover .thumb-card-title{color:var(--accent)}
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);
 z-index:1000;cursor:zoom-out;justify-content:center;align-items:center;padding:2rem}
 .lightbox.open{display:flex}
@@ -411,7 +418,19 @@ def photo_sidebar(current_id):
     return (smyrna_crumb("../") +
             '\n<div class="view-toggle">'
             '<a href="../smyrna.html">Site Info</a>'
-            '<a class="active" href="../smyrna.html">Thumbnails</a>'
+            '<a class="active" href="../smyrna-thumbnails.html">Thumbnails</a>'
+            '</div>'
+            '\n<div class="sidebar-label">Photos in this site</div>'
+            f'\n<ul class="nav-list">\n{items}</ul>')
+
+def thumb_sidebar():
+    items = ""
+    for num, iid, title, _ in PHOTOS:
+        items += f'<li><a href="photos/{iid}.html">{_h.escape(title)}</a></li>\n'
+    return (smyrna_crumb("") +
+            '\n<div class="view-toggle">'
+            '<a href="smyrna.html">Site Info</a>'
+            '<a class="active" href="smyrna-thumbnails.html">Thumbnails</a>'
             '</div>'
             '\n<div class="sidebar-label">Photos in this site</div>'
             f'\n<ul class="nav-list">\n{items}</ul>')
@@ -423,7 +442,7 @@ def site_info_sidebar():
     return (smyrna_crumb("") +
             '\n<div class="view-toggle">'
             '<a class="active" href="smyrna.html">Site Info</a>'
-            '<a href="smyrna.html">Thumbnails</a>'
+            '<a href="smyrna-thumbnails.html">Thumbnails</a>'
             '</div>'
             '\n<div class="sidebar-label">Photos in this site</div>'
             f'\n<ul class="nav-list">\n{items}</ul>')
@@ -643,6 +662,49 @@ his faith at the stadium here, was one of the first Christian martyrs (age 86, A
 of the ancient city. The Izmir Archaeological Museum contains outstanding artifacts from
 the city and vicinity.</p>"""
 
+def thumb_page():
+    cards = ""
+    for _, img_id, title, _ in PHOTOS:
+        et = _h.escape(title)
+        cards += (
+            f'<a class="thumb-card" href="photos/{img_id}.html">\n'
+            f'  <img src="https://img.holylandphotos.org/{img_id}.jpg'
+            f'?w=420&amp;h=420&amp;mode=max" alt="{et}" loading="lazy">\n'
+            f'  <div class="thumb-card-title">{et}</div>\n'
+            f'</a>\n'
+        )
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smyrna/Izmir &mdash; All Photos &mdash; Holy Land Photos</title>
+  <meta name="description" content="Browse all 14 photos of Smyrna/Izmir (ancient and modern Izmir, Turkey) &mdash; including the agora, citadel, and Cryptoporticus. Free high-resolution downloads.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Smyrna/Izmir &mdash; All Photos &mdash; Holy Land Photos">
+  <meta property="og:description" content="Browse all 14 photos of Smyrna/Izmir (ancient and modern Izmir, Turkey). Free high-resolution downloads for personal and classroom use.">
+  <meta property="og:image" content="https://img.holylandphotos.org/TWCSSM20.jpg?w=1200&amp;h=630&amp;mode=crop">
+  <meta property="og:site_name" content="Holy Land Photos">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smyrna/Izmir &mdash; All Photos &mdash; Holy Land Photos">
+  <meta name="twitter:description" content="Browse all 14 photos of Smyrna/Izmir (ancient and modern Izmir, Turkey). Free high-resolution downloads for personal and classroom use.">
+  <meta name="twitter:image" content="https://img.holylandphotos.org/TWCSSM20.jpg?w=1200&amp;h=630&amp;mode=crop">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+{TOPNAV}
+{HEADER}
+<div class="page-layout">
+  <aside class="sidebar">{thumb_sidebar()}</aside>
+  <main class="main-content">
+    <h1 class="page-title">Smyrna/Izmir &mdash; All Photos</h1>
+    <div class="thumb-grid">
+{cards}    </div>
+  </main>
+</div>
+{FOOTER}
+{NAV_JS}
+</body></html>"""
+
 def main():
     with open(os.path.join(MOCKUPS, "style.css"), "w") as f:
         f.write(CSS)
@@ -679,12 +741,16 @@ def main():
             f.write(html)
         print(filename)
 
+    with open(os.path.join(MOCKUPS, "smyrna-thumbnails.html"), "w") as f:
+        f.write(thumb_page())
+    print("smyrna-thumbnails.html")
+
     old = os.path.join(MOCKUPS, "photo-view.html")
     if os.path.exists(old):
         os.remove(old)
         print("removed photo-view.html")
 
-    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + style.css")
+    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + 1 thumbnail page + style.css")
 
 if __name__ == "__main__":
     main()
