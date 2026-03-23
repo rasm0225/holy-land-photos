@@ -142,8 +142,21 @@ body{font-size:11pt;background:#fff}
 .photo-title,.page-title{font-size:16pt;color:#000}
 .photo-frame{box-shadow:none;cursor:default;max-width:100%}
 .photo-comments,.section-desc{max-width:100%}}
+.nav-toggle{display:none;flex-direction:column;justify-content:space-between;
+width:22px;height:16px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.nav-toggle span{display:block;height:2px;background:#C4B8AE;border-radius:2px;
+transition:transform .2s,opacity .2s}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 @media(max-width:680px){
-.topnav-links{display:none}
+.nav-toggle{display:flex}
+.topnav-links{display:none;position:absolute;top:46px;left:0;right:0;
+background:var(--nav-bg);flex-direction:column;z-index:100;border-top:1px solid #443A2E}
+.topnav-links.open{display:flex}
+.topnav-links li+li{border-left:none;border-top:1px solid #443A2E}
+.topnav-links a{line-height:1;padding:.85rem 1.5rem}
+.topnav{position:relative}
 .page-layout{grid-template-columns:1fr}
 .sidebar{border-right:none;border-bottom:1px solid var(--border);padding:1rem}
 .main-content{padding:1rem 1rem 2rem}
