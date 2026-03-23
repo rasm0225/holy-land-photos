@@ -314,6 +314,42 @@ font-family:system-ui,sans-serif;font-size:.78rem;line-height:1.9}
 footer a{color:#C4B8AE;text-decoration:none}
 footer a:hover{color:#fff}
 footer .sep{margin:0 .5rem;opacity:.35}
+.sidebar-section+.sidebar-section{margin-top:1.25rem}
+.rss-bar{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;
+font-family:system-ui,sans-serif;font-size:.82rem}
+.rss-bar a{color:var(--link);text-decoration:none;display:flex;align-items:center;gap:.35rem}
+.rss-bar a:hover{color:var(--accent)}
+.time-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.75rem}
+.time-tabs a{font-family:system-ui,sans-serif;font-size:.78rem;padding:.3rem .75rem;
+border-radius:var(--radius);border:1px solid var(--border);text-decoration:none;
+color:var(--text-muted);background:#fff;transition:all .15s}
+.time-tabs a:hover{border-color:var(--accent);color:var(--accent)}
+.time-tabs a.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.feed-list{margin-bottom:2rem}
+.feed-entry{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+.feed-entry:first-child{padding-top:0}
+.feed-thumb{flex-shrink:0;width:80px;height:80px;border-radius:var(--radius);
+overflow:hidden;background:var(--bg-sidebar);border:1px solid var(--border)}
+.feed-thumb img{width:80px;height:80px;object-fit:cover;display:block}
+.feed-body{flex:1;min-width:0}
+.feed-title{font-size:.97rem;margin-bottom:.28rem;line-height:1.4}
+.feed-title a{color:var(--link);text-decoration:none}
+.feed-title a:hover{color:var(--accent);text-decoration:underline}
+.feed-date{font-family:system-ui,sans-serif;font-size:.75rem;color:var(--text-muted);margin-bottom:.3rem}
+.feed-keywords{font-family:system-ui,sans-serif;font-size:.75rem;color:var(--text-light);line-height:1.65}
+.feed-keywords strong{color:var(--text-muted);font-weight:600}
+.prose{max-width:65ch}
+.prose h2{font-size:1.05rem;font-weight:700;color:var(--accent);margin:1.6rem 0 .55rem;
+font-family:system-ui,sans-serif}
+.prose h2:first-child{margin-top:0}
+.prose p{margin-bottom:.9rem;font-size:1rem;line-height:1.78}
+.prose p:last-child{margin-bottom:0}
+.prose a{color:var(--link)}
+.prose a:hover{color:var(--accent)}
+.prose strong{font-weight:700}
+.prose .credit{background:var(--bg-sidebar);border-left:3px solid var(--accent);
+padding:.65rem 1rem;border-radius:0 var(--radius) var(--radius) 0;
+font-style:italic;margin:.85rem 0 1rem;font-size:.95rem}
 @media print{
 .topnav,.site-header,.sidebar,.toolbar,.pagination,
 .lightbox,.modal-overlay,footer,.zoom-hint,.view-toggle{display:none!important}
@@ -351,8 +387,8 @@ TOPNAV = """<nav class="topnav">
       <li><a href="/">Home</a></li>
       <li><a href="/page.asp?page_ID=8">Complete Site List</a></li>
       <li><a href="/search.asp">Search</a></li>
-      <li><a href="/whats_new.asp">What&#8217;s New?</a></li>
-      <li><a href="/page.asp?page_ID=5">Permission to Use</a></li>
+      <li><a href="whats-new.html">What&#8217;s New?</a></li>
+      <li><a href="permission.html">Permission to Use</a></li>
       <li><a href="mailto:holylandphotos@gmail.com">Contact Us</a></li>
     </ul>
   </div>
@@ -422,6 +458,39 @@ def photo_sidebar(current_id):
             '</div>'
             '\n<div class="sidebar-label">Photos in this site</div>'
             f'\n<ul class="nav-list">\n{items}</ul>')
+
+def static_sidebar(active=None):
+    """Sidebar for non-browse pages (search, whats_new, page.asp)."""
+    browse = [
+        ("Daily Life and Artifacts", "#"),
+        ("People",                   "#"),
+        ("Atlas Images",             "#"),
+        ("Museums of the World",     "#"),
+        ("Browse by Countries",      "#"),
+    ]
+    info = [
+        ("Tour \u2013 Turkey &amp; Greece \u2013 Apr/May 2026", "#"),
+        ("Recent Additions",    "whats-new.html"),
+        ("Permission to Use",   "permission.html"),
+        ("Complete Site List",  "#"),
+        ("How to Use this Site","#"),
+        ("Topical Easy Find",   "#"),
+        ("About this Site",     "#"),
+        ("Recommended Reading", "#"),
+    ]
+    def item(label, url, key):
+        cls = ' class="active"' if key == active else ""
+        return f'<li{cls}><a href="{url}">{label}</a></li>'
+    browse_items = "\n".join(item(l, u, l) for l, u in browse)
+    info_items   = "\n".join(item(l, u, l) for l, u in info)
+    return (
+        f'<div class="sidebar-section">'
+        f'<div class="sidebar-label">Browse Photos</div>'
+        f'<ul class="nav-list">\n{browse_items}\n</ul></div>'
+        f'<div class="sidebar-section">'
+        f'<div class="sidebar-label">Site Information</div>'
+        f'<ul class="nav-list">\n{info_items}\n</ul></div>'
+    )
 
 def thumb_sidebar():
     items = ""
@@ -662,6 +731,156 @@ his faith at the stadium here, was one of the first Christian martyrs (age 86, A
 of the ancient city. The Izmir Archaeological Museum contains outstanding artifacts from
 the city and vicinity.</p>"""
 
+# ── Feed entry data (real entries from live site + Smyrna examples) ───────────
+FEED_ENTRIES = [
+    ("TWCSSM20", "Smyrna/Izmir :: Agora Panorama",
+     "3/26/2025",
+     "Agora, Panorama, Smyrna, Izmir, Turkey, Aegean, Western Turkey, Seven Churches, Revelation"),
+    ("TWCSSM03", "Smyrna/Izmir :: Agora From Above",
+     "3/26/2025",
+     "Agora, Citadel, Kadifekale, Smyrna, Izmir, Turkey, Seven Churches, Revelation"),
+    ("TWCSSM04", "Smyrna/Izmir :: Agora Portico",
+     "3/26/2025",
+     "Agora, Portico, Columns, Corinthian, Smyrna, Izmir, Turkey, Seven Churches"),
+    ("TWCSSM30", "Smyrna/Izmir :: Cryptoporticus",
+     "3/26/2025",
+     "Cryptoporticus, Underground Agora, Arches, Smyrna, Izmir, Turkey"),
+    ("TWCSSM20", "Sardis Artemis Temple Plus :: Interior of Second Church",
+     "3/19/2026",
+     "Second Church, First Church, Byzantine Church, Fourth Century, Sardis, Revelation, Seven Churches, Sart, Turkey, Aegean North"),
+    ("TWCSSM21", "Sardis Artemis Temple Plus :: Interior of First Church",
+     "3/18/2026",
+     "First Church, Byzantine Church, Fourth Century, Sardis, Revelation, Seven Churches"),
+    ("TWCSSM10", "Assos: Citadel, Temple of Athena, Harbor :: Ancient Harbor Detail",
+     "3/17/2026",
+     "Harbor, Port, Paul, Assos, Behramkale, Northern Aegean, Turkey"),
+]
+
+def whats_new_page():
+    tabs_data = [("1 Week","7"),("2 Weeks","14"),("3 Weeks","21"),("1 Month","30"),("2 Months","60")]
+    tabs = ""
+    for label, d in tabs_data:
+        cls = ' class="active"' if d == "7" else ""
+        tabs += f'<a href="whats-new.html?d={d}"{cls}>{label}</a>\n'
+
+    entries_html = ""
+    for img_id, title, date, keywords in FEED_ENTRIES:
+        site, photo = (title.split(" :: ", 1) + [""])[:2]
+        title_html = f"<strong>{_h.escape(site)}</strong>"
+        if photo:
+            title_html += f" :: {_h.escape(photo)}"
+        entries_html += f"""<div class="feed-entry">
+  <a href="#" class="feed-thumb">
+    <img src="https://img.holylandphotos.org/{img_id}.jpg?w=160&h=160&mode=max"
+         alt="{_h.escape(title)}" loading="lazy">
+  </a>
+  <div class="feed-body">
+    <div class="feed-title"><a href="#">{title_html}</a></div>
+    <div class="feed-date">Added {date}</div>
+    <div class="feed-keywords"><strong>Keywords:</strong> {_h.escape(keywords)}</div>
+  </div>
+</div>\n"""
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>What&#8217;s New &mdash; Holy Land Photos</title>
+  <meta name="description" content="Browse the most recently added biblical and archaeological photos on Holy Land Photos &mdash; updated weekly with new high-resolution images.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="What&#8217;s New &mdash; Holy Land Photos">
+  <meta property="og:description" content="Browse the most recently added biblical and archaeological photos on Holy Land Photos &mdash; updated weekly with new high-resolution images.">
+  <meta property="og:site_name" content="Holy Land Photos">
+  <link rel="alternate" type="application/rss+xml" title="Holy Land Photos &mdash; Recent Additions" href="/rss.asp">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+{TOPNAV}
+{HEADER}
+<div class="page-layout">
+  <aside class="sidebar">{static_sidebar("Recent Additions")}</aside>
+  <main class="main-content">
+    <h1 class="page-title">What&#8217;s New?</h1>
+    <div class="rss-bar">
+      <a href="/rss.asp">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="5" cy="19" r="3"/><path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V10z"/></svg>
+        Subscribe via RSS
+      </a>
+    </div>
+    <div class="time-tabs">
+{tabs}    </div>
+    <div class="feed-list">
+{entries_html}    </div>
+  </main>
+</div>
+{FOOTER}
+{NAV_JS}
+</body></html>"""
+
+
+def permission_page():
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Permission to Use &mdash; Holy Land Photos</title>
+  <meta name="description" content="Images on Holy Land Photos are free for personal, classroom, and Bible study use with attribution. Learn about commercial and web usage permissions.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Permission to Use &mdash; Holy Land Photos">
+  <meta property="og:description" content="Images on Holy Land Photos are free for personal, classroom, and Bible study use with attribution. Learn about commercial and web usage permissions.">
+  <meta property="og:site_name" content="Holy Land Photos">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+{TOPNAV}
+{HEADER}
+<div class="page-layout">
+  <aside class="sidebar">{static_sidebar("Permission to Use")}</aside>
+  <main class="main-content">
+    <h1 class="page-title">Permission to Use</h1>
+    <div class="prose">
+      <h2>Personal Use &mdash; Free</h2>
+      <p>These images are our gift to you for non&#8211;commercial, non&#8211;web personal
+      use &mdash; <strong>but</strong> see below for web and commercial usage.</p>
+      <p>The only request we make is that you use something like the following credit
+      at some point during your presentation:</p>
+      <p class="credit">Image(s) courtesy of
+      <a href="https://www.holylandphotos.org">www.HolyLandPhotos.org</a>
+      &mdash; either in written or verbal form.</p>
+
+      <h2>Commercial Usage</h2>
+      <p>To request permission to use images commercially &mdash; for a modest fee &mdash;
+      <a href="mailto:holylandphotos@gmail.com?subject=Commercial%20Image%20Usage">contact
+      Dr. Rasmussen</a> at
+      <a href="mailto:holylandphotos@gmail.com?subject=Commercial%20Image%20Usage">HolyLandPhotos@gmail.com</a>.</p>
+      <p>Non-watermarked, high-resolution versions are available for licensed commercial use.</p>
+
+      <h2>Web Usage</h2>
+      <p>In general, images are <strong>not</strong> to be used on other websites &mdash;
+      <strong>however</strong>, permission is granted to use up to 4 images per website
+      if clear credit is given to
+      <a href="https://www.holylandphotos.org">www.HolyLandPhotos.org</a> for each image used.</p>
+      <p>For use of 5 or more images, you must have the express written permission of
+      <a href="mailto:holylandphotos@gmail.com">www.HolyLandPhotos.org</a>.</p>
+      <p>Text is not to be reproduced without specific permission from the
+      <a href="mailto:holylandphotos@gmail.com">content provider</a>.</p>
+
+      <h2>Register for Updates</h2>
+      <p>To receive an occasional notification when images are added,
+      <a href="/register.asp">Register Here</a>.</p>
+      <p>You will not be swamped with email, and this list will never be shared
+      with any other party.</p>
+
+      <h2>Request Additional Images</h2>
+      <p>To request an image you would like to see added to the site, contact Dr. Rasmussen at
+      <a href="mailto:holylandphotos@gmail.com">HolyLandPhotos@gmail.com</a>.</p>
+    </div>
+  </main>
+</div>
+{FOOTER}
+{NAV_JS}
+</body></html>"""
+
 def thumb_page():
     cards = ""
     for _, img_id, title, _ in PHOTOS:
@@ -745,12 +964,20 @@ def main():
         f.write(thumb_page())
     print("smyrna-thumbnails.html")
 
+    with open(os.path.join(MOCKUPS, "whats-new.html"), "w") as f:
+        f.write(whats_new_page())
+    print("whats-new.html")
+
+    with open(os.path.join(MOCKUPS, "permission.html"), "w") as f:
+        f.write(permission_page())
+    print("permission.html")
+
     old = os.path.join(MOCKUPS, "photo-view.html")
     if os.path.exists(old):
         os.remove(old)
         print("removed photo-view.html")
 
-    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + 1 thumbnail page + style.css")
+    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + 1 thumbnail page + 2 static pages + style.css")
 
 if __name__ == "__main__":
     main()
