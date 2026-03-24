@@ -147,9 +147,7 @@
       min-height: 100vh;
       position: relative;
     }
-    /* Alternating layout */
-    .chapter:nth-child(even) { direction: rtl; }
-    .chapter:nth-child(even) > * { direction: ltr; }
+    /* Image always left */
 
     /* Sticky image column */
     .chapter-figure {
@@ -187,11 +185,6 @@
       transform: translateY(1.5rem);
       transition: opacity .9s ease, transform .9s ease;
     }
-    .chapter:nth-child(even) .chapter-text {
-      border-left: none;
-      border-right: 1px solid rgba(237,232,225,.06);
-      padding: 12vh 3.5rem 12vh 4rem;
-    }
     .chapter-text.visible {
       opacity: 1; transform: none;
     }
@@ -219,12 +212,17 @@
     .ch-body a { color: #C47A4E; }
     .ch-body a:hover { color: #E09060; text-decoration: none; }
 
-    /* ── Divider between chapters ─────────────────────────────── */
-    .chapter + .chapter::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(to right, transparent, rgba(237,232,225,.1) 30%, rgba(237,232,225,.1) 70%, transparent);
+    /* ── Chapters wrapper (centered, with gaps) ───────────────── */
+    .chapters-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+    @media (max-width: 768px) {
+      .chapters-wrapper { padding: 0 1rem; gap: 2rem; }
     }
 
     /* ── End screen ───────────────────────────────────────────── */
@@ -264,9 +262,6 @@
       }
       .chapter-figure {
         position: relative; height: 56vw;
-      }
-      .chapter:nth-child(even) .chapter-text {
-        border-right: none; padding: 2.5rem 1.5rem;
       }
       .chapter-text {
         padding: 2.5rem 1.5rem;
@@ -440,6 +435,7 @@
     <div class="scroll-cue">Scroll to begin &nbsp;↓</div>
   </section>
 
+  <div class="chapters-wrapper">
   <!-- ── Chapter 01 — Colossae ─────────────────────────────────── -->
   <section class="chapter">
     <a class="chapter-figure" data-num="01 / 31"
@@ -1188,6 +1184,8 @@
       </div>
     </article>
   </section>
+
+  </div><!-- /.chapters-wrapper -->
 
   <!-- ── End screen ─────────────────────────────────────────────── -->
   <section class="story-end">
