@@ -417,6 +417,12 @@ font-weight:700;color:var(--accent);margin:0 0 .5rem}
 .featured-collection a{color:var(--link);text-decoration:none;font-family:system-ui,sans-serif;
 font-size:.88rem;font-weight:600}
 .featured-collection a:hover{color:var(--accent)}
+.video-section{margin:1.5rem 0}
+.video-section h3{font-size:1rem;font-family:system-ui,sans-serif;font-weight:700;
+color:var(--accent);margin:0 0 .75rem}
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;
+border-radius:var(--radius);background:#000}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .newsletter-card{background:var(--bg-sidebar);border:1px solid var(--border);
 border-radius:var(--radius);padding:1rem;margin-top:1.25rem}
 .newsletter-card h3{font-size:.92rem;font-family:system-ui,sans-serif;font-weight:700;
@@ -1189,6 +1195,17 @@ def homepage():
       11 times in the Old Testament. Abram settled here for a period of time on his way from Ur to
       the Land of Canaan (Genesis 11&ndash;12).</p>
       <a href="#">View Collection &rarr;</a>
+    </div>
+
+    <div class="video-section">
+      <h3>Video: Introduction to Holy Land Photos</h3>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/eXC2VOKsXPc"
+                title="Introduction to Holy Land Photos"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+      </div>
     </div>
 
   </main>
