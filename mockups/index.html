@@ -96,27 +96,13 @@
 
     <div class="carousel-section">
       <div class="carousel-title">Next Sunday is Palm Sunday</div>
-      <div class="carousel" id="carousel-1"><div class="carousel-track"><div class="carousel-slide"><img src="https://img.holylandphotos.org/PPS0710.jpg" alt="Pilgrims from around the world join in." loading="lazy"><div class="carousel-caption">Pilgrims from around the world join in.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTMLGN31.jpg" alt="Pilgrims will process down the Mount of Olives, following the route of Jesus into Jerusalem." loading="lazy"><div class="carousel-caption">Pilgrims will process down the Mount of Olives, following the route of Jesus into Jerusalem.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/PPS0705.jpg" alt="All generations participate." loading="lazy"><div class="carousel-caption">All generations participate.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/PPS0701.jpg" alt="Local leaders of the procession." loading="lazy"><div class="carousel-caption">Local leaders of the procession.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/PPS0703.jpg" alt="Christian Palestinian groups in the procession." loading="lazy"><div class="carousel-caption">Christian Palestinian groups in the procession.</div></div>
-</div><button class="carousel-btn prev" aria-label="Previous">&#8249;</button><button class="carousel-btn next" aria-label="Next">&#8250;</button></div><div class="carousel-dots"><button class="carousel-dot active" aria-label="Slide 1"></button><button class="carousel-dot" aria-label="Slide 2"></button><button class="carousel-dot" aria-label="Slide 3"></button><button class="carousel-dot" aria-label="Slide 4"></button><button class="carousel-dot" aria-label="Slide 5"></button></div>
+      <div class="carousel-static" id="carousel-1"><img src="https://img.holylandphotos.org/PPS0710.jpg" alt="Pilgrims from around the world join in." loading="lazy"><div class="carousel-caption">Pilgrims from around the world join in.</div><div class="carousel-count">5 photos in this collection</div></div>
       <p class="carousel-note">Next week is Palm Sunday commemorating Jesus&rsquo; entry into the City of Jerusalem</p>
     </div>
 
     <div class="carousel-section">
       <div class="carousel-title">Holy Week Images</div>
-      <div class="carousel" id="carousel-2"><div class="carousel-track"><div class="carousel-slide"><img src="https://img.holylandphotos.org/ICSHMD20.jpg" alt="Rolling Stone Tomb at Khirbet Midras." loading="lazy"><div class="carousel-caption">Rolling Stone Tomb at Khirbet Midras.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/DLPLTRCT01.jpg" alt="A crown of thorns (John 19:2)." loading="lazy"><div class="carousel-caption">A crown of thorns (John 19:2).</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTGTGT01.jpg" alt="The Garden Tomb in Jerusalem." loading="lazy"><div class="carousel-caption">The Garden Tomb in Jerusalem.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTGT02.jpg" alt="Gordon’s Calvary." loading="lazy"><div class="carousel-caption">Gordon’s Calvary.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTHSCL33.jpg" alt="Calvary: Greek Orthodox in the Church of the Holy Sepulcher." loading="lazy"><div class="carousel-caption">Calvary: Greek Orthodox in the Church of the Holy Sepulcher.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTGT04.jpg" alt="Face of the Skull." loading="lazy"><div class="carousel-caption">Face of the Skull.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTHSTM01.jpg" alt="Entrance to the Tomb of Jesus — Church of the Holy Sepulcher." loading="lazy"><div class="carousel-caption">Entrance to the Tomb of Jesus — Church of the Holy Sepulcher.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTHS87.jpg" alt="Burial bench in the Tomb of Jesus — Church of the Holy Sepulcher." loading="lazy"><div class="carousel-caption">Burial bench in the Tomb of Jesus — Church of the Holy Sepulcher.</div></div>
-<div class="carousel-slide"><img src="https://img.holylandphotos.org/IJNTHS01.jpg" alt="Holy Sepulcher from above." loading="lazy"><div class="carousel-caption">Holy Sepulcher from above.</div></div>
-</div><button class="carousel-btn prev" aria-label="Previous">&#8249;</button><button class="carousel-btn next" aria-label="Next">&#8250;</button></div><div class="carousel-dots"><button class="carousel-dot active" aria-label="Slide 1"></button><button class="carousel-dot" aria-label="Slide 2"></button><button class="carousel-dot" aria-label="Slide 3"></button><button class="carousel-dot" aria-label="Slide 4"></button><button class="carousel-dot" aria-label="Slide 5"></button><button class="carousel-dot" aria-label="Slide 6"></button><button class="carousel-dot" aria-label="Slide 7"></button><button class="carousel-dot" aria-label="Slide 8"></button><button class="carousel-dot" aria-label="Slide 9"></button></div>
+      <div class="carousel-static" id="carousel-2"><img src="https://img.holylandphotos.org/ICSHMD20.jpg" alt="Rolling Stone Tomb at Khirbet Midras." loading="lazy"><div class="carousel-caption">Rolling Stone Tomb at Khirbet Midras.</div><div class="carousel-count">9 photos in this collection</div></div>
     </div>
 
     <hr class="section-divider">
@@ -185,35 +171,5 @@
   </div>
 </footer>
 <script>document.querySelector(".nav-toggle").addEventListener("click",function(){var open=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!open);document.querySelector(".topnav-links").classList.toggle("open",!open)});</script>
-<script>
-class Carousel {
-  constructor(id) {
-    this.el = document.getElementById(id);
-    if (!this.el) return;
-    this.track = this.el.querySelector('.carousel-track');
-    this.slides = this.el.querySelectorAll('.carousel-slide');
-    this.dots = this.el.parentElement.querySelectorAll('.carousel-dot');
-    this.current = 0;
-    this.total = this.slides.length;
-    this.timer = null;
-    this.el.querySelector('.carousel-btn.prev').addEventListener('click', () => this.go(this.current - 1));
-    this.el.querySelector('.carousel-btn.next').addEventListener('click', () => this.go(this.current + 1));
-    this.dots.forEach((d, i) => d.addEventListener('click', () => this.go(i)));
-    this.el.addEventListener('mouseenter', () => clearInterval(this.timer));
-    this.el.addEventListener('mouseleave', () => this.start());
-    this.start();
-  }
-  go(n) {
-    this.current = ((n % this.total) + this.total) % this.total;
-    this.track.style.transform = `translateX(-${this.current * 100}%)`;
-    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
-  }
-  start() {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.go(this.current + 1), 6000);
-  }
-}
-new Carousel('carousel-1');
-new Carousel('carousel-2');
-</script>
+
 </body></html>

@@ -374,27 +374,16 @@ text-decoration:none;margin-left:auto}
 .carousel-section{margin-bottom:2rem}
 .carousel-title{font-size:1.05rem;font-family:system-ui,sans-serif;font-weight:700;
 color:var(--text);margin-bottom:.6rem}
-.carousel{position:relative;border-radius:var(--radius);overflow:hidden;
-background:#111;aspect-ratio:16/9;cursor:pointer}
-.carousel-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-.carousel-slide{min-width:100%;position:relative;overflow:hidden}
-.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.carousel-static{position:relative;border-radius:var(--radius);overflow:hidden;
+background:#111;aspect-ratio:16/9}
+.carousel-static img{width:100%;height:100%;object-fit:cover;display:block}
 .carousel-caption{position:absolute;bottom:0;left:0;right:0;
 background:linear-gradient(transparent,rgba(0,0,0,.72));
-color:#fff;padding:2rem 1rem .7rem;
+color:#fff;padding:2rem 1rem .5rem;
 font-family:system-ui,sans-serif;font-size:.83rem;line-height:1.4}
-.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);
-background:rgba(255,255,255,.88);border:none;border-radius:50%;
-width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;
-cursor:pointer;font-size:1rem;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.2);
-transition:background .15s;z-index:2}
-.carousel-btn:hover{background:#fff}
-.carousel-btn.prev{left:.6rem}
-.carousel-btn.next{right:.6rem}
-.carousel-dots{display:flex;justify-content:center;gap:.4rem;margin-top:.55rem}
-.carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);
-border:none;cursor:pointer;padding:0;transition:background .2s}
-.carousel-dot.active{background:var(--accent)}
+.carousel-count{position:absolute;top:.6rem;right:.7rem;
+background:rgba(0,0,0,.55);color:#fff;border-radius:999px;
+font-family:system-ui,sans-serif;font-size:.72rem;padding:.2rem .65rem}
 .carousel-note{font-style:italic;font-size:.88rem;color:var(--text-muted);
 margin-top:.5rem;margin-bottom:1.25rem}
 .holyweek-links{list-style:none;padding:0;margin:.6rem 0 1.25rem;
@@ -1025,60 +1014,19 @@ def thumb_page():
 </body></html>"""
 
 def _carousel_html(carousel_id, slides):
-    """Build carousel HTML. slides = list of (img_id, caption) tuples."""
-    slides_html = ""
-    for img_id, caption in slides:
-        slides_html += (
-            f'<div class="carousel-slide">'
-            f'<img src="https://img.holylandphotos.org/{img_id}.jpg" alt="{_h.escape(caption)}" loading="lazy">'
-            f'<div class="carousel-caption">{_h.escape(caption)}</div>'
-            f'</div>\n'
-        )
-    dots_html = "".join(
-        f'<button class="carousel-dot{" active" if i == 0 else ""}" aria-label="Slide {i+1}"></button>'
-        for i in range(len(slides))
-    )
+    """Show first slide as a static image with a photo count badge. No JS needed."""
+    img_id, caption = slides[0]
+    count = len(slides)
     return (
-        f'<div class="carousel" id="{carousel_id}">'
-        f'<div class="carousel-track">{slides_html}</div>'
-        f'<button class="carousel-btn prev" aria-label="Previous">&#8249;</button>'
-        f'<button class="carousel-btn next" aria-label="Next">&#8250;</button>'
+        f'<div class="carousel-static" id="{carousel_id}">'
+        f'<img src="https://img.holylandphotos.org/{img_id}.jpg" alt="{_h.escape(caption)}" loading="lazy">'
+        f'<div class="carousel-caption">{_h.escape(caption)}</div>'
+        f'<div class="carousel-count">{count} photos in this collection</div>'
         f'</div>'
-        f'<div class="carousel-dots">{dots_html}</div>'
     )
 
 
-CAROUSEL_JS = """<script>
-class Carousel {
-  constructor(id) {
-    this.el = document.getElementById(id);
-    if (!this.el) return;
-    this.track = this.el.querySelector('.carousel-track');
-    this.slides = this.el.querySelectorAll('.carousel-slide');
-    this.dots = this.el.parentElement.querySelectorAll('.carousel-dot');
-    this.current = 0;
-    this.total = this.slides.length;
-    this.timer = null;
-    this.el.querySelector('.carousel-btn.prev').addEventListener('click', () => this.go(this.current - 1));
-    this.el.querySelector('.carousel-btn.next').addEventListener('click', () => this.go(this.current + 1));
-    this.dots.forEach((d, i) => d.addEventListener('click', () => this.go(i)));
-    this.el.addEventListener('mouseenter', () => clearInterval(this.timer));
-    this.el.addEventListener('mouseleave', () => this.start());
-    this.start();
-  }
-  go(n) {
-    this.current = ((n % this.total) + this.total) % this.total;
-    this.track.style.transform = `translateX(-${this.current * 100}%)`;
-    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
-  }
-  start() {
-    clearInterval(this.timer);
-    this.timer = setInterval(() => this.go(this.current + 1), 6000);
-  }
-}
-new Carousel('carousel-1');
-new Carousel('carousel-2');
-</script>"""
+CAROUSEL_JS = ""  # carousels are now static single-image displays
 
 
 def homepage():
