@@ -350,6 +350,106 @@ font-family:system-ui,sans-serif}
 .prose .credit{background:var(--bg-sidebar);border-left:3px solid var(--accent);
 padding:.65rem 1rem;border-radius:0 var(--radius) var(--radius) 0;
 font-style:italic;margin:.85rem 0 1rem;font-size:.95rem}
+/* Homepage */
+.search-hero{background:var(--bg-sidebar);border-bottom:1px solid var(--border);
+padding:1.25rem 1.5rem;margin-bottom:0}
+.search-hero-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:.4rem}
+.search-hero-form{display:flex;gap:.5rem}
+.search-hero-input{flex:1;padding:.55rem .9rem;border:1px solid var(--border);
+border-radius:var(--radius);font-family:Georgia,serif;font-size:1rem;
+background:#fff;transition:border-color .15s}
+.search-hero-input:focus{outline:none;border-color:var(--accent)}
+.search-hero-btn{padding:.55rem 1.25rem;background:var(--accent);color:#fff;
+border:none;border-radius:var(--radius);cursor:pointer;font-family:system-ui,sans-serif;
+font-size:.9rem;font-weight:600;transition:background .15s;white-space:nowrap}
+.search-hero-btn:hover{background:#8b3a3a}
+.search-hint{font-family:system-ui,sans-serif;font-size:.78rem;color:var(--text-muted)}
+.section-heading{font-size:1.2rem;font-weight:700;color:var(--accent);
+font-family:system-ui,sans-serif;margin:0 0 .3rem;display:flex;
+align-items:baseline;gap:1rem}
+.section-heading a{font-size:.8rem;font-weight:500;color:var(--link);
+text-decoration:none;margin-left:auto}
+.section-heading a:hover{color:var(--accent);text-decoration:underline}
+.section-divider{margin:2rem 0;border:none;border-top:1px solid var(--border)}
+.carousel-section{margin-bottom:2rem}
+.carousel-title{font-size:1.05rem;font-family:system-ui,sans-serif;font-weight:700;
+color:var(--text);margin-bottom:.6rem}
+.carousel{position:relative;border-radius:var(--radius);overflow:hidden;
+background:#111;aspect-ratio:16/9;cursor:pointer}
+.carousel-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.carousel-slide{min-width:100%;position:relative;overflow:hidden}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.carousel-caption{position:absolute;bottom:0;left:0;right:0;
+background:linear-gradient(transparent,rgba(0,0,0,.72));
+color:#fff;padding:2rem 1rem .7rem;
+font-family:system-ui,sans-serif;font-size:.83rem;line-height:1.4}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);
+background:rgba(255,255,255,.88);border:none;border-radius:50%;
+width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;
+cursor:pointer;font-size:1rem;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.2);
+transition:background .15s;z-index:2}
+.carousel-btn:hover{background:#fff}
+.carousel-btn.prev{left:.6rem}
+.carousel-btn.next{right:.6rem}
+.carousel-dots{display:flex;justify-content:center;gap:.4rem;margin-top:.55rem}
+.carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);
+border:none;cursor:pointer;padding:0;transition:background .2s}
+.carousel-dot.active{background:var(--accent)}
+.carousel-note{font-style:italic;font-size:.88rem;color:var(--text-muted);
+margin-top:.5rem;margin-bottom:1.25rem}
+.holyweek-links{list-style:none;padding:0;margin:.6rem 0 1.25rem;
+display:flex;flex-direction:column;gap:.4rem}
+.holyweek-links li{padding:.45rem .7rem;border-left:3px solid var(--border);
+border-radius:0 var(--radius) var(--radius) 0;
+font-size:.92rem;line-height:1.45;transition:border-color .15s}
+.holyweek-links li:hover{border-color:var(--accent);background:var(--bg-sidebar)}
+.holyweek-links li a{color:var(--link);text-decoration:none;font-weight:600}
+.holyweek-links li a:hover{color:var(--accent)}
+.holyweek-links li span{color:var(--text-muted);font-size:.82rem;display:block;margin-top:.15rem}
+.callout-box{background:#fdf6ec;border:1px solid #e8d5b0;border-radius:var(--radius);
+padding:1rem 1.1rem;margin:1.5rem 0}
+.callout-box h3{font-size:.97rem;font-family:system-ui,sans-serif;font-weight:700;
+color:#7a5c1e;margin:0 0 .4rem}
+.callout-box p{font-size:.9rem;line-height:1.65;color:var(--text);margin:0}
+.donate-block{text-align:center;padding:1rem;border:1px solid var(--border);
+border-radius:var(--radius);background:var(--bg-sidebar);margin:1.5rem 0}
+.donate-block p{font-size:.9rem;color:var(--text-muted);margin:0 0 .75rem;
+font-family:system-ui,sans-serif}
+.donate-btn{display:inline-block;background:#0070ba;color:#fff;
+border:none;border-radius:var(--radius);padding:.55rem 1.4rem;
+font-family:system-ui,sans-serif;font-size:.9rem;font-weight:600;
+cursor:pointer;text-decoration:none;transition:background .15s}
+.donate-btn:hover{background:#005c96}
+.featured-collection{border:1px solid var(--border);border-radius:var(--radius);
+padding:1rem 1.1rem;background:#fff;margin:1.5rem 0}
+.featured-collection h3{font-size:1rem;font-family:system-ui,sans-serif;
+font-weight:700;color:var(--accent);margin:0 0 .5rem}
+.featured-collection p{font-size:.9rem;line-height:1.7;color:var(--text);margin:0 0 .65rem}
+.featured-collection a{color:var(--link);text-decoration:none;font-family:system-ui,sans-serif;
+font-size:.88rem;font-weight:600}
+.featured-collection a:hover{color:var(--accent)}
+.newsletter-card{background:var(--bg-sidebar);border:1px solid var(--border);
+border-radius:var(--radius);padding:1rem;margin-top:1.25rem}
+.newsletter-card h3{font-size:.92rem;font-family:system-ui,sans-serif;font-weight:700;
+color:var(--text);margin:0 0 .25rem}
+.newsletter-card p{font-size:.77rem;color:var(--text-muted);margin:0 0 .75rem;
+font-family:system-ui,sans-serif;line-height:1.5}
+.newsletter-form{display:flex;flex-direction:column;gap:.45rem}
+.newsletter-form input,.newsletter-form select{padding:.42rem .6rem;
+border:1px solid var(--border);border-radius:var(--radius);
+font-family:system-ui,sans-serif;font-size:.82rem;background:#fff;width:100%;box-sizing:border-box}
+.newsletter-form input:focus,.newsletter-form select:focus{outline:none;border-color:var(--accent)}
+.newsletter-form button{padding:.45rem .8rem;background:var(--accent);color:#fff;
+border:none;border-radius:var(--radius);cursor:pointer;
+font-family:system-ui,sans-serif;font-size:.82rem;font-weight:600;transition:background .15s}
+.newsletter-form button:hover{background:#8b3a3a}
+.rss-sidebar-link{display:flex;align-items:center;gap:.4rem;margin-top:.85rem;
+font-family:system-ui,sans-serif;font-size:.8rem;color:var(--text-muted)}
+.rss-sidebar-link a{color:var(--link);text-decoration:none}
+.rss-sidebar-link a:hover{color:var(--accent)}
+.stats-chip{display:inline-flex;align-items:center;gap:.4rem;font-family:system-ui,sans-serif;
+font-size:.78rem;color:var(--text-muted);background:var(--bg-sidebar);
+border:1px solid var(--border);border-radius:999px;padding:.2rem .75rem;margin-left:.5rem}
 @media print{
 .topnav,.site-header,.sidebar,.toolbar,.pagination,
 .lightbox,.modal-overlay,footer,.zoom-hint,.view-toggle{display:none!important}
@@ -924,6 +1024,233 @@ def thumb_page():
 {NAV_JS}
 </body></html>"""
 
+def _carousel_html(carousel_id, slides):
+    """Build carousel HTML. slides = list of (img_id, caption) tuples."""
+    slides_html = ""
+    for img_id, caption in slides:
+        slides_html += (
+            f'<div class="carousel-slide">'
+            f'<img src="https://img.holylandphotos.org/{img_id}.jpg" alt="{_h.escape(caption)}" loading="lazy">'
+            f'<div class="carousel-caption">{_h.escape(caption)}</div>'
+            f'</div>\n'
+        )
+    dots_html = "".join(
+        f'<button class="carousel-dot{" active" if i == 0 else ""}" aria-label="Slide {i+1}"></button>'
+        for i in range(len(slides))
+    )
+    return (
+        f'<div class="carousel" id="{carousel_id}">'
+        f'<div class="carousel-track">{slides_html}</div>'
+        f'<button class="carousel-btn prev" aria-label="Previous">&#8249;</button>'
+        f'<button class="carousel-btn next" aria-label="Next">&#8250;</button>'
+        f'</div>'
+        f'<div class="carousel-dots">{dots_html}</div>'
+    )
+
+
+CAROUSEL_JS = """<script>
+class Carousel {
+  constructor(id) {
+    this.el = document.getElementById(id);
+    if (!this.el) return;
+    this.track = this.el.querySelector('.carousel-track');
+    this.slides = this.el.querySelectorAll('.carousel-slide');
+    this.dots = this.el.parentElement.querySelectorAll('.carousel-dot');
+    this.current = 0;
+    this.total = this.slides.length;
+    this.timer = null;
+    this.el.querySelector('.carousel-btn.prev').addEventListener('click', () => this.go(this.current - 1));
+    this.el.querySelector('.carousel-btn.next').addEventListener('click', () => this.go(this.current + 1));
+    this.dots.forEach((d, i) => d.addEventListener('click', () => this.go(i)));
+    this.el.addEventListener('mouseenter', () => clearInterval(this.timer));
+    this.el.addEventListener('mouseleave', () => this.start());
+    this.start();
+  }
+  go(n) {
+    this.current = ((n % this.total) + this.total) % this.total;
+    this.track.style.transform = `translateX(-${this.current * 100}%)`;
+    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
+  }
+  start() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => this.go(this.current + 1), 6000);
+  }
+}
+new Carousel('carousel-1');
+new Carousel('carousel-2');
+</script>"""
+
+
+def homepage():
+    PALM_SUNDAY_SLIDES = [
+        ("PPS0710",      "Pilgrims from around the world join in."),
+        ("IJNTMLGN31",   "Pilgrims will process down the Mount of Olives, following the route of Jesus into Jerusalem."),
+        ("PPS0705",      "All generations participate."),
+        ("PPS0701",      "Local leaders of the procession."),
+        ("PPS0703",      "Christian Palestinian groups in the procession."),
+    ]
+    HOLY_WEEK_SLIDES = [
+        ("ICSHMD20",     "Rolling Stone Tomb at Khirbet Midras."),
+        ("DLPLTRCT01",   "A crown of thorns (John 19:2)."),
+        ("IJNTGTGT01",   "The Garden Tomb in Jerusalem."),
+        ("IJNTGT02",     "Gordon\u2019s Calvary."),
+        ("IJNTHSCL33",   "Calvary: Greek Orthodox in the Church of the Holy Sepulcher."),
+        ("IJNTGT04",     "Face of the Skull."),
+        ("IJNTHSTM01",   "Entrance to the Tomb of Jesus \u2014 Church of the Holy Sepulcher."),
+        ("IJNTHS87",     "Burial bench in the Tomb of Jesus \u2014 Church of the Holy Sepulcher."),
+        ("IJNTHS01",     "Holy Sepulcher from above."),
+    ]
+
+    carousel1 = _carousel_html("carousel-1", PALM_SUNDAY_SLIDES)
+    carousel2 = _carousel_html("carousel-2", HOLY_WEEK_SLIDES)
+
+    sidebar_html = (
+        static_sidebar() +
+        """
+<div class="newsletter-card">
+  <h3>Register for Updates</h3>
+  <p>Receive occasional notifications when new images are added. Your email will never be shared.</p>
+  <form class="newsletter-form" action="/register.asp" method="post">
+    <input type="email" name="email" placeholder="Email address" required>
+    <input type="text" name="name" placeholder="Your name">
+    <select name="country">
+      <option value="">Country&hellip;</option>
+      <option>United States</option>
+      <option>United Kingdom</option>
+      <option>Canada</option>
+      <option>Australia</option>
+      <option>Israel</option>
+      <option>Other</option>
+    </select>
+    <button type="submit">Subscribe</button>
+  </form>
+</div>
+<div class="rss-sidebar-link">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="5" cy="19" r="3"/><path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V10z"/></svg>
+  <a href="/rss.asp">Subscribe via RSS</a>
+</div>"""
+    )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Holy Land Photos &mdash; Free High-Resolution Photos of the Holy Land</title>
+  <meta name="description" content="7,023 free, high-resolution photos of biblical and archaeological sites across 612 locations. Used by scholars, teachers, pastors, and pilgrims worldwide.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Holy Land Photos &mdash; Free High-Resolution Photos of the Holy Land">
+  <meta property="og:description" content="7,023 free, high-resolution photos of biblical and archaeological sites across 612 locations. Used by scholars, teachers, pastors, and pilgrims worldwide.">
+  <meta property="og:site_name" content="Holy Land Photos">
+  <link rel="alternate" type="application/rss+xml" title="Holy Land Photos &mdash; Recent Additions" href="/rss.asp">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+{TOPNAV}
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="site-wordmark">
+      <a href="/"><h1>Holy Land Photos</h1>
+      <div class="tagline">Free &middot; High-Resolution &middot; Biblical &amp; Archaeological</div>
+      </a>
+    </div>
+    <div style="font-family:system-ui,sans-serif;font-size:.82rem;color:var(--text-muted);margin-left:auto">
+      <span class="stats-chip">612 sites &middot; 7,023 photos</span>
+    </div>
+  </div>
+</header>
+<div class="search-hero">
+  <div class="search-hero-inner">
+    <form class="search-hero-form" action="/search.asp" method="get">
+      <input class="search-hero-input" type="text" name="searchText"
+             placeholder='Search by keyword (e.g. &ldquo;Paul First Journey&rdquo;, &ldquo;tomb&rdquo;, &ldquo;Galilee&rdquo;)'
+             aria-label="Search photos">
+      <button class="search-hero-btn" type="submit">Search</button>
+    </form>
+    <div class="search-hint">Enter singular noun keywords for best results.</div>
+  </div>
+</div>
+<div class="page-layout">
+  <aside class="sidebar">{sidebar_html}</aside>
+  <main class="main-content">
+
+    <h2 class="section-heading">Site News &amp; Recent Additions
+      <a href="whats-new.html">View all recent additions &rarr;</a>
+    </h2>
+    <hr class="section-divider" style="margin-top:.75rem">
+
+    <div class="carousel-section">
+      <div class="carousel-title">Next Sunday is Palm Sunday</div>
+      {carousel1}
+      <p class="carousel-note">Next week is Palm Sunday commemorating Jesus&rsquo; entry into the City of Jerusalem</p>
+    </div>
+
+    <div class="carousel-section">
+      <div class="carousel-title">Holy Week Images</div>
+      {carousel2}
+    </div>
+
+    <hr class="section-divider">
+
+    <h3 style="font-size:1rem;font-family:system-ui,sans-serif;font-weight:700;color:var(--text);margin:0 0 .4rem">Explore Holy Week Sites</h3>
+    <ul class="holyweek-links">
+      <li>
+        <a href="#">Rolling Stone Tomb</a>
+        <span>Don&rsquo;t miss what WAS &ldquo;the best-preserved&rdquo; Rolling Stone Tomb in Israel &mdash; until it was destroyed.</span>
+      </li>
+      <li>
+        <a href="#">Gordon&rsquo;s Calvary and Garden Tomb</a>
+        <span>Alternative Protestant site of crucifixion and burial/resurrection</span>
+      </li>
+      <li>
+        <a href="#">Church of the Holy Sepulcher</a>
+        <span>Probable site of crucifixion and burial/resurrection</span>
+      </li>
+      <li>
+        <a href="#">Gethsemane / Church of All Nations</a>
+        <span>Site of Jesus&rsquo; prayer and arrest (note: lesser-known alternative site on grounds of Mary Magdalene Church)</span>
+      </li>
+      <li>
+        <a href="#">Mount of Olives</a>
+        <span>Palm Sunday entrance, Olivet Discourse</span>
+      </li>
+      <li>
+        <a href="#">Via Dolorosa</a>
+        <span>Sacred pilgrim route in Jerusalem</span>
+      </li>
+      <li>
+        <a href="#">Saint Peter in Gallicantu</a>
+        <span>Traditional site of House of Caiaphas; ossuary of Joseph son of Caiaphas</span>
+      </li>
+    </ul>
+
+    <div class="callout-box">
+      <h3>Sunday Service Hint</h3>
+      <p>If you use PowerPoint presentations during your worship services, you are welcome to download
+      and use our images. Click &ldquo;Max Size Available&rdquo; for PowerPoint-ready images.</p>
+    </div>
+
+    <div class="donate-block">
+      <p>Help support HolyLandPhotos.org</p>
+      <a class="donate-btn" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener">Donate via PayPal</a>
+    </div>
+
+    <div class="featured-collection">
+      <h3>Featured Collection: Haran</h3>
+      <p>Haran (also Harran) is located in southern Turkey 28 mi. [45 km.] south-southeast of
+      &Scedil;anl&#305;urfa &mdash; about 56 mi. [90 km.] east of the Euphrates River. It is mentioned
+      11 times in the Old Testament. Abram settled here for a period of time on his way from Ur to
+      the Land of Canaan (Genesis 11&ndash;12).</p>
+      <a href="#">View Collection &rarr;</a>
+    </div>
+
+  </main>
+</div>
+{FOOTER}
+{NAV_JS}
+{CAROUSEL_JS}
+</body></html>"""
+
+
 def main():
     with open(os.path.join(MOCKUPS, "style.css"), "w") as f:
         f.write(CSS)
@@ -972,12 +1299,16 @@ def main():
         f.write(permission_page())
     print("permission.html")
 
+    with open(os.path.join(MOCKUPS, "index.html"), "w") as f:
+        f.write(homepage())
+    print("index.html")
+
     old = os.path.join(MOCKUPS, "photo-view.html")
     if os.path.exists(old):
         os.remove(old)
         print("removed photo-view.html")
 
-    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + 1 thumbnail page + 2 static pages + style.css")
+    print(f"\nDone. {len(PHOTOS)} photo pages + 4 browse pages + 1 thumbnail page + 3 static pages + style.css")
 
 if __name__ == "__main__":
     main()
