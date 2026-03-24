@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Central &amp; Southern Aegean — Photo Essay — Holy Land Photos</title>
+  <meta name="description" content="A site guide to 31 archaeological and biblical sites in the Central &amp; Southern Aegean region of western Turkey — by Dr. Carl Rasmussen.">
+  <meta property="og:title" content="Central &amp; Southern Aegean — Site Guide">
+  <meta property="og:description" content="Browse 31 sites in the Central &amp; Southern Aegean region of western Turkey, including Ephesus, Laodicea, Smyrna, Hierapolis, and more.">
+  <meta property="og:image" content="http://s3.amazonaws.com/hlp-section-images/AegeanSCMap2.jpg">
+  <meta property="og:type" content="article">
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body {
+      background: #0D0B08;
+      color: #EDE8E1;
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    a { color: #C47A4E; }
+    a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Progress bar ─────────────────────────────────────────── */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 100;
+      height: 2px; width: 0%;
+      background: #B85C2C;
+      transition: width .05s linear;
+    }
+
+    /* ── Return link ──────────────────────────────────────────── */
+    .return-link {
+      position: fixed; top: 1rem; left: 1.25rem; z-index: 99;
+      font-family: system-ui, sans-serif; font-size: .72rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(237,232,225,.45); text-decoration: none;
+      transition: color .2s;
+    }
+    .return-link:hover { color: #EDE8E1; }
+
+    /* ── Site intro ───────────────────────────────────────────── */
+    .story-intro {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      padding-bottom: 5rem;
+      position: relative;
+    }
+    .story-breadcrumb {
+      padding: 2.25rem 3.5rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: .8rem; letter-spacing: .03em;
+      display: flex; align-items: center;
+      flex-wrap: wrap; gap: .3rem;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      padding-bottom: 1.5rem;
+    }
+    .story-breadcrumb a {
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .story-breadcrumb .bc-root {
+      color: #B85C2C; font-weight: 700;
+      font-size: 1rem; letter-spacing: .01em;
+    }
+    .story-breadcrumb .bc-root:hover { color: #D06830; }
+    .story-breadcrumb .bc-mid {
+      color: rgba(237,232,225,.4);
+    }
+    .story-breadcrumb .bc-mid:hover { color: rgba(237,232,225,.75); }
+    .story-breadcrumb .bc-sep {
+      color: rgba(237,232,225,.18);
+      font-size: .9rem; margin: 0 .1rem;
+    }
+    .story-breadcrumb .bc-current {
+      color: rgba(237,232,225,.65);
+    }
+    .story-intro-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+      padding: 4rem 3.5rem 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%; box-sizing: border-box;
+    }
+    .story-map img {
+      width: 100%; max-height: 440px;
+      object-fit: contain;
+      border-radius: 3px;
+      opacity: .88;
+      filter: sepia(.15) contrast(1.05);
+    }
+    .story-text-intro {}
+    .story-kicker {
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .22em;
+      text-transform: uppercase; color: #B85C2C;
+      margin-bottom: .9rem;
+    }
+    .story-main-title {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      font-weight: normal; line-height: 1.08;
+      color: #F5F0E8; margin-bottom: 1.75rem;
+    }
+    .story-desc {
+      color: rgba(237,232,225,.68);
+      font-size: 1rem; line-height: 1.82;
+    }
+    .story-desc p + p { margin-top: .95rem; }
+    .story-byline {
+      margin-top: 2rem;
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .06em;
+      color: rgba(237,232,225,.28);
+      border-top: 1px solid rgba(237,232,225,.08);
+      padding-top: 1.25rem;
+    }
+    .scroll-cue {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.25);
+      animation: nudge 2.4s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    @keyframes nudge {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+    @media (max-width: 780px) {
+      .story-intro-body { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; }
+      .story-breadcrumb { padding: 1.5rem 1.5rem .75rem; }
+    }
+
+    /* ── Chapter ──────────────────────────────────────────────── */
+    .chapter {
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      min-height: 100vh;
+      position: relative;
+    }
+    /* Alternating layout */
+    .chapter:nth-child(even) { direction: rtl; }
+    .chapter:nth-child(even) > * { direction: ltr; }
+
+    /* Sticky image column */
+    .chapter-figure {
+      position: sticky; top: 0;
+      height: 100vh; overflow: hidden;
+      background: #080604;
+      display: block;
+      text-decoration: none;
+    }
+    .chapter-img {
+      width: 100%; height: 115%;
+      object-fit: cover;
+      will-change: transform;
+      transform: translateY(-7.5%); /* start centered */
+    }
+
+    /* Chapter number watermark */
+    .chapter-figure::after {
+      content: attr(data-num);
+      position: absolute; bottom: 1.5rem; right: 1.75rem;
+      font-family: system-ui, sans-serif;
+      font-size: 5rem; font-weight: 800; line-height: 1;
+      color: rgba(255,255,255,.07);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Text column */
+    .chapter-text {
+      padding: 12vh 4rem 12vh 3.5rem;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid rgba(237,232,225,.06);
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .chapter:nth-child(even) .chapter-text {
+      border-left: none;
+      border-right: 1px solid rgba(237,232,225,.06);
+      padding: 12vh 3.5rem 12vh 4rem;
+    }
+    .chapter-text.visible {
+      opacity: 1; transform: none;
+    }
+
+    .ch-num {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #B85C2C;
+      margin-bottom: .9rem; display: block;
+    }
+    .ch-title {
+      font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+      font-weight: normal; line-height: 1.2;
+      color: #F5F0E8;
+      margin-bottom: 1.25rem;
+    }
+    .ch-body {
+      font-size: .97rem; line-height: 1.82;
+      color: rgba(237,232,225,.78);
+      max-width: 48ch;
+    }
+    .ch-body p { margin-bottom: .85rem; }
+    .ch-body p:last-child { margin-bottom: 0; }
+    .ch-body a { color: #C47A4E; }
+    .ch-body a:hover { color: #E09060; text-decoration: none; }
+
+    /* ── Divider between chapters ─────────────────────────────── */
+    .chapter + .chapter::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(237,232,225,.1) 30%, rgba(237,232,225,.1) 70%, transparent);
+    }
+
+    /* ── End screen ───────────────────────────────────────────── */
+    .story-end {
+      min-height: 60vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; gap: 1rem;
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(237,232,225,.08);
+    }
+    .story-end p {
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.28);
+    }
+    .end-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: system-ui, sans-serif; font-size: .82rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #C47A4E; text-decoration: none;
+      border: 1px solid rgba(196,122,78,.35);
+      padding: .65rem 1.5rem; border-radius: 2px;
+      transition: all .2s;
+    }
+    .end-btn:hover {
+      background: rgba(196,122,78,.1);
+      border-color: #C47A4E; color: #E09060;
+    }
+
+    /* ── Mobile ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .chapter {
+        grid-template-columns: 1fr;
+        direction: ltr !important;
+      }
+      .chapter-figure {
+        position: relative; height: 56vw;
+      }
+      .chapter:nth-child(even) .chapter-text {
+        border-right: none; padding: 2.5rem 1.5rem;
+      }
+      .chapter-text {
+        padding: 2.5rem 1.5rem;
+        border-left: none !important;
+        opacity: 1 !important; transform: none !important;
+      }
+    }
+
+    /* ── Chapter actions ───────────────────────────────────────── */
+    .ch-actions {
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      margin-top: 1.5rem; align-items: center;
+    }
+    .ch-link {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,232,225,.12);
+      padding-bottom: .15rem;
+      transition: color .2s, border-color .2s;
+      cursor: pointer; background: none; border-top: none;
+      border-left: none; border-right: none;
+    }
+    .ch-link:hover { color: #C47A4E; border-bottom-color: #C47A4E; }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+  <a class="return-link" href="aegean.html">← Holy Land Photos</a>
+
+  <!-- ── Site Intro ────────────────────────────────────────────── -->
+  <section class="story-intro">
+
+    <nav class="story-breadcrumb" aria-label="Location">
+      <a href="turkey.html"         class="bc-root">Turkey</a>
+      <span class="bc-sep">›</span>
+      <a href="western-turkey.html" class="bc-mid">Western Turkey</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">Central &amp; Southern Aegean</span>
+    </nav>
+
+    <div class="story-intro-body">
+      <div class="story-map">
+        <img src="http://s3.amazonaws.com/hlp-section-images/AegeanSCMap2.jpg"
+             alt="Map of the Central &amp; Southern Aegean region of western Turkey">
+      </div>
+
+      <div class="story-text-intro">
+        <p class="story-kicker">Site Guide &nbsp;·&nbsp; 31 Sites</p>
+        <h1 class="story-main-title">Central &amp; Southern Aegean</h1>
+        <div class="story-desc">
+          <p>The Central &amp; Southern Aegean region includes some of the most significant biblical
+          and archaeological sites in western Turkey — spanning the Hellenistic, Roman, and Byzantine
+          periods.</p>
+          <p>Sites include Colossae, Didyma, Ephesus, Euromos, Hierapolis, Knidos, Laodicea, Miletus,
+          Nysa, Priene, Smyrna/Izmir, and more — many of them directly mentioned in the New Testament
+          and Revelation's letters to the Seven Churches.</p>
+        </div>
+        <p class="story-byline">Photographs &amp; text by Dr. Carl Rasmussen &nbsp;·&nbsp; HolyLandPhotos.org</p>
+      </div>
+    </div>
+
+    <div class="scroll-cue">Scroll to begin &nbsp;↓</div>
+  </section>
+
+  <!-- ── Chapter 01 — Colossae ─────────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="01 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSCL15" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSCL15.jpg"
+           alt="Colossae" loading="eager">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">01 / 31</span>
+      <h2 class="ch-title">Colossae</h2>
+      <div class="ch-body">
+        <p>The ancient site of Colossae sits on the southern edge of the Lycus Valley near larger
+        sites such as Laodicea, 8 mi. to the west, and Hierapolis, 13 mi. to the northwest. Paul
+        authored Colossians and Philemon addressed to this city, though he apparently never visited
+        personally.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSCL15" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSCL15" data-share-title="Colossae">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 02 — Didyma ──────────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="02 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSDD50" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSDD50.jpg"
+           alt="Didyma" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">02 / 31</span>
+      <h2 class="ch-title">Didyma</h2>
+      <div class="ch-body">
+        <p>Didyma housed a world-famous oracle of Apollo; the original temple was finished around
+        560 B.C. before Persian destruction in 494 B.C. A later Hellenistic temple begun around
+        300 B.C. remained under construction for roughly five centuries.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSDD50" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSDD50" data-share-title="Didyma">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 03 — Ephesus Upper City ──────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="03 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCEPUCM70" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCEPUCM70.jpg"
+           alt="Ephesus — Upper City" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">03 / 31</span>
+      <h2 class="ch-title">Ephesus — Upper City</h2>
+      <div class="ch-body">
+        <p>The Upper City is the eastern section of Ephesus, situated in a valley between Mount
+        Pion and Mount Coressus. It served as the political heart of the city and contained multiple
+        temples honoring the Imperial Cult.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCEPUCM70" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCEPUCM70" data-share-title="Ephesus — Upper City">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 04 — Ephesus Middle City ─────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="04 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCEPMC01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCEPMC01.jpg"
+           alt="Ephesus — Middle City" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">04 / 31</span>
+      <h2 class="ch-title">Ephesus — Middle City</h2>
+      <div class="ch-body">
+        <p>The Middle City of Ephesus spans the area from the Upper City down to the Lower City,
+        representing the transitional zone connecting the upper administrative and commercial areas
+        with the lower entertainment and cultural facilities of this major Roman city.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCEPMC01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCEPMC01" data-share-title="Ephesus — Middle City">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 05 — Ephesus Lower City ──────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="05 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCEPLCN03" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCEPLCN03.jpg"
+           alt="Ephesus — Lower City" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">05 / 31</span>
+      <h2 class="ch-title">Ephesus — Lower City</h2>
+      <div class="ch-body">
+        <p>Ephesus was the major city of Asia Minor during the New Testament era. Paul stayed
+        approximately three years here on his third missionary journey. The site is one of the
+        seven churches of Revelation and receives 18 mentions throughout the New Testament.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCEPLCN03" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCEPLCN03" data-share-title="Ephesus — Lower City">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 06 — Ephesus Terrace Houses ───────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="06 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSEPTH60" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSEPTH60.jpg"
+           alt="Ephesus — Terrace Houses" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">06 / 31</span>
+      <h2 class="ch-title">Ephesus — Terrace Houses</h2>
+      <div class="ch-body">
+        <p>The Terrace Houses occupy the northern slope of Mount Bülbül. Unit 2 contains 7
+        residential structures spanning approximately 43,000 square feet, initially built around
+        A.D. 20 and modified until destruction during earthquakes in the third century A.D.
+        Elaborately decorated with tiled floors, frescoes, and marble.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSEPTH60" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSEPTH60" data-share-title="Ephesus — Terrace Houses">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 07 — Ephesus Area ────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="07 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TMRISMT02" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TMRISMT02.jpg"
+           alt="Ephesus — Area" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">07 / 31</span>
+      <h2 class="ch-title">Ephesus — Area</h2>
+      <div class="ch-body">
+        <p>Images of places near the antiquity site of Ephesus, featuring the Temple of Artemis,
+        an aqueduct, Mary's House, the Isa Bey Mosque, the burial chambers of the Seven Sleepers,
+        and other monuments in the broader Ephesus region.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TMRISMT02" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TMRISMT02" data-share-title="Ephesus — Area">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 08 — Ephesus Paul and Thecla Cave ─────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="08 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSEPPT01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSEPPT01.jpg"
+           alt="Ephesus — Paul and Thecla Cave" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">08 / 31</span>
+      <h2 class="ch-title">Ephesus — Paul and Thecla Cave</h2>
+      <div class="ch-body">
+        <p>The Grotto of Paul is situated on the northern slope of Bülbül Dag, overlooking ancient
+        Ephesus. The underground sanctuary measures 50 ft long and features gallery walls adorned
+        with artwork spanning the late fourth century A.D. through the 12th–13th century.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSEPPT01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSEPPT01" data-share-title="Ephesus — Paul and Thecla Cave">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 09 — Ephesus Basilica of St John ──────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="09 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSEPSJ01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSEPSJ01.jpg"
+           alt="Ephesus — Basilica of St John" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">09 / 31</span>
+      <h2 class="ch-title">Ephesus — Basilica of St John</h2>
+      <div class="ch-body">
+        <p>A basilica on the citadel of Selçuk, Turkey, constructed by Byzantine Emperor Justinian
+        (r. 527–565) over the believed burial location of John the Theologian. John died ca. A.D. 100
+        and was buried here according to historical tradition.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSEPSJ01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSEPSJ01" data-share-title="Ephesus — Basilica of St John">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 10 — Ephesus Museum ──────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="10 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSEA15" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSEA15.jpg"
+           alt="Ephesus — Museum" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">10 / 31</span>
+      <h2 class="ch-title">Ephesus — Museum</h2>
+      <div class="ch-body">
+        <p>The renovated Ephesus Museum in Selçuk, organized into themed rooms including the
+        Artemis Room, Terrace Houses, and Imperial Cult Room. Along with the site itself, this
+        museum is considered a must-visit destination for any student of the ancient world.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSEA15" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSEA15" data-share-title="Ephesus — Museum">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 11 — Ephesus Church of Mary ───────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="11 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TSAEPMCC01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TSAEPMCC01.jpg"
+           alt="Ephesus — Church of Mary" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">11 / 31</span>
+      <h2 class="ch-title">Ephesus — Church of Mary</h2>
+      <div class="ch-body">
+        <p>The Church of Mary is a very long and narrow structure built in the late fifth century
+        atop an earlier Imperial Complex. Following a 557 A.D. earthquake, the structure was
+        reconstructed and divided into two separate churches.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TSAEPMCC01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TSAEPMCC01" data-share-title="Ephesus — Church of Mary">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 12 — Euromos ──────────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="12 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSEU01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSEU01.jpg"
+           alt="Euromos" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">12 / 31</span>
+      <h2 class="ch-title">Euromos</h2>
+      <div class="ch-body">
+        <p>Located roughly 44 miles southeast of Ephesus, Euromos contains largely unexcavated
+        ruins from the second century B.C. through second century A.D. Its Temple of Zeus, standing
+        in an olive grove with 16 columns intact, is potentially the finest temple preservation
+        in Turkey.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSEU01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSEU01" data-share-title="Euromos">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 13 — Hierapolis Introduction ──────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="13 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHR01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHR01.jpg"
+           alt="Hierapolis — Introduction" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">13 / 31</span>
+      <h2 class="ch-title">Hierapolis — Introduction</h2>
+      <div class="ch-body">
+        <p>Hierapolis sits on the northern edge of the Lycus Valley. The Turkish name Pamukkale
+        ('Cotton Castle') comes from the distinctive white travertine cliffs fed by thermal springs.
+        Founded in the early second century B.C. by King Eumenes II of Pergamum, it served primarily
+        as a spa and religious center.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHR01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHR01" data-share-title="Hierapolis — Introduction">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 14 — Hierapolis Plutonium ────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="14 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHRPL11" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHRPL11.jpg"
+           alt="Hierapolis — Plutonium" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">14 / 31</span>
+      <h2 class="ch-title">Hierapolis — Plutonium</h2>
+      <div class="ch-body">
+        <p>The Plutonium at Hierapolis, thought to be the gate to the Underworld, was documented
+        by ancient authors and confirmed by excavation in 2013 by classical archaeology professor
+        Francesco D'Andria of the University of Salento.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHRPL11" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHRPL11" data-share-title="Hierapolis — Plutonium">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 15 — Hierapolis the Site ─────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="15 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHR01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHR01.jpg"
+           alt="Hierapolis — the Site" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">15 / 31</span>
+      <h2 class="ch-title">Hierapolis — the Site</h2>
+      <div class="ch-body">
+        <p>Hierapolis sits approximately 12 miles north of Denizli on the Lycus Valley's northern
+        boundary. Founded by Eumenes II of Pergamum, it functioned primarily as a spa and religious
+        hub, gaining renown for producing wool and cloth, particularly purple dye.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHR01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHR01" data-share-title="Hierapolis — the Site">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 16 — Hierapolis Tomb Church & Martyrium of Philip -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="16 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHRPC01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHRPC01.jpg"
+           alt="Hierapolis — Tomb Church &amp; Martyrium of Philip" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">16 / 31</span>
+      <h2 class="ch-title">Hierapolis — Tomb Church &amp; Martyrium of Philip</h2>
+      <div class="ch-body">
+        <p>According to early Christian tradition, Philip settled at Hierapolis and was martyred
+        here. A fifth-century Martyrium was constructed on a northeastern hill. A 2011 discovery
+        revealed Philip's actual church-tomb approximately 120 feet from the Martyrium.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHRPC01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHRPC01" data-share-title="Hierapolis — Tomb Church &amp; Martyrium of Philip">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 17 — Hierapolis Theater ─────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="17 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHR50" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHR50.jpg"
+           alt="Hierapolis — Theater" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">17 / 31</span>
+      <h2 class="ch-title">Hierapolis — Theater</h2>
+      <div class="ch-body">
+        <p>The well-preserved theater at Hierapolis was built in the second century A.D. and
+        remodeled in subsequent centuries, with an impressive capacity of roughly 10,000
+        spectators.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHR50" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHR50" data-share-title="Hierapolis — Theater">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 18 — Hierapolis Necropolis ───────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="18 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSHRNC10" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSHRNC10.jpg"
+           alt="Hierapolis — Necropolis" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">18 / 31</span>
+      <h2 class="ch-title">Hierapolis — Necropolis</h2>
+      <div class="ch-body">
+        <p>The necropolis at Hierapolis stretches north of the Domitian Gate for about 2 miles.
+        Over 1,200 tombs have been documented, with various burial styles spanning from the
+        Hellenistic through Early Byzantine periods.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSHRNC10" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSHRNC10" data-share-title="Hierapolis — Necropolis">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 19 — Knidos (Cnidus) ─────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="19 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSML30" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSML30.jpg"
+           alt="Knidos (Cnidus)" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">19 / 31</span>
+      <h2 class="ch-title">Knidos (Cnidus)</h2>
+      <div class="ch-body">
+        <p>Knidos was a very important city during the Hellenistic and Roman/Byzantine periods,
+        located on the western tip of the Datça Peninsula. A significant trading hub and home of
+        the Temple of Aphrodite, the city was visited by the Apostle Paul on his voyage to Rome
+        (Acts 27:7).</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSML30" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSML30" data-share-title="Knidos (Cnidus)">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 20 — Laodicea ─────────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="20 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSSM20" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM20.jpg"
+           alt="Laodicea" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">20 / 31</span>
+      <h2 class="ch-title">Laodicea</h2>
+      <div class="ch-body">
+        <p>Laodicea is a very large mound located north of modern Denizli, founded by Seleucid
+        kings during the third century B.C. During the New Testament period it became a major
+        urban center. It is the final church in Revelation's seven-church sequence (Rev. 3:14–22).</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSSM20" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSSM20" data-share-title="Laodicea">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 21 — Laodicea Temples ────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="21 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TUTKULAO03" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TUTKULAO03.jpg"
+           alt="Laodicea — Temples" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">21 / 31</span>
+      <h2 class="ch-title">Laodicea — Temples</h2>
+      <div class="ch-body">
+        <p>Temple A at Laodicea was established in the first century A.D. and dedicated to Apollo.
+        Over centuries, worship of Artemis was incorporated, followed by Imperial Cult worship
+        added in the early fourth century A.D. during the reign of Diocletian.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TUTKULAO03" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TUTKULAO03" data-share-title="Laodicea — Temples">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 22 — Laodicea North Agora ────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="22 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TCSALANA01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TCSALANA01.jpg"
+           alt="Laodicea — North Agora" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">22 / 31</span>
+      <h2 class="ch-title">Laodicea — North Agora</h2>
+      <div class="ch-body">
+        <p>The North (Sacred) Agora occupied the western section north of the Syrian Street,
+        encompassing nearly 9 acres. Initially constructed during the reign of Augustus, it featured
+        three entrances, matching pools, and temples dedicated to Athena and Zeus.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TCSALANA01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TCSALANA01" data-share-title="Laodicea — North Agora">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 23 — Laodicea South ──────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="23 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TUWTLANW02" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TUWTLANW02.jpg"
+           alt="Laodicea — South" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">23 / 31</span>
+      <h2 class="ch-title">Laodicea — South</h2>
+      <div class="ch-body">
+        <p>Images of structures located south of the main east-west street in Laodicea, including
+        colonnaded streets, thermal water infrastructure, and civic structures from the Roman and
+        Byzantine periods.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TUWTLANW02" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TUWTLANW02" data-share-title="Laodicea — South">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 24 — Laodicea Christian Structures ───────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="24 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TCSALACB20" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TCSALACB20.jpg"
+           alt="Laodicea — Christian Structures" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">24 / 31</span>
+      <h2 class="ch-title">Laodicea — Christian Structures</h2>
+      <div class="ch-body">
+        <p>Two significant Christian edifices at Laodicea: the 'Laodicean Church' and the
+        'Peristyle House with Church.' The latter was erected in the third century A.D. south of
+        the Large/North Theater.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TCSALACB20" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TCSALACB20" data-share-title="Laodicea — Christian Structures">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 25 — Magnesia ad Maeandrum ───────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="25 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TRAEMGST01" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TRAEMGST01.jpg"
+           alt="Magnesia ad Maeandrum" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">25 / 31</span>
+      <h2 class="ch-title">Magnesia ad Maeandrum</h2>
+      <div class="ch-body">
+        <p>Magnesia ad Maeandrum is located 12 miles southeast of Ephesus, north of the Maeander
+        River on an ancient inland trade route connecting Ephesus through the Maeander Valley
+        toward Hierapolis, Laodicea, and Colossae.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TRAEMGST01" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TRAEMGST01" data-share-title="Magnesia ad Maeandrum">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 26 — Miletus (Balat) ─────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="26 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSML30" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSML30.jpg"
+           alt="Miletus (Balat)" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">26 / 31</span>
+      <h2 class="ch-title">Miletus (Balat)</h2>
+      <div class="ch-body">
+        <p>Paul visited Miletus at the end of his third missionary journey (ca. A.D. 57, Acts 20:38),
+        calling together church leaders from Ephesus. Historically a significant seafaring hub that
+        established trading colonies throughout the Mediterranean and Black Sea.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSML30" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSML30" data-share-title="Miletus (Balat)">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 27 — Nysa ─────────────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="27 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TCSANYNY04" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TCSANYNY04.jpg"
+           alt="Nysa" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">27 / 31</span>
+      <h2 class="ch-title">Nysa</h2>
+      <div class="ch-body">
+        <p>Nysa was located on the southern slopes of the Messogis Mountain overlooking the Maeander
+        Valley, founded during the Hellenistic Period in the early third century B.C. Notable remains
+        include a theater, library, and commercial structures.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TCSANYNY04" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TCSANYNY04" data-share-title="Nysa">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 28 — Priene General ──────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="28 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSPNTA57" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSPNTA57.jpg"
+           alt="Priene — General" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">28 / 31</span>
+      <h2 class="ch-title">Priene — General</h2>
+      <div class="ch-body">
+        <p>Priene is an ancient Greco-Roman site 17 miles south of Ephesus, built about 350 B.C.
+        according to the grid plan promoted by Hippodamus of Miletus. Alexander the Great visited
+        in the late fourth century B.C. and contributed financially to the Temple of Athena's
+        construction.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSPNTA57" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSPNTA57" data-share-title="Priene — General">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 29 — Priene Religious Buildings ───────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="29 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSPNTA58" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSPNTA58.jpg"
+           alt="Priene — Religious Buildings" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">29 / 31</span>
+      <h2 class="ch-title">Priene — Religious Buildings</h2>
+      <div class="ch-body">
+        <p>Multiple temples at Priene were dedicated to Athena, Asclepius, Demeter, and Egyptian
+        gods. The Temple of Athena, ordered by Alexander the Great around 333 B.C. and designed by
+        architect Pythius, housed a smaller version of the Parthenon statue.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSPNTA58" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSPNTA58" data-share-title="Priene — Religious Buildings">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 30 — Smyrna/Izmir ─────────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="30 / 31"
+       href="story.html"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM20.jpg"
+           alt="Smyrna/Izmir" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">30 / 31</span>
+      <h2 class="ch-title">Smyrna/Izmir</h2>
+      <div class="ch-body">
+        <p>Smyrna (modern Izmir) is located on a deep sheltered bay of the Aegean Sea and was the
+        second of the seven churches addressed in Revelation. Polycarp, burned for his faith at the
+        stadium here, was one of the first Christian martyrs (age 86, A.D. 156).</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="story.html">View Photo Essay →</a>
+        <button class="ch-link" data-share-id="TWCSSM20" data-share-title="Smyrna/Izmir">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Chapter 31 — Smyrna Artifacts ─────────────────────────── -->
+  <section class="chapter">
+    <a class="chapter-figure" data-num="31 / 31"
+       href="https://holylandphotos.org/browse.asp?s=TWCSSA03" target="_blank" rel="noopener"
+       style="cursor:pointer">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSA03.jpg"
+           alt="Smyrna — Artifacts" loading="lazy">
+    </a>
+    <article class="chapter-text">
+      <span class="ch-num">31 / 31</span>
+      <h2 class="ch-title">Smyrna — Artifacts</h2>
+      <div class="ch-body">
+        <p>The Archaeological Museum in Izmir houses a very rich collection of artifacts from
+        Smyrna and from sites in the vicinity — including Pergamum, Sardis, Ephesus, and others.</p>
+      </div>
+      <div class="ch-actions">
+        <a class="ch-link" href="https://holylandphotos.org/browse.asp?s=TWCSSA03" target="_blank" rel="noopener">Browse Photos →</a>
+        <button class="ch-link" data-share-id="TWCSSA03" data-share-title="Smyrna — Artifacts">Share</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── End screen ─────────────────────────────────────────────── -->
+  <section class="story-end">
+    <a class="end-btn" href="aegean.html">← Return to Aegean overview</a>
+    <p>© Dr. Carl Rasmussen &nbsp;·&nbsp; All images courtesy of HolyLandPhotos.org</p>
+  </section>
+
+  <script>
+    // ── Progress bar ──────────────────────────────────────────────
+    const bar = document.getElementById('progress');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total    = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100).toFixed(2) + '%';
+    }
+
+    // ── Parallax ──────────────────────────────────────────────────
+    const chapters = [...document.querySelectorAll('.chapter')];
+    function updateParallax() {
+      const vh = window.innerHeight;
+      chapters.forEach(ch => {
+        const img  = ch.querySelector('.chapter-img');
+        const rect = ch.getBoundingClientRect();
+        // progress: -1 (fully above) → 0 (centered) → +1 (fully below)
+        const progress = (vh / 2 - (rect.top + rect.height / 2)) / (vh + rect.height / 2);
+        img.style.transform = `translateY(${-7.5 + progress * 15}%)`;
+      });
+    }
+
+    // ── Fade-in on scroll ─────────────────────────────────────────
+    const textPanels = document.querySelectorAll('.chapter-text');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target); // fire once
+        }
+      });
+    }, { threshold: 0.18 });
+    textPanels.forEach(el => observer.observe(el));
+
+    // ── Unified scroll handler ─────────────────────────────────────
+    let rafId = null;
+    window.addEventListener('scroll', () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          updateProgress();
+          updateParallax();
+          rafId = null;
+        });
+      }
+    }, { passive: true });
+
+    // Initial paint
+    updateProgress();
+    updateParallax();
+
+    // ── Share ─────────────────────────────────────────────────────
+    document.querySelectorAll('[data-share-id]').forEach(el => {
+      el.addEventListener('click', async e => {
+        e.preventDefault();
+        const title = el.dataset.shareTitle;
+        const url   = `https://www.holylandphotos.org/browse.asp?s=${el.dataset.shareId}`;
+        if (navigator.share) {
+          try { await navigator.share({ title: `Holy Land Photos — ${title}`, url }); } catch {}
+        } else {
+          try {
+            await navigator.clipboard.writeText(url);
+            const orig = el.textContent;
+            el.textContent = 'Copied!';
+            setTimeout(() => { el.textContent = orig; }, 2000);
+          } catch {}
+        }
+      });
+    });
+  </script>
+</body>
+</html>
