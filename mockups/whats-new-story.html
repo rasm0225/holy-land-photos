@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>What's New — Holy Land Photos</title>
+  <meta name="description" content="Images added to the Holy Land Photos collection within the past week — a visual essay of the most recent additions.">
+  <meta property="og:title" content="What's New — Holy Land Photos">
+  <meta property="og:description" content="Images recently added to the Holy Land Photos collection.">
+  <meta property="og:type" content="article">
+  <link rel="alternate" type="application/rss+xml" title="Holy Land Photos — Recent Additions" href="/rss.asp">
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body {
+      background: #0D0B08;
+      color: #EDE8E1;
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    a { color: #C47A4E; }
+    a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Progress bar ─────────────────────────────────────────── */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 200;
+      height: 2px; width: 0%;
+      background: #B85C2C;
+      transition: width .05s linear;
+    }
+
+    /* ── Top nav ──────────────────────────────────────────────── */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 48px;
+      background: rgba(13,11,8,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      display: flex; align-items: center;
+      padding: 0 1.5rem;
+    }
+    .topnav-logo {
+      font-family: system-ui, sans-serif;
+      font-size: .82rem; letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #EDE8E1; text-decoration: none;
+      flex-shrink: 0;
+    }
+    .topnav-logo span { color: #B85C2C; }
+    .topnav-links {
+      display: flex; gap: 1.5rem;
+      list-style: none; margin-left: auto;
+    }
+    .topnav-links a {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.5); text-decoration: none;
+      transition: color .2s;
+    }
+    .topnav-links a:hover { color: #EDE8E1; }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .story-hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      background:
+        linear-gradient(to bottom, rgba(13,11,8,.3) 0%, rgba(13,11,8,.7) 60%, #0D0B08 100%),
+        url('https://img.holylandphotos.org/TWCSSM20.jpg') center/cover no-repeat;
+    }
+    .hero-kicker {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .22em;
+      text-transform: uppercase; color: #B85C2C;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      font-weight: normal; line-height: 1.05;
+      color: #F5F0E8;
+      margin-bottom: 1.25rem;
+    }
+    .hero-sub {
+      max-width: 46ch; font-size: 1.05rem;
+      color: rgba(237,232,225,.68); line-height: 1.65;
+      margin: 0 auto 2rem;
+    }
+    .hero-rss {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,232,225,.12);
+      padding-bottom: .15rem;
+      transition: color .2s, border-color .2s;
+    }
+    .hero-rss:hover { color: #C47A4E; border-bottom-color: #C47A4E; }
+    .scroll-cue {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.3);
+      animation: nudge 2.4s ease-in-out infinite;
+    }
+    @keyframes nudge {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── Time filter bar ──────────────────────────────────────── */
+    .time-filter {
+      position: sticky; top: 48px; z-index: 50;
+      background: rgba(13,11,8,.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      display: flex; gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .time-filter a {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.35);
+      text-decoration: none;
+      padding: .85rem 1.5rem;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    .time-filter a:hover { color: rgba(237,232,225,.75); }
+    .time-filter a.active {
+      color: #C47A4E;
+      border-bottom-color: #C47A4E;
+    }
+
+    /* ── Feed entries ─────────────────────────────────────────── */
+    .feed-entry {
+      display: grid;
+      grid-template-columns: 40fr 60fr;
+      min-height: 60vh;
+      position: relative;
+    }
+    /* Alternating layout */
+    .feed-entry:nth-child(even) { direction: rtl; }
+    .feed-entry:nth-child(even) > * { direction: ltr; }
+
+    .entry-figure {
+      position: sticky; top: calc(48px + 41px); /* nav + filter bar */
+      height: 60vh; overflow: hidden;
+      background: #080604;
+    }
+    .entry-img {
+      width: 100%; height: 115%;
+      object-fit: cover;
+      will-change: transform;
+      transform: translateY(-7.5%);
+    }
+
+    /* Divider */
+    .feed-entry + .feed-entry::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(237,232,225,.08) 30%, rgba(237,232,225,.08) 70%, transparent);
+    }
+
+    /* Text panel */
+    .entry-text {
+      padding: 8vh 4rem 8vh 3.5rem;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid rgba(237,232,225,.06);
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .feed-entry:nth-child(even) .entry-text {
+      border-left: none;
+      border-right: 1px solid rgba(237,232,225,.06);
+      padding: 8vh 3.5rem 8vh 4rem;
+    }
+    .entry-text.visible {
+      opacity: 1; transform: none;
+    }
+
+    .entry-site {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #B85C2C;
+      margin-bottom: .6rem;
+    }
+    .entry-title {
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: normal; line-height: 1.2;
+      color: #F5F0E8;
+      margin-bottom: .75rem;
+    }
+    .entry-date {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.28);
+      margin-bottom: 1rem;
+    }
+    .entry-keywords {
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; line-height: 1.7;
+      color: rgba(237,232,225,.38);
+      max-width: 44ch;
+      margin-bottom: 1.5rem;
+    }
+    .entry-keywords strong {
+      color: rgba(237,232,225,.28);
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .65rem;
+    }
+
+    /* ch-link style for entry actions */
+    .entry-link {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,232,225,.12);
+      padding-bottom: .15rem;
+      transition: color .2s, border-color .2s;
+    }
+    .entry-link:hover { color: #C47A4E; border-bottom-color: #C47A4E; }
+
+    /* ── End screen ───────────────────────────────────────────── */
+    .story-end {
+      min-height: 40vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; gap: 1rem;
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(237,232,225,.08);
+    }
+    .story-end p {
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.28);
+    }
+    .end-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: system-ui, sans-serif; font-size: .82rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #C47A4E; text-decoration: none;
+      border: 1px solid rgba(196,122,78,.35);
+      padding: .65rem 1.5rem; border-radius: 2px;
+      transition: all .2s;
+    }
+    .end-btn:hover {
+      background: rgba(196,122,78,.1);
+      border-color: #C47A4E; color: #E09060;
+    }
+
+    /* ── Mobile ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .topnav-links { display: none; }
+      .feed-entry {
+        grid-template-columns: 1fr;
+        direction: ltr !important;
+      }
+      .entry-figure {
+        position: relative; height: 56vw;
+        top: 0;
+      }
+      .feed-entry:nth-child(even) .entry-text {
+        border-right: none; padding: 2.5rem 1.5rem;
+      }
+      .entry-text {
+        padding: 2.5rem 1.5rem;
+        border-left: none !important;
+        opacity: 1 !important; transform: none !important;
+      }
+      .story-hero { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+
+  <!-- ── Top nav ────────────────────────────────────────────────── -->
+  <nav class="topnav">
+    <a class="topnav-logo" href="index.html">Holy Land <span>Photos</span></a>
+    <ul class="topnav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Complete Site List</a></li>
+      <li><a href="#">Search</a></li>
+      <li><a href="whats-new.html">What's New?</a></li>
+      <li><a href="permission.html">Permission to Use</a></li>
+      <li><a href="mailto:holylandphotos@gmail.com">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <section class="story-hero">
+    <p class="hero-kicker">Recently Added</p>
+    <h1 class="hero-title">What's New</h1>
+    <p class="hero-sub">Images added to the collection within the past week. Subscribe via RSS to receive notifications.</p>
+    <a class="hero-rss" href="/rss.asp">Subscribe via RSS →</a>
+    <div class="scroll-cue">Scroll to explore &nbsp;↓</div>
+  </section>
+
+  <!-- ── Time filter bar ───────────────────────────────────────── -->
+  <nav class="time-filter" aria-label="Filter by time">
+    <a href="whats-new-story.html?d=7" class="active">1 Week</a>
+    <a href="whats-new-story.html?d=14">2 Weeks</a>
+    <a href="whats-new-story.html?d=21">3 Weeks</a>
+    <a href="whats-new-story.html?d=30">1 Month</a>
+    <a href="whats-new-story.html?d=60">2 Months</a>
+  </nav>
+
+  <!-- ── Entry 01 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM20.jpg"
+           alt="Agora Panorama" loading="eager">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Smyrna / Izmir</div>
+      <h2 class="entry-title">Agora Panorama</h2>
+      <div class="entry-date">Added 3/26/2025</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Agora, Panorama, Smyrna, Izmir, Turkey, Aegean, Western Turkey, Seven Churches, Revelation
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 02 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM03.jpg"
+           alt="Agora From Above" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Smyrna / Izmir</div>
+      <h2 class="entry-title">Agora From Above</h2>
+      <div class="entry-date">Added 3/26/2025</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Agora, Citadel, Kadifekale, Smyrna, Izmir, Turkey, Seven Churches, Revelation
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 03 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM04.jpg"
+           alt="Agora Portico" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Smyrna / Izmir</div>
+      <h2 class="entry-title">Agora Portico</h2>
+      <div class="entry-date">Added 3/26/2025</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Agora, Portico, Columns, Corinthian, Smyrna, Izmir, Turkey, Seven Churches
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 04 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM30.jpg"
+           alt="Cryptoporticus" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Smyrna / Izmir</div>
+      <h2 class="entry-title">Cryptoporticus</h2>
+      <div class="entry-date">Added 3/26/2025</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Cryptoporticus, Underground Agora, Arches, Smyrna, Izmir, Turkey
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 05 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM20.jpg"
+           alt="Interior of Second Church" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Sardis Artemis Temple Plus</div>
+      <h2 class="entry-title">Interior of Second Church</h2>
+      <div class="entry-date">Added 3/19/2026</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Second Church, First Church, Byzantine Church, Fourth Century, Sardis, Revelation, Seven Churches, Sart, Turkey, Aegean North
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 06 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM21.jpg"
+           alt="Interior of First Church" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Sardis Artemis Temple Plus</div>
+      <h2 class="entry-title">Interior of First Church</h2>
+      <div class="entry-date">Added 3/18/2026</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> First Church, Byzantine Church, Fourth Century, Sardis, Revelation, Seven Churches
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── Entry 07 ──────────────────────────────────────────────── -->
+  <article class="feed-entry">
+    <figure class="entry-figure">
+      <img class="entry-img"
+           src="https://img.holylandphotos.org/TWCSSM10.jpg"
+           alt="Ancient Harbor Detail" loading="lazy">
+    </figure>
+    <div class="entry-text">
+      <div class="entry-site">Assos: Citadel, Temple of Athena, Harbor</div>
+      <h2 class="entry-title">Ancient Harbor Detail</h2>
+      <div class="entry-date">Added 3/17/2026</div>
+      <div class="entry-keywords">
+        <strong>Keywords:</strong> Harbor, Port, Paul, Assos, Behramkale, Northern Aegean, Turkey
+      </div>
+      <a class="entry-link" href="#">View photo →</a>
+    </div>
+  </article>
+
+  <!-- ── End screen ─────────────────────────────────────────────── -->
+  <section class="story-end">
+    <a class="end-btn" href="whats-new.html">← Back to Holy Land Photos</a>
+    <p>© Dr. Carl Rasmussen &nbsp;·&nbsp; All images courtesy of HolyLandPhotos.org</p>
+  </section>
+
+  <script>
+    // ── Progress bar ──────────────────────────────────────────────
+    const bar = document.getElementById('progress');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total    = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (total > 0 ? scrolled / total * 100 : 0).toFixed(2) + '%';
+    }
+
+    // ── Parallax ──────────────────────────────────────────────────
+    const entries = [...document.querySelectorAll('.feed-entry')];
+    function updateParallax() {
+      const vh = window.innerHeight;
+      entries.forEach(entry => {
+        const img  = entry.querySelector('.entry-img');
+        const rect = entry.getBoundingClientRect();
+        const progress = (vh / 2 - (rect.top + rect.height / 2)) / (vh + rect.height / 2);
+        img.style.transform = `translateY(${-7.5 + progress * 15}%)`;
+      });
+    }
+
+    // ── Fade-in on scroll ─────────────────────────────────────────
+    const textPanels = document.querySelectorAll('.entry-text');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    textPanels.forEach(el => observer.observe(el));
+
+    // ── Unified scroll handler ─────────────────────────────────────
+    let rafId = null;
+    window.addEventListener('scroll', () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          updateProgress();
+          updateParallax();
+          rafId = null;
+        });
+      }
+    }, { passive: true });
+
+    // Initial paint
+    updateProgress();
+    updateParallax();
+  </script>
+</body>
+</html>

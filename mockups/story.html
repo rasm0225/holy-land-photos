@@ -238,6 +238,70 @@
       }
       .story-hero { background-attachment: scroll; }
     }
+
+    /* ── Chapter actions ───────────────────────────────────────── */
+    .ch-actions {
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      margin-top: 1.5rem; align-items: center;
+    }
+    .ch-link {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,232,225,.12);
+      padding-bottom: .15rem;
+      transition: color .2s, border-color .2s;
+      cursor: pointer; background: none; border-top: none;
+      border-left: none; border-right: none;
+    }
+    .ch-link:hover { color: #C47A4E; border-bottom-color: #C47A4E; }
+
+    /* ── Lightbox ──────────────────────────────────────────────── */
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 999;
+      background: rgba(0,0,0,.96);
+      justify-content: center; align-items: center;
+      cursor: zoom-out;
+    }
+    #lightbox.open { display: flex; }
+    #lb-img {
+      max-width: 90vw; max-height: 85vh;
+      object-fit: contain; border-radius: 2px;
+      user-select: none; pointer-events: none;
+    }
+    #lb-caption {
+      position: fixed; bottom: 1.75rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: system-ui, sans-serif; font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(237,232,225,.38); white-space: nowrap;
+    }
+    #lb-close {
+      position: fixed; top: 1.25rem; right: 1.5rem;
+      background: none; border: none; color: rgba(237,232,225,.45);
+      font-size: 1.4rem; cursor: pointer; line-height: 1;
+      transition: color .2s; font-family: system-ui, sans-serif;
+    }
+    #lb-close:hover { color: #EDE8E1; }
+    #lb-prev, #lb-next {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(237,232,225,.25);
+      font-size: 3.5rem; cursor: pointer; line-height: 1;
+      padding: 1.25rem; transition: color .2s;
+      font-family: system-ui, sans-serif;
+    }
+    #lb-prev:hover, #lb-next:hover { color: rgba(237,232,225,.85); }
+    #lb-prev { left: 0; }
+    #lb-next { right: 0; }
+    #lb-num {
+      position: fixed; top: 1.4rem; left: 50%; transform: translateX(-50%);
+      font-family: system-ui, sans-serif; font-size: .68rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(237,232,225,.28);
+    }
   </style>
 </head>
 <body>
@@ -256,7 +320,7 @@
 
   <!-- ── Chapter 01 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="01">
+    <figure class="chapter-figure" data-num="01" data-lb-id="TWCSSM20" data-lb-title="Agora Panorama" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM20.jpg"
            alt="Agora Panorama" loading="eager">
@@ -274,13 +338,17 @@
         <p>Tip: to view the wonderful details of this panorama, please download at
         "Max Size Available."</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM20.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM20" data-lb-title="Agora Panorama">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM20" data-share-title="Agora Panorama">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM20.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 02 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="02">
+    <figure class="chapter-figure" data-num="02" data-lb-id="TWCSSM21" data-lb-title="Agora" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM21.jpg"
            alt="Agora" loading="lazy">
@@ -296,13 +364,17 @@
         by a protective covering because of the
         <a href="photos/TWCSSM07.html">valuable wall graffiti in the lower <em>Cryptoporticus</em></a>.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM21.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM21" data-lb-title="Agora">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM21" data-share-title="Agora">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM21.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 03 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="03">
+    <figure class="chapter-figure" data-num="03" data-lb-id="TWCSSM10" data-lb-title="Citadel" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM10.jpg"
            alt="Citadel" loading="lazy">
@@ -317,13 +389,17 @@
         the days of Alexander the Great (d. 323 B.C.).</p>
         <p>Note the architectural fragments that have been assembled in the agora.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM10.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM10" data-lb-title="Citadel">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM10" data-share-title="Citadel">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM10.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 04 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="04">
+    <figure class="chapter-figure" data-num="04" data-lb-id="TWCSSM02" data-lb-title="The City" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM02.jpg"
            alt="The City" loading="lazy">
@@ -338,13 +414,17 @@
         visible.</p>
         <p>Izmir is the third largest city of Turkey with about 2,700,000 people.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM02.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM02" data-lb-title="The City">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM02" data-share-title="The City">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM02.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 05 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="05">
+    <figure class="chapter-figure" data-num="05" data-lb-id="TWCSSM03" data-lb-title="Agora From Above" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM03.jpg"
            alt="Agora From Above" loading="lazy">
@@ -359,13 +439,17 @@
         <p>The open space just below the garage is the area of the ancient agora — one of the
         few conveniently available ancient remains of ancient Smyrna.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM03.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM03" data-lb-title="Agora From Above">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM03" data-share-title="Agora From Above">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM03.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 06 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="06">
+    <figure class="chapter-figure" data-num="06" data-lb-id="TWCSSM04" data-lb-title="Agora Portico" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM04.jpg"
            alt="Agora Portico" loading="lazy">
@@ -380,13 +464,17 @@
         <a href="photos/TWCSSM07.html">click here</a>.</p>
         <p>The re-erected columns with the Corinthian capitals outline the upper agora.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM04.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM04" data-lb-title="Agora Portico">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM04" data-share-title="Agora Portico">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM04.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 07 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="07">
+    <figure class="chapter-figure" data-num="07" data-lb-id="TWCSSM30" data-lb-title="Cryptoporticus" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM30.jpg"
            alt="Cryptoporticus" loading="lazy">
@@ -400,13 +488,17 @@
         supported a long covered portico that was located on the east side of the agora.</p>
         <p>The green grass on the left is the area of the agora.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM30.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM30" data-lb-title="Cryptoporticus">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM30" data-share-title="Cryptoporticus">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM30.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 08 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="08">
+    <figure class="chapter-figure" data-num="08" data-lb-id="TWCSSM07" data-lb-title="Underground Agora 1" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM07.jpg"
            alt="Underground Agora 1" loading="lazy">
@@ -420,13 +512,17 @@
         <p>Note the covered frescos on the left side of the passageway — eventually, these will
         be open to the public. Above this was the main shopping area of the agora.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM07.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM07" data-lb-title="Underground Agora 1">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM07" data-share-title="Underground Agora 1">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM07.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 09 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="09">
+    <figure class="chapter-figure" data-num="09" data-lb-id="TWCSSM08" data-lb-title="Underground Agora 2" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM08.jpg"
            alt="Underground Agora 2" loading="lazy">
@@ -442,13 +538,17 @@
         and reconstructions are ongoing.</p>
         <p>A similar two-story agora has also been found in the excavations at Thessaloniki, Greece.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM08.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM08" data-lb-title="Underground Agora 2">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM08" data-share-title="Underground Agora 2">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM08.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 10 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="10">
+    <figure class="chapter-figure" data-num="10" data-lb-id="TWCSSM05" data-lb-title="Underground Agora 3" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM05.jpg"
            alt="Underground Agora 3" loading="lazy">
@@ -462,13 +562,17 @@
         the viewer.</p>
         <p>A similar two-story agora has also been found in the excavations at Thessaloniki, Greece.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM05.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM05" data-lb-title="Underground Agora 3">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM05" data-share-title="Underground Agora 3">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM05.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 11 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="11">
+    <figure class="chapter-figure" data-num="11" data-lb-id="TWCSSM12" data-lb-title="Cryptoporticus Nymphaeum" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM12.jpg"
            alt="Cryptoporticus Nymphaeum" loading="lazy">
@@ -481,13 +585,17 @@
         agora (the <em>Cryptoporticus</em>). The arches in the image supported the ground level portion
         of the western portico.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM12.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM12" data-lb-title="Cryptoporticus Nymphaeum">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM12" data-share-title="Cryptoporticus Nymphaeum">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM12.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 12 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="12">
+    <figure class="chapter-figure" data-num="12" data-lb-id="TWCSSM13" data-lb-title="Spring" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM13.jpg"
            alt="Spring" loading="lazy">
@@ -499,13 +607,17 @@
         <p>View of one of the springs that are still flowing in the underground portion of the
         agora — the <em>Cryptoporticus</em>.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM13.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM13" data-lb-title="Spring">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM13" data-share-title="Spring">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM13.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 13 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="13">
+    <figure class="chapter-figure" data-num="13" data-lb-id="TWCSSM01" data-lb-title="Citadel Cisterns" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM01.jpg"
            alt="Citadel Cisterns" loading="lazy">
@@ -519,13 +631,17 @@
         Hellenistic foundations surrounds this area.</p>
         <p>At various spots ancient remains, such as these cisterns, are visible on the surface.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM01.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM01" data-lb-title="Citadel Cisterns">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM01" data-share-title="Citadel Cisterns">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM01.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
   <!-- ── Chapter 14 ─────────────────────────────────────────────── -->
   <section class="chapter">
-    <figure class="chapter-figure" data-num="14">
+    <figure class="chapter-figure" data-num="14" data-lb-id="TWCSSM09" data-lb-title="Avenue &amp; Water" style="cursor:zoom-in">
       <img class="chapter-img"
            src="https://img.holylandphotos.org/TWCSSM09.jpg"
            alt="Avenue & Water" loading="lazy">
@@ -539,7 +655,11 @@
         minaret to the right of it.</p>
         <p>Izmir today is a vibrant, modern city built directly over the layers of ancient Smyrna.</p>
       </div>
-      <a class="ch-link" href="photos/TWCSSM09.html">View full image →</a>
+      <div class="ch-actions">
+        <a class="ch-link" data-lb-id="TWCSSM09" data-lb-title="Avenue &amp; Water">View full image</a>
+        <a class="ch-link" data-share-id="TWCSSM09" data-share-title="Avenue &amp; Water">Share</a>
+        <a class="ch-link" href="https://img.holylandphotos.org/TWCSSM09.jpg" target="_blank" rel="noopener">Download</a>
+      </div>
     </article>
   </section>
 
@@ -598,6 +718,100 @@
     // Initial paint
     updateProgress();
     updateParallax();
+
+    // ── Lightbox ──────────────────────────────────────────────────
+    const LB_IMAGES = [
+      { id: 'TWCSSM20', title: 'Agora Panorama' },
+      { id: 'TWCSSM21', title: 'Agora' },
+      { id: 'TWCSSM10', title: 'Citadel' },
+      { id: 'TWCSSM02', title: 'The City' },
+      { id: 'TWCSSM03', title: 'Agora From Above' },
+      { id: 'TWCSSM04', title: 'Agora Portico' },
+      { id: 'TWCSSM30', title: 'Cryptoporticus' },
+      { id: 'TWCSSM07', title: 'Underground Agora 1' },
+      { id: 'TWCSSM08', title: 'Underground Agora 2' },
+      { id: 'TWCSSM05', title: 'Underground Agora 3' },
+      { id: 'TWCSSM12', title: 'Cryptoporticus Nymphaeum' },
+      { id: 'TWCSSM13', title: 'Spring' },
+      { id: 'TWCSSM01', title: 'Citadel Cisterns' },
+      { id: 'TWCSSM09', title: 'Avenue & Water' },
+    ];
+
+    let lbIdx = 0;
+    const lb    = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCap = document.getElementById('lb-caption');
+    const lbNum = document.getElementById('lb-num');
+
+    function lbOpen(id) {
+      lbIdx = LB_IMAGES.findIndex(x => x.id === id);
+      if (lbIdx < 0) lbIdx = 0;
+      lbShow();
+    }
+    function lbShow() {
+      const { id, title } = LB_IMAGES[lbIdx];
+      lbImg.src = `https://img.holylandphotos.org/${id}.jpg`;
+      lbImg.alt = title;
+      lbCap.textContent = title;
+      lbNum.textContent = `${lbIdx + 1} / ${LB_IMAGES.length}`;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function lbClose() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lbImg.src = ''; }, 300);
+    }
+    function lbPrev() { lbIdx = (lbIdx - 1 + LB_IMAGES.length) % LB_IMAGES.length; lbShow(); }
+    function lbNext() { lbIdx = (lbIdx + 1) % LB_IMAGES.length; lbShow(); }
+
+    document.getElementById('lb-close').addEventListener('click', e => { e.stopPropagation(); lbClose(); });
+    document.getElementById('lb-prev').addEventListener('click', e => { e.stopPropagation(); lbPrev(); });
+    document.getElementById('lb-next').addEventListener('click', e => { e.stopPropagation(); lbNext(); });
+    lb.addEventListener('click', () => lbClose());
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape')      lbClose();
+      if (e.key === 'ArrowLeft')   lbPrev();
+      if (e.key === 'ArrowRight')  lbNext();
+    });
+
+    // Wire up figure clicks and ch-link[data-lb-id]
+    document.querySelectorAll('[data-lb-id]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        lbOpen(el.dataset.lbId);
+      });
+    });
+
+    // Share
+    document.querySelectorAll('[data-share-id]').forEach(el => {
+      el.addEventListener('click', async e => {
+        e.preventDefault();
+        const title = el.dataset.shareTitle;
+        const url   = `https://www.holylandphotos.org/browse.asp?img=${el.dataset.shareId}`;
+        if (navigator.share) {
+          try { await navigator.share({ title: `Holy Land Photos — ${title}`, url }); } catch {}
+        } else {
+          try {
+            await navigator.clipboard.writeText(url);
+            const orig = el.textContent;
+            el.textContent = 'Copied!';
+            setTimeout(() => { el.textContent = orig; }, 2000);
+          } catch {}
+        }
+      });
+    });
   </script>
+
+  <!-- ── Lightbox ──────────────────────────────────────────────── -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Full screen photo">
+    <button id="lb-close" aria-label="Close">✕</button>
+    <button id="lb-prev" aria-label="Previous photo">&#8249;</button>
+    <button id="lb-next" aria-label="Next photo">&#8250;</button>
+    <div id="lb-num"></div>
+    <img id="lb-img" src="" alt="">
+    <div id="lb-caption"></div>
+  </div>
 </body>
 </html>

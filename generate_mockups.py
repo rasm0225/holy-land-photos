@@ -895,7 +895,7 @@ def whats_new_page():
 <div class="page-layout">
   <aside class="sidebar">{static_sidebar("Recent Additions")}</aside>
   <main class="main-content">
-    <h1 class="page-title">What&#8217;s New?</h1>
+    <h1 class="page-title">What&#8217;s New? <a href="whats-new-story.html" style="font-size:.75rem;font-family:system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;font-weight:normal;vertical-align:middle;margin-left:.75rem;">View as Photo Essay &rarr;</a></h1>
     <div class="rss-bar">
       <a href="/rss.asp">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="5" cy="19" r="3"/><path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V10z"/></svg>
