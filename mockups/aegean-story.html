@@ -333,7 +333,35 @@
     .toc-item.active .toc-label { color: #EDE8E1; }
     .toc-item:hover .toc-label  { color: #EDE8E1; }
     .toc-item:hover .toc-dot    { background: rgba(237,232,225,.5); }
-    @media (max-width: 700px) { #scroll-toc { display: none; } }
+    @media (max-width: 700px) {
+      #scroll-toc {
+        top: auto; bottom: 1.25rem;
+        right: auto; left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        gap: 2px;
+        background: rgba(13,11,8,.55);
+        backdrop-filter: blur(6px);
+        border-radius: 999px;
+        padding: 6px 10px;
+      }
+      .toc-item  { padding: 0; }
+      .toc-label { display: none; }
+      .toc-dot   { width: 6px; height: 6px; }
+      /* enlarge tap target without changing visual */
+      .toc-item::before {
+        content: ''; position: absolute;
+        inset: -8px;
+      }
+      .toc-item { position: relative; }
+      /* on mobile just brighten dots instead of expanding labels */
+      #scroll-toc.expanded .toc-dot {
+        background: rgba(237,232,225,.35);
+      }
+      #scroll-toc.expanded .toc-item.active .toc-dot {
+        background: #B85C2C;
+      }
+    }
   </style>
 </head>
 <body>
