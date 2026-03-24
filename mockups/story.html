@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ancient Smyrna — A Visual Journey · Holy Land Photos</title>
+  <meta name="description" content="Scroll through 14 photographs of the ancient agora, citadel, and underground chambers of Smyrna/Izmir, Turkey — by Dr. Carl Rasmussen.">
+  <meta property="og:title" content="Ancient Smyrna — A Visual Journey">
+  <meta property="og:description" content="Scroll through 14 photographs of the ancient agora, citadel, and underground chambers of Smyrna/Izmir, Turkey.">
+  <meta property="og:image" content="https://img.holylandphotos.org/TWCSSM20.jpg">
+  <meta property="og:type" content="article">
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body {
+      background: #0D0B08;
+      color: #EDE8E1;
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    a { color: #C47A4E; }
+    a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Progress bar ─────────────────────────────────────────── */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 100;
+      height: 2px; width: 0%;
+      background: #B85C2C;
+      transition: width .05s linear;
+    }
+
+    /* ── Return link ──────────────────────────────────────────── */
+    .return-link {
+      position: fixed; top: 1rem; left: 1.25rem; z-index: 99;
+      font-family: system-ui, sans-serif; font-size: .72rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(237,232,225,.45); text-decoration: none;
+      transition: color .2s;
+    }
+    .return-link:hover { color: #EDE8E1; }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .story-hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      background:
+        linear-gradient(to bottom, rgba(13,11,8,.1) 0%, rgba(13,11,8,.65) 60%, #0D0B08 100%),
+        url('https://img.holylandphotos.org/TWCSSM20.jpg') center/cover no-repeat;
+    }
+    .hero-kicker {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .22em;
+      text-transform: uppercase; color: #B85C2C;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-size: clamp(2.6rem, 7vw, 5.5rem);
+      font-weight: normal; line-height: 1.05;
+      color: #F5F0E8;
+      margin-bottom: 1.25rem;
+    }
+    .hero-sub {
+      max-width: 46ch; font-size: 1.1rem;
+      color: rgba(237,232,225,.72); line-height: 1.65;
+      margin: 0 auto 2rem;
+    }
+    .hero-byline {
+      font-family: system-ui, sans-serif;
+      font-size: .78rem; letter-spacing: .06em;
+      color: rgba(237,232,225,.38);
+    }
+    .scroll-cue {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.3);
+      animation: nudge 2.4s ease-in-out infinite;
+    }
+    @keyframes nudge {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── Chapter ──────────────────────────────────────────────── */
+    .chapter {
+      display: grid;
+      grid-template-columns: 55fr 45fr;
+      min-height: 100vh;
+      position: relative;
+    }
+    /* Alternating layout */
+    .chapter:nth-child(even) { direction: rtl; }
+    .chapter:nth-child(even) > * { direction: ltr; }
+
+    /* Sticky image column */
+    .chapter-figure {
+      position: sticky; top: 0;
+      height: 100vh; overflow: hidden;
+      background: #080604;
+    }
+    .chapter-img {
+      width: 100%; height: 115%;
+      object-fit: cover;
+      will-change: transform;
+      transform: translateY(-7.5%); /* start centered */
+    }
+
+    /* Chapter number watermark */
+    .chapter-figure::after {
+      content: attr(data-num);
+      position: absolute; bottom: 1.5rem; right: 1.75rem;
+      font-family: system-ui, sans-serif;
+      font-size: 5rem; font-weight: 800; line-height: 1;
+      color: rgba(255,255,255,.07);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Text column */
+    .chapter-text {
+      padding: 12vh 4rem 12vh 3.5rem;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid rgba(237,232,225,.06);
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .chapter:nth-child(even) .chapter-text {
+      border-left: none;
+      border-right: 1px solid rgba(237,232,225,.06);
+      padding: 12vh 3.5rem 12vh 4rem;
+    }
+    .chapter-text.visible {
+      opacity: 1; transform: none;
+    }
+
+    .ch-num {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #B85C2C;
+      margin-bottom: .9rem; display: block;
+    }
+    .ch-title {
+      font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+      font-weight: normal; line-height: 1.2;
+      color: #F5F0E8;
+      margin-bottom: 1.25rem;
+    }
+    .ch-body {
+      font-size: .97rem; line-height: 1.82;
+      color: rgba(237,232,225,.78);
+      max-width: 48ch;
+    }
+    .ch-body p { margin-bottom: .85rem; }
+    .ch-body p:last-child { margin-bottom: 0; }
+    .ch-body a { color: #C47A4E; }
+    .ch-body a:hover { color: #E09060; text-decoration: none; }
+    .ch-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      font-family: system-ui, sans-serif;
+      font-size: .76rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237,232,225,.12);
+      padding-bottom: .15rem;
+      transition: color .2s, border-color .2s;
+    }
+    .ch-link:hover {
+      color: #C47A4E; border-color: #C47A4E;
+    }
+
+    /* ── Divider between chapters ─────────────────────────────── */
+    .chapter + .chapter::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(237,232,225,.1) 30%, rgba(237,232,225,.1) 70%, transparent);
+    }
+
+    /* ── End screen ───────────────────────────────────────────── */
+    .story-end {
+      min-height: 60vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; gap: 1rem;
+      padding: 4rem 2rem;
+      border-top: 1px solid rgba(237,232,225,.08);
+    }
+    .story-end p {
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.28);
+    }
+    .end-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: system-ui, sans-serif; font-size: .82rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #C47A4E; text-decoration: none;
+      border: 1px solid rgba(196,122,78,.35);
+      padding: .65rem 1.5rem; border-radius: 2px;
+      transition: all .2s;
+    }
+    .end-btn:hover {
+      background: rgba(196,122,78,.1);
+      border-color: #C47A4E; color: #E09060;
+    }
+
+    /* ── Mobile ───────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .chapter {
+        grid-template-columns: 1fr;
+        direction: ltr !important;
+      }
+      .chapter-figure {
+        position: relative; height: 56vw;
+      }
+      .chapter:nth-child(even) .chapter-text {
+        border-right: none; padding: 2.5rem 1.5rem;
+      }
+      .chapter-text {
+        padding: 2.5rem 1.5rem;
+        border-left: none !important;
+        opacity: 1 !important; transform: none !important;
+      }
+      .story-hero { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+  <a class="return-link" href="smyrna.html">← Holy Land Photos</a>
+
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <section class="story-hero">
+    <p class="hero-kicker">Smyrna &nbsp;·&nbsp; Izmir &nbsp;·&nbsp; Western Turkey</p>
+    <h1 class="hero-title">Ancient City</h1>
+    <p class="hero-sub">Fourteen photographs of the agora, citadel, and underground chambers of one of antiquity's great cities — and one of the Seven Churches of Revelation.</p>
+    <p class="hero-byline">Photographs by Dr. Carl Rasmussen &nbsp;·&nbsp; HolyLandPhotos.org</p>
+    <div class="scroll-cue">Scroll to begin &nbsp;↓</div>
+  </section>
+
+  <!-- ── Chapter 01 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="01">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM20.jpg"
+           alt="Agora Panorama" loading="eager">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">01 of 14</span>
+      <h2 class="ch-title">Agora Panorama</h2>
+      <div class="ch-body">
+        <p>View looking north at the "open space" of the agora of ancient Smyrna.
+        On the left (west) notice the columns where the western portico and the
+        <a href="photos/TWCSSM30.html">western <em>Cryptoporticus</em></a> is located.
+        On the far (north) side of the agora is a "basilica" — it is covered
+        by a protective covering because of the
+        <a href="photos/TWCSSM07.html">valuable wall graffiti in the lower <em>Cryptoporticus</em></a>.</p>
+        <p>Tip: to view the wonderful details of this panorama, please download at
+        "Max Size Available."</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM20.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 02 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="02">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM21.jpg"
+           alt="Agora" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">02 of 14</span>
+      <h2 class="ch-title">Agora</h2>
+      <div class="ch-body">
+        <p>View looking north at the "open space" of the agora of ancient Smyrna.
+        On the left (west) notice the columns where the western portico and the
+        <a href="photos/TWCSSM30.html">western <em>Cryptoporticus</em></a> is located.
+        On the far (north) side of the agora is a "basilica" — it is covered
+        by a protective covering because of the
+        <a href="photos/TWCSSM07.html">valuable wall graffiti in the lower <em>Cryptoporticus</em></a>.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM21.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 03 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="03">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM10.jpg"
+           alt="Citadel" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">03 of 14</span>
+      <h2 class="ch-title">Citadel</h2>
+      <div class="ch-body">
+        <p>View from within the agora looking southeast towards the ancient citadel.
+        The modern name for the citadel is "Kadifekale" — "the velvet castle" —
+        while the ancient name was Mt. Pagus. Major development of the citadel began during
+        the days of Alexander the Great (d. 323 B.C.).</p>
+        <p>Note the architectural fragments that have been assembled in the agora.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM10.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 04 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="04">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM02.jpg"
+           alt="The City" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">04 of 14</span>
+      <h2 class="ch-title">The City</h2>
+      <div class="ch-body">
+        <p>View looking down from the Kadifekale (= "the velvet castle"; actually the
+        citadel of Smyrna) to north northwest at modern Izmir. Just above, and to the left of,
+        the skyscraper (what else than the Hilton Hotel!), an outline of the bay of Izmir is
+        visible.</p>
+        <p>Izmir is the third largest city of Turkey with about 2,700,000 people.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM02.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 05 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="05">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM03.jpg"
+           alt="Agora From Above" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">05 of 14</span>
+      <h2 class="ch-title">Agora From Above</h2>
+      <div class="ch-body">
+        <p>View looking down from the Kadifekale to the north northeast at modern Izmir and
+        the area of the ancient agora. Above and to the right of the center of the image is
+        a seven-level parking garage.</p>
+        <p>The open space just below the garage is the area of the ancient agora — one of the
+        few conveniently available ancient remains of ancient Smyrna.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM03.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 06 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="06">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM04.jpg"
+           alt="Agora Portico" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">06 of 14</span>
+      <h2 class="ch-title">Agora Portico</h2>
+      <div class="ch-body">
+        <p>View looking north at the remains of the large western portico of the agora.
+        On the left side of the image, note the arches of the underground (lower portion) of
+        the agora. For a view of the area underneath these arches (the <em>Cryptoporticus</em>)
+        <a href="photos/TWCSSM07.html">click here</a>.</p>
+        <p>The re-erected columns with the Corinthian capitals outline the upper agora.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM04.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 07 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="07">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM30.jpg"
+           alt="Cryptoporticus" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">07 of 14</span>
+      <h2 class="ch-title"><em>Cryptoporticus</em></h2>
+      <div class="ch-body">
+        <p>View looking north across the tops of the three rows of arches under which were
+        the three vaulted storage areas that composed the <em>Cryptoporticus</em>. These arches in turn
+        supported a long covered portico that was located on the east side of the agora.</p>
+        <p>The green grass on the left is the area of the agora.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM30.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 08 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="08">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM07.jpg"
+           alt="Underground Agora 1" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">08 of 14</span>
+      <h2 class="ch-title">Underground Agora 1</h2>
+      <div class="ch-body">
+        <p>View of a portion of the lower portion of the agora (the <em>Cryptoporticus</em>).
+        A similar two-story agora has also been found in the excavations at Thessaloniki, Greece.</p>
+        <p>Note the covered frescos on the left side of the passageway — eventually, these will
+        be open to the public. Above this was the main shopping area of the agora.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM07.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 09 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="09">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM08.jpg"
+           alt="Underground Agora 2" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">09 of 14</span>
+      <h2 class="ch-title">Underground Agora 2</h2>
+      <div class="ch-body">
+        <p>View of a portion of the lower agora (the <em>Cryptoporticus</em>).
+        Note the remnant of frescos on the wall to the right.</p>
+        <p>In January 2003 the Turks had begun large-scale excavations of the agora and were
+        opening large portions of the northeastern <em>Cryptoporticus</em>. These major excavations
+        and reconstructions are ongoing.</p>
+        <p>A similar two-story agora has also been found in the excavations at Thessaloniki, Greece.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM08.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 10 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="10">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM05.jpg"
+           alt="Underground Agora 3" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">10 of 14</span>
+      <h2 class="ch-title">Underground Agora 3</h2>
+      <div class="ch-body">
+        <p>View of one of the canals that leads from one of the springs located in the western
+        portion of the lower agora (the <em>Cryptoporticus</em>). The water in the canal flows toward
+        the viewer.</p>
+        <p>A similar two-story agora has also been found in the excavations at Thessaloniki, Greece.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM05.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 11 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="11">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM12.jpg"
+           alt="Cryptoporticus Nymphaeum" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">11 of 14</span>
+      <h2 class="ch-title"><em>Cryptoporticus</em> Nymphaeum</h2>
+      <div class="ch-body">
+        <p>View looking south at a water basin and the south end of the lower portion of the
+        agora (the <em>Cryptoporticus</em>). The arches in the image supported the ground level portion
+        of the western portico.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM12.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 12 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="12">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM13.jpg"
+           alt="Spring" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">12 of 14</span>
+      <h2 class="ch-title">Spring</h2>
+      <div class="ch-body">
+        <p>View of one of the springs that are still flowing in the underground portion of the
+        agora — the <em>Cryptoporticus</em>.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM13.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 13 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="13">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM01.jpg"
+           alt="Citadel Cisterns" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">13 of 14</span>
+      <h2 class="ch-title">Citadel Cisterns</h2>
+      <div class="ch-body">
+        <p>View of remains located on the top of the citadel of ancient Smyrna, Kadifekale
+        (the "velvet castle") or the ancient Pagus. A Turkish wall that is built upon
+        Hellenistic foundations surrounds this area.</p>
+        <p>At various spots ancient remains, such as these cisterns, are visible on the surface.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM01.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── Chapter 14 ─────────────────────────────────────────────── -->
+  <section class="chapter">
+    <figure class="chapter-figure" data-num="14">
+      <img class="chapter-img"
+           src="https://img.holylandphotos.org/TWCSSM09.jpg"
+           alt="Avenue & Water" loading="lazy">
+    </figure>
+    <article class="chapter-text">
+      <span class="ch-num">14 of 14</span>
+      <h2 class="ch-title">Avenue &amp; Water</h2>
+      <div class="ch-body">
+        <p>View of one of the avenues of Izmir that has a decorative water channel alongside
+        of it. The blue building in the background is a mosque with a white base of a
+        minaret to the right of it.</p>
+        <p>Izmir today is a vibrant, modern city built directly over the layers of ancient Smyrna.</p>
+      </div>
+      <a class="ch-link" href="photos/TWCSSM09.html">View full image →</a>
+    </article>
+  </section>
+
+  <!-- ── End screen ─────────────────────────────────────────────── -->
+  <section class="story-end">
+    <a class="end-btn" href="smyrna.html">← Return to Smyrna overview</a>
+    <p>© Dr. Carl Rasmussen &nbsp;·&nbsp; All images courtesy of HolyLandPhotos.org</p>
+  </section>
+
+  <script>
+    // ── Progress bar ──────────────────────────────────────────────
+    const bar = document.getElementById('progress');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total    = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (scrolled / total * 100).toFixed(2) + '%';
+    }
+
+    // ── Parallax ──────────────────────────────────────────────────
+    const chapters = [...document.querySelectorAll('.chapter')];
+    function updateParallax() {
+      const vh = window.innerHeight;
+      chapters.forEach(ch => {
+        const img  = ch.querySelector('.chapter-img');
+        const rect = ch.getBoundingClientRect();
+        // progress: -1 (fully above) → 0 (centered) → +1 (fully below)
+        const progress = (vh / 2 - (rect.top + rect.height / 2)) / (vh + rect.height / 2);
+        img.style.transform = `translateY(${-7.5 + progress * 15}%)`;
+      });
+    }
+
+    // ── Fade-in on scroll ─────────────────────────────────────────
+    const textPanels = document.querySelectorAll('.chapter-text');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target); // fire once
+        }
+      });
+    }, { threshold: 0.18 });
+    textPanels.forEach(el => observer.observe(el));
+
+    // ── Unified scroll handler ─────────────────────────────────────
+    let rafId = null;
+    window.addEventListener('scroll', () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          updateProgress();
+          updateParallax();
+          rafId = null;
+        });
+      }
+    }, { passive: true });
+
+    // Initial paint
+    updateProgress();
+    updateParallax();
+  </script>
+</body>
+</html>
