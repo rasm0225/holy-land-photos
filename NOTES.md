@@ -182,6 +182,66 @@ Likely **ImageResizer.net** or similar .NET image processing tool. The `timestam
 
 ---
 
+## URL Structure — Options Under Consideration
+
+### Option A: Keep image IDs, add clean path prefix
+```
+/photos/TWCSSM04
+```
+- Simple pattern redirect: `browse.asp?img=X` → `/photos/X`
+- One rule handles all 7,000+ photos
+- Image ID is preserved as canonical identifier
+
+### Option B: Full hierarchy in URL
+```
+/turkey/western-turkey/aegean/smyrna/agora-portico
+```
+- Human-readable and SEO-friendly
+- Requires ~7,000 individual redirect rules (generatable from DB)
+- URL breaks if site is reorganized in the hierarchy
+
+### Option C: Anchor tags within story/essay pages (no individual photo pages)
+```
+/turkey/western-turkey/aegean/smyrna#agora-portico
+```
+- Photos are sections within their site's story page, not standalone pages
+- Old photo URLs redirect to anchor: `browse.asp?img=TWCSSM04` → `/turkey/.../smyrna#agora-portico`
+- Lightbox opens automatically when anchor matches on page load
+- SEO handled via inline Schema.org `ImageObject` per photo within the page
+- Tradeoff: individual photo sharing/bookmarking goes to an anchor, not a dedicated page
+- Tradeoff: per-photo Open Graph tags (for social sharing previews) are harder with anchors
+
+**No decision made yet.** All three options remain open pending DB access and further discussion.
+
+---
+
+## Image Metadata (EXIF)
+Spot-checked `ICHESHBA06.jpg` (Israel › Central › Hill Country of Ephraim › Shiloh Basilica › Mosaic 2):
+- Dimensions: 1,800 × 1,196 px / 0.81 MB / 180 DPI
+- Copyright: © Carl Rasmussen 2011 (minor UTF-8 encoding glitch — fixable in bulk)
+- **No GPS coordinates, no camera data, no date/time in EXIF**
+- Location data lives entirely in the site's database hierarchy, not in file metadata
+- Image ID naming convention encodes full hierarchy: `IC` = Israel Central, `HE` = Hill Country of Ephraim, `SH` = Shiloh, `BA` = Basilica, `06` = photo number
+
+If naming convention is consistent across all 7,000+ photos, filenames alone can reconstruct breadcrumb paths — worth verifying against DB on access.
+
+---
+
+## URL Redirects
+A redirect list mapping old ASP URLs to new URLs will be needed to protect:
+- 20+ years of inbound links from academic sites, Bible study resources, church websites
+- Google's indexed URLs
+- Saved bookmarks
+
+The redirect file (`.htaccess`, `vercel.json`, or Next.js middleware) can be auto-generated from the DB export once the new URL structure is decided. Hold until Option A/B/C decision is made.
+
+---
+
+## All Placeholder Copy
+Text written by Claude in story/essay template mockups (country descriptions, site intros, etc.) is a mix of content pulled from the live site and copy written by Claude to fill gaps. **All body copy must be reviewed and approved by Dr. Rasmussen before going live.**
+
+---
+
 ## Open Questions
 - What database is behind the site? (SQL Server or Access?)
 - How complex is the custom CMS? (simple CRUD vs. multi-user workflow?)
