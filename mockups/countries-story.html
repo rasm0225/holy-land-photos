@@ -315,6 +315,19 @@
 #sticky-bc .sbc-sep { color: rgba(237,232,225,.18); margin: 0 .1rem; }
 #sticky-bc .sbc-current { color: rgba(237,232,225,.7); }
 @media (max-width: 700px) { #sticky-bc { padding: .4rem 1rem; font-size: .65rem; } }
+
+    /* ── Chapters wrapper (centered, with gaps) ───────────────── */
+    .chapters-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+    @media (max-width: 768px) {
+      .chapters-wrapper { padding: 0 1rem; gap: 2rem; }
+    }
   </style>
 </head>
 <body>
@@ -354,6 +367,7 @@
   </section>
 
   <!-- ── Chapter 01 — Jordan ───────────────────────────────────── -->
+  <div class="chapters-wrapper">
   <section class="chapter">
     <a class="chapter-figure" data-num="01 / 12"
        href="#"
@@ -611,6 +625,7 @@
     <a class="end-btn" href="index.html">← Return to Holy Land Photos</a>
     <p>© Dr. Carl Rasmussen &nbsp;·&nbsp; All images courtesy of HolyLandPhotos.org</p>
   </section>
+  </div>
 
   <script>
     // ── Progress bar ──────────────────────────────────────────────
