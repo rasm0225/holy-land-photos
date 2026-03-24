@@ -43,51 +43,102 @@
     .return-link:hover { color: #EDE8E1; }
 
     /* ── Hero ─────────────────────────────────────────────────── */
-    .story-hero {
+    /* ── Site intro (replaces full-bleed hero) ───────────────── */
+    .story-intro {
       min-height: 100vh;
       display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      text-align: center;
-      padding: 4rem 2rem;
+      padding-bottom: 5rem;
       position: relative;
-      background:
-        linear-gradient(to bottom, rgba(13,11,8,.1) 0%, rgba(13,11,8,.65) 60%, #0D0B08 100%),
-        url('https://img.holylandphotos.org/TWCSSM20.jpg') center/cover no-repeat;
     }
-    .hero-kicker {
+    .story-breadcrumb {
+      padding: 2.25rem 3.5rem 0;
       font-family: system-ui, sans-serif;
-      font-size: .72rem; letter-spacing: .22em;
+      font-size: .8rem; letter-spacing: .03em;
+      display: flex; align-items: center;
+      flex-wrap: wrap; gap: .3rem;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      padding-bottom: 1.5rem;
+    }
+    .story-breadcrumb a {
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .story-breadcrumb .bc-root {
+      color: #B85C2C; font-weight: 700;
+      font-size: 1rem; letter-spacing: .01em;
+    }
+    .story-breadcrumb .bc-root:hover { color: #D06830; }
+    .story-breadcrumb .bc-mid {
+      color: rgba(237,232,225,.4);
+    }
+    .story-breadcrumb .bc-mid:hover { color: rgba(237,232,225,.75); }
+    .story-breadcrumb .bc-sep {
+      color: rgba(237,232,225,.18);
+      font-size: .9rem; margin: 0 .1rem;
+    }
+    .story-breadcrumb .bc-current {
+      color: rgba(237,232,225,.65);
+    }
+    .story-intro-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+      padding: 4rem 3.5rem 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%; box-sizing: border-box;
+    }
+    .story-map img {
+      width: 100%; max-height: 440px;
+      object-fit: contain;
+      border-radius: 3px;
+      opacity: .88;
+      filter: sepia(.15) contrast(1.05);
+    }
+    .story-text-intro {}
+    .story-kicker {
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .22em;
       text-transform: uppercase; color: #B85C2C;
-      margin-bottom: 1.25rem;
+      margin-bottom: .9rem;
     }
-    .hero-title {
-      font-size: clamp(2.6rem, 7vw, 5.5rem);
-      font-weight: normal; line-height: 1.05;
-      color: #F5F0E8;
-      margin-bottom: 1.25rem;
+    .story-main-title {
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      font-weight: normal; line-height: 1.08;
+      color: #F5F0E8; margin-bottom: 1.75rem;
     }
-    .hero-sub {
-      max-width: 46ch; font-size: 1.1rem;
-      color: rgba(237,232,225,.72); line-height: 1.65;
-      margin: 0 auto 2rem;
+    .story-desc {
+      color: rgba(237,232,225,.68);
+      font-size: 1rem; line-height: 1.82;
     }
-    .hero-byline {
+    .story-desc p + p { margin-top: .95rem; }
+    .story-byline {
+      margin-top: 2rem;
       font-family: system-ui, sans-serif;
-      font-size: .78rem; letter-spacing: .06em;
-      color: rgba(237,232,225,.38);
+      font-size: .75rem; letter-spacing: .06em;
+      color: rgba(237,232,225,.28);
+      border-top: 1px solid rgba(237,232,225,.08);
+      padding-top: 1.25rem;
     }
     .scroll-cue {
-      position: absolute; bottom: 2.5rem; left: 50%;
+      position: absolute; bottom: 2rem; left: 50%;
       transform: translateX(-50%);
       font-family: system-ui, sans-serif;
-      font-size: .72rem; letter-spacing: .14em;
+      font-size: .7rem; letter-spacing: .14em;
       text-transform: uppercase;
-      color: rgba(237,232,225,.3);
+      color: rgba(237,232,225,.25);
       animation: nudge 2.4s ease-in-out infinite;
+      white-space: nowrap;
     }
     @keyframes nudge {
       0%, 100% { transform: translateX(-50%) translateY(0); }
       50%       { transform: translateX(-50%) translateY(6px); }
+    }
+    @media (max-width: 780px) {
+      .story-intro-body { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; }
+      .story-breadcrumb { padding: 1.5rem 1.5rem .75rem; }
     }
 
     /* ── Chapter ──────────────────────────────────────────────── */
@@ -309,12 +360,45 @@
   <div id="progress"></div>
   <a class="return-link" href="smyrna.html">← Holy Land Photos</a>
 
-  <!-- ── Hero ──────────────────────────────────────────────────── -->
-  <section class="story-hero">
-    <p class="hero-kicker">Smyrna &nbsp;·&nbsp; Izmir &nbsp;·&nbsp; Western Turkey</p>
-    <h1 class="hero-title">Ancient City</h1>
-    <p class="hero-sub">Fourteen photographs of the agora, citadel, and underground chambers of one of antiquity's great cities — and one of the Seven Churches of Revelation.</p>
-    <p class="hero-byline">Photographs by Dr. Carl Rasmussen &nbsp;·&nbsp; HolyLandPhotos.org</p>
+  <!-- ── Site Intro ────────────────────────────────────────────── -->
+  <section class="story-intro">
+
+    <nav class="story-breadcrumb" aria-label="Location">
+      <a href="turkey.html"         class="bc-root">Turkey</a>
+      <span class="bc-sep">›</span>
+      <a href="western-turkey.html" class="bc-mid">Western Turkey</a>
+      <span class="bc-sep">›</span>
+      <a href="aegean.html"         class="bc-mid">Central &amp; Southern Aegean</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">Smyrna / Izmir</span>
+    </nav>
+
+    <div class="story-intro-body">
+      <div class="story-map">
+        <img src="http://s3.amazonaws.com/hlp-section-images/SmyrnaMap.jpg"
+             alt="Map of Smyrna / Izmir showing its location on the Aegean coast of western Turkey">
+      </div>
+
+      <div class="story-text-intro">
+        <p class="story-kicker">Photo Essay &nbsp;·&nbsp; 14 Photographs</p>
+        <h1 class="story-main-title">Smyrna / Izmir</h1>
+        <div class="story-desc">
+          <p>Smyrna (modern Izmir) is located on a deep sheltered bay of the
+          Aegean Sea. It sits at the western end of an important ancient road from the east
+          (Syria, India, China) through Laodicea, Philadelphia, and Sardis.</p>
+          <p>By the time of the early church, Smyrna was a center of emperor worship and a close
+          ally of Rome. It is the second of the seven churches addressed in Revelation
+          (1:11; 2:8&ndash;11). The &ldquo;crown of life&rdquo; mentioned in 2:10 may refer to the
+          victor&rsquo;s wreath or to the citadel that towered over the city. Polycarp, burned for
+          his faith at the stadium here, was one of the first Christian martyrs (age 86, A.D. 156).</p>
+          <p>The major surviving remains are the citadel (Kadifekale), the agora, and excavated areas
+          of the ancient city. The Izmir Archaeological Museum contains outstanding artifacts from
+          the city and vicinity.</p>
+        </div>
+        <p class="story-byline">Photographs &amp; text by Dr. Carl Rasmussen &nbsp;·&nbsp; HolyLandPhotos.org</p>
+      </div>
+    </div>
+
     <div class="scroll-cue">Scroll to begin &nbsp;↓</div>
   </section>
 
