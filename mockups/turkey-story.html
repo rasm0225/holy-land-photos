@@ -148,8 +148,6 @@
       position: relative;
     }
     /* Alternating layout */
-    .chapter:nth-child(even) { direction: rtl; }
-    .chapter:nth-child(even) > * { direction: ltr; }
 
     /* Sticky image column */
     .chapter-figure {
@@ -185,11 +183,6 @@
       opacity: 0;
       transform: translateY(1.5rem);
       transition: opacity .9s ease, transform .9s ease;
-    }
-    .chapter:nth-child(even) .chapter-text {
-      border-left: none;
-      border-right: 1px solid rgba(237,232,225,.06);
-      padding: 12vh 3.5rem 12vh 4rem;
     }
     .chapter-text.visible {
       opacity: 1; transform: none;
@@ -264,12 +257,8 @@
       .chapter-figure {
         position: relative; height: 56vw;
       }
-      .chapter:nth-child(even) .chapter-text {
-        border-right: none; padding: 2.5rem 1.5rem;
-      }
       .chapter-text {
         padding: 2.5rem 1.5rem;
-        border-left: none !important;
         opacity: 1 !important; transform: none !important;
       }
     }
