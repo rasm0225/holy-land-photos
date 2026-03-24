@@ -294,12 +294,53 @@
       border-left: none; border-right: none;
     }
     .ch-link:hover { color: #C47A4E; border-bottom-color: #C47A4E; }
+    /* ── Scroll TOC ───────────────────────────────────────────── */
+    #scroll-toc {
+      position: fixed; right: 0; top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex; flex-direction: column;
+      gap: 3px; padding: 10px 0;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+    .toc-item {
+      display: flex; align-items: center; gap: 7px;
+      cursor: pointer; padding: 3px 10px 3px 0;
+      pointer-events: all;
+    }
+    .toc-label {
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .03em;
+      color: rgba(237,232,225,.6);
+      white-space: nowrap;
+      max-width: 0; overflow: hidden; opacity: 0;
+      transition: max-width .35s ease, opacity .35s ease;
+      text-align: right;
+    }
+    .toc-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(237,232,225,.18);
+      flex-shrink: 0;
+      transition: background .2s, transform .2s;
+    }
+    #scroll-toc.expanded .toc-label {
+      max-width: 200px; opacity: 1;
+    }
+    .toc-item.active .toc-dot {
+      background: #B85C2C; transform: scale(1.5);
+    }
+    .toc-item.active .toc-label { color: #EDE8E1; }
+    .toc-item:hover .toc-label  { color: #EDE8E1; }
+    .toc-item:hover .toc-dot    { background: rgba(237,232,225,.5); }
+    @media (max-width: 700px) { #scroll-toc { display: none; } }
   </style>
 </head>
 <body>
 
   <div id="progress"></div>
   <a class="return-link" href="aegean.html">← Holy Land Photos</a>
+  <nav id="scroll-toc" aria-label="Page sections"></nav>
 
   <!-- ── Site Intro ────────────────────────────────────────────── -->
   <section class="story-intro">
@@ -1140,6 +1181,46 @@
     // Initial paint
     updateProgress();
     updateParallax();
+
+    // ── Scroll TOC ────────────────────────────────────────────────
+    (function() {
+      const toc      = document.getElementById('scroll-toc');
+      const chapters = Array.from(document.querySelectorAll('.chapter'));
+
+      // Build items
+      chapters.forEach((chapter, i) => {
+        const title = chapter.querySelector('.ch-title')?.textContent?.trim() || `Site ${i+1}`;
+        const item  = document.createElement('div');
+        item.className = 'toc-item';
+        item.innerHTML = `<span class="toc-label">${title}</span><span class="toc-dot"></span>`;
+        item.addEventListener('click', () =>
+          chapter.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        );
+        toc.appendChild(item);
+      });
+
+      const tocItems = Array.from(toc.querySelectorAll('.toc-item'));
+
+      // Expand on scroll, contract after idle
+      let contractTimer;
+      window.addEventListener('scroll', () => {
+        toc.classList.add('expanded');
+        clearTimeout(contractTimer);
+        contractTimer = setTimeout(() => toc.classList.remove('expanded'), 1600);
+      }, { passive: true });
+
+      // Highlight active chapter
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = chapters.indexOf(entry.target);
+            tocItems.forEach((item, i) => item.classList.toggle('active', i === idx));
+          }
+        });
+      }, { threshold: 0.35 });
+
+      chapters.forEach(ch => io.observe(ch));
+    })();
 
     // ── Share ─────────────────────────────────────────────────────
     document.querySelectorAll('[data-share-id]').forEach(el => {
