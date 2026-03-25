@@ -78,6 +78,16 @@
     .site-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .3rem .5rem; list-style: none; padding: 0; }
     .site-grid li a { font-size: .88rem; color: rgba(237,232,225,.65); text-decoration: none; transition: color .2s; font-family: system-ui,sans-serif; }
     .site-grid li a:hover { color: #C47A4E; }
+
+    .country-block { margin-bottom: 3rem; }
+    .country-heading { font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: #B85C2C; margin-bottom: 1.25rem; padding-bottom: .6rem; border-bottom: 1px solid rgba(184,92,44,.25); }
+    .site-list { list-style: none; padding: 0; margin: 0 0 .75rem; }
+    .site-list li { font-family: system-ui,sans-serif; font-size: .88rem; color: rgba(237,232,225,.65); padding: .18rem 0; }
+    .site-list li a { color: rgba(237,232,225,.65); text-decoration: none; transition: color .2s; }
+    .site-list li a:hover { color: #C47A4E; }
+    .site-list .sub { padding-left: 1.25rem; font-size: .82rem; color: rgba(237,232,225,.45); }
+    .site-list .sub a { color: rgba(237,232,225,.45); }
+    .site-list .sub a:hover { color: #C47A4E; }
   </style>
 </head>
 <body>
@@ -107,9 +117,687 @@
       <h1 class="page-title">Complete Site List</h1>
     </div>
 
-    <p class="site-list-intro">This page lists the sites from five countries: Egypt, Greece, Israel, Italy, Jordan, and Turkey (in that order). Please scroll down to view the relevant portion of the list.</p>
+    <p class="page-prose" style="margin-bottom:2.5rem">This page lists the sites from five countries: Egypt, Greece, Israel, Italy, Jordan, and Turkey (in that order). Please scroll down to view the relevant portion of the list.</p>
 
-    <p class="site-list-intro">[The full site list is drawn from the database and will be rendered dynamically in the final build.]</p>
+    <!-- CYPRUS -->
+    <div class="country-block">
+      <h2 class="country-heading">Cyprus</h2>
+      <ul class="site-list">
+        <li><a href="#">Paphos — Introduction Map</a></li>
+        <li><a href="#">Paphos Harbor</a></li>
+        <li><a href="#">Paphos House of Aion Mosaics</a></li>
+        <li><a href="#">Paphos House of Theseus</a></li>
+        <li><a href="#">Salamis</a></li>
+      </ul>
+    </div>
+
+    <!-- EGYPT -->
+    <div class="country-block">
+      <h2 class="country-heading">Egypt</h2>
+      <ul class="site-list">
+        <li><a href="#">Views of Egypt</a></li>
+        <li><a href="#">Hieroglyphic Inscriptions</a></li>
+        <li><a href="#">Sinai</a></li>
+      </ul>
+    </div>
+
+    <!-- FRANCE -->
+    <div class="country-block">
+      <h2 class="country-heading">France</h2>
+      <ul class="site-list">
+        <li><a href="#">Lyon - Lugdunum</a></li>
+        <li><a href="#">Lyon - Museum</a></li>
+        <li><a href="#">Paris Louvre Statues</a></li>
+      </ul>
+    </div>
+
+    <!-- GREECE -->
+    <div class="country-block">
+      <h2 class="country-heading">Greece</h2>
+      <ul class="site-list">
+        <li><a href="#">Aegina</a></li>
+        <li><a href="#">Amphipolis</a></li>
+        <li>Athens
+          <ul class="site-list">
+            <li class="sub"><a href="#">Acropolis — Erechtheion</a></li>
+            <li class="sub"><a href="#">Acropolis — Parthenon</a></li>
+            <li class="sub"><a href="#">Acropolis — Southern Slope</a></li>
+            <li class="sub"><a href="#">Acropolis — Odeion of Herodes Atticus</a></li>
+            <li class="sub"><a href="#">Acropolis — Structures</a></li>
+            <li class="sub"><a href="#">Acropolis — Theater of Dionysus</a></li>
+            <li class="sub"><a href="#">Acropolis Museum</a></li>
+            <li class="sub"><a href="#">Agora — General</a></li>
+            <li class="sub"><a href="#">Agora — National Museum</a></li>
+            <li class="sub"><a href="#">Agora — Various Objects</a></li>
+            <li class="sub"><a href="#">Agora — Deities (Statues)</a></li>
+            <li class="sub"><a href="#">Agora — Metal Statues and Objects</a></li>
+            <li class="sub"><a href="#">Plaka Area</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Berea (Verria)</a></li>
+        <li><a href="#">Cenchreae</a></li>
+        <li>Corinth
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+            <li class="sub"><a href="#">Acrocorinth</a></li>
+            <li class="sub"><a href="#">Diolkos</a></li>
+            <li class="sub"><a href="#">Asclepion</a></li>
+            <li class="sub"><a href="#">Corinthian Canal</a></li>
+          </ul>
+        </li>
+        <li>Cos, Kos
+          <ul class="site-list">
+            <li class="sub"><a href="#">Asclepion</a></li>
+            <li class="sub"><a href="#">Museum/Artifacts</a></li>
+          </ul>
+        </li>
+        <li>Crete
+          <ul class="site-list">
+            <li class="sub"><a href="#">Fair Havens</a></li>
+            <li class="sub"><a href="#">Gortyna</a></li>
+            <li class="sub"><a href="#">Knossos</a></li>
+          </ul>
+        </li>
+        <li>Delphi
+          <ul class="site-list">
+            <li class="sub"><a href="#">Stadium</a></li>
+            <li class="sub"><a href="#">Theater</a></li>
+            <li class="sub"><a href="#">Charioteer</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+            <li class="sub"><a href="#">Temple of Apollo</a></li>
+            <li class="sub"><a href="#">Lower Area Site</a></li>
+          </ul>
+        </li>
+        <li>Epidaurus
+          <ul class="site-list">
+            <li class="sub"><a href="#">Theater</a></li>
+            <li class="sub"><a href="#">Site</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+          </ul>
+        </li>
+        <li>Isthmia
+          <ul class="site-list">
+            <li class="sub"><a href="#">Site</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Meteora Kakambaka</a></li>
+        <li>Mycenae
+          <ul class="site-list">
+            <li class="sub"><a href="#">Beehive Tombs</a></li>
+            <li class="sub"><a href="#">Setting</a></li>
+            <li class="sub"><a href="#">Citadel</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Neapolis (Kavala)</a></li>
+        <li>Nemea
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Stadium</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+          </ul>
+        </li>
+        <li>Olympia
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Stadium</a></li>
+            <li class="sub"><a href="#">Temple of Zeus</a></li>
+            <li class="sub"><a href="#">Museum/Artifacts</a></li>
+            <li class="sub"><a href="#">Museum Pottery</a></li>
+          </ul>
+        </li>
+        <li>Patmos
+          <ul class="site-list">
+            <li class="sub"><a href="#">View of Island</a></li>
+            <li class="sub"><a href="#">Harbor/Skala</a></li>
+            <li class="sub"><a href="#">The Monastery — Main Church</a></li>
+            <li class="sub"><a href="#">Acropolis (Kastelli)</a></li>
+          </ul>
+        </li>
+        <li>Philippi
+          <ul class="site-list">
+            <li class="sub"><a href="#">West Philippi</a></li>
+            <li class="sub"><a href="#">East Philippi</a></li>
+            <li class="sub"><a href="#">Baptismal Site</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Samothrace</a></li>
+        <li><a href="#">Samos (Strait of Mycale)</a></li>
+        <li><a href="#">Thermopylae</a></li>
+        <li>Thessalonica (Thessaloniki)
+          <ul class="site-list">
+            <li class="sub"><a href="#">City</a></li>
+            <li class="sub"><a href="#">Forum/Agora</a></li>
+            <li class="sub"><a href="#">Church of St. Demetrius</a></li>
+            <li class="sub"><a href="#">Vlatadon Monastery</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Via Egnatia</a></li>
+      </ul>
+    </div>
+
+    <!-- ISRAEL -->
+    <div class="country-block">
+      <h2 class="country-heading">Israel</h2>
+      <ul class="site-list">
+        <li><a href="#">Abel Beth Maacah</a></li>
+        <li>Arad
+          <ul class="site-list">
+            <li class="sub"><a href="#">Iron Age Citadel</a></li>
+            <li class="sub"><a href="#">Early Bronze Age City (ca. 2800 B.C.)</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Arbel Cliffs</a></li>
+        <li><a href="#">Arbel Synagogue</a></li>
+        <li>Ashqelon/Ashkelon
+          <ul class="site-list">
+            <li class="sub"><a href="#">Bouleuterion/Forum</a></li>
+            <li class="sub"><a href="#">Views of Site</a></li>
+            <li class="sub"><a href="#">Gate &amp; Glacis</a></li>
+            <li class="sub"><a href="#">St. Mary's Church</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Baram</a></li>
+        <li><a href="#">Bir'im</a></li>
+        <li><a href="#">Beersheba (Beer Sheva)</a></li>
+        <li><a href="#">Beth Guvrin - Eleutheropolis</a></li>
+        <li>Bethlehem
+          <ul class="site-list">
+            <li class="sub"><a href="#">Bethlehem</a></li>
+            <li class="sub"><a href="#">Church of Nativity — Mosaics and Columns</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Bethsaida/el-Araj (Sea of Galilee)</a></li>
+        <li><a href="#">Bethsaida/et-Tell (Sea of Galilee)</a></li>
+        <li><a href="#">Beth Shemesh</a></li>
+        <li><a href="#">Benjamin, Eastern (Views and sites)</a></li>
+        <li><a href="#">Benjamin, Western (Views and sites)</a></li>
+        <li>Caesarea Maritima
+          <ul class="site-list">
+            <li class="sub"><a href="#">Amphitheater</a></li>
+            <li class="sub"><a href="#">Promontory Palace</a></li>
+            <li class="sub"><a href="#">Circus/Hippodrome East</a></li>
+            <li class="sub"><a href="#">Hippodrome/Circus</a></li>
+            <li class="sub"><a href="#">Theater</a></li>
+            <li class="sub"><a href="#">Harbor</a></li>
+            <li class="sub"><a href="#">Aqueduct, High Level</a></li>
+            <li class="sub"><a href="#">Aqueduct, Low Level</a></li>
+            <li class="sub"><a href="#">Crusader City</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+            <li class="sub"><a href="#">Temple of Augustus</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Caesarea Philippi</a></li>
+        <li><a href="#">Cana of Galilee</a></li>
+        <li><a href="#">Capernaum — Traditional (Franciscan) Site</a></li>
+        <li><a href="#">Capernaum — Greek Orthodox</a></li>
+        <li><a href="#">Carmel, Mount</a></li>
+        <li><a href="#">Church of Primacy of Peter</a></li>
+        <li><a href="#">Dan</a></li>
+        <li>Dead Sea
+          <ul class="site-list">
+            <li class="sub"><a href="#">Masada — Western Palace</a></li>
+            <li class="sub"><a href="#">Masada — Northern Palace</a></li>
+            <li class="sub"><a href="#">Masada — Bath House</a></li>
+            <li class="sub"><a href="#">Masada — Synagogue</a></li>
+            <li class="sub"><a href="#">Masada — Roman Ramp and Camps</a></li>
+            <li class="sub"><a href="#">Qumran</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Dhahr Mirzbaneh (Ein Samiya)</a></li>
+        <li><a href="#">Elah, Valley of</a></li>
+        <li><a href="#">En Avedat</a></li>
+        <li><a href="#">En Dor</a></li>
+        <li><a href="#">En Gedi</a></li>
+        <li><a href="#">et-Tell (Ai?)</a></li>
+        <li><a href="#">et-Tell (Galilee; Bethsaida)</a></li>
+        <li><a href="#">Galilee (Jesus) Boat</a></li>
+        <li><a href="#">Gergesa/Kursi</a></li>
+        <li><a href="#">Gerizim, Mount</a></li>
+        <li><a href="#">Geshur/et-Tell (Sea of Galilee)</a></li>
+        <li><a href="#">Gezer</a></li>
+        <li><a href="#">Gibeon</a></li>
+        <li><a href="#">Golan/Bashan Views</a></li>
+        <li><a href="#">Harod Valley</a></li>
+        <li><a href="#">Hazor</a></li>
+        <li><a href="#">Hazor Recent Excavations</a></li>
+        <li><a href="#">Hazor Artifacts</a></li>
+        <li><a href="#">Hebron</a></li>
+        <li><a href="#">Herodium</a></li>
+        <li><a href="#">Herodium Tomb and Theater</a></li>
+        <li><a href="#">Hesi, Tell–el</a></li>
+        <li><a href="#">Hill Country of Judah - Views</a></li>
+        <li><a href="#">Joppa/Jaffa</a></li>
+        <li><a href="#">Sychar/Jacob's Well</a></li>
+        <li><a href="#">Jemmeh, Tell (T. Gamma; Yurza)</a></li>
+        <li>Jericho
+          <ul class="site-list">
+            <li class="sub"><a href="#">Old Testament Jericho</a></li>
+            <li class="sub"><a href="#">New Testament Jericho</a></li>
+          </ul>
+        </li>
+        <li>Jerusalem
+          <ul class="site-list">
+            <li class="sub"><a href="#">Church of Holy Sepulcher — Exterior</a></li>
+            <li class="sub"><a href="#">Church of Holy Sepulcher — Calvary</a></li>
+            <li class="sub"><a href="#">Church of Holy Sepulcher — Tomb of Jesus</a></li>
+            <li class="sub"><a href="#">Church of Holy Sepulcher — Chapels</a></li>
+            <li class="sub"><a href="#">Church of Holy Sepulcher — Interesting Places</a></li>
+            <li class="sub"><a href="#">Citadel at Jaffa Gate</a></li>
+            <li class="sub"><a href="#">The Citadel</a></li>
+            <li class="sub"><a href="#">Citadel Museum</a></li>
+            <li class="sub"><a href="#">City of David</a></li>
+            <li class="sub"><a href="#">City of David Antiquities</a></li>
+            <li class="sub"><a href="#">Church of Mary Magdalene (Mount of Olives)</a></li>
+            <li class="sub"><a href="#">Kathisma Church</a></li>
+            <li class="sub"><a href="#">Saint Anne's Church</a></li>
+            <li class="sub"><a href="#">Saint Mark's Syrian Orthodox Church</a></li>
+            <li class="sub"><a href="#">Saint Peter in Gallicantu</a></li>
+            <li class="sub"><a href="#">Dominus Flevit Church (Mount of Olives)</a></li>
+            <li class="sub"><a href="#">Garden Tomb &amp; Gordon's Calvary</a></li>
+            <li class="sub"><a href="#">Gates &amp; Walls</a></li>
+            <li class="sub"><a href="#">Gethsemane</a></li>
+            <li class="sub"><a href="#">Modern City</a></li>
+            <li class="sub"><a href="#">Yad Vashem</a></li>
+            <li class="sub"><a href="#">Israel Museum</a></li>
+            <li class="sub"><a href="#">Israel Museum — Objects from Old Testament Times</a></li>
+            <li class="sub"><a href="#">Mount of Olives</a></li>
+            <li class="sub"><a href="#">Mount Zion (Modern)</a></li>
+            <li class="sub"><a href="#">Old City — Broad/Avigad's Wall</a></li>
+            <li class="sub"><a href="#">Rockefeller Museum</a></li>
+            <li class="sub"><a href="#">Southern Wall Excavations</a></li>
+            <li class="sub"><a href="#">Temple Mount — Platform/Haram</a></li>
+            <li class="sub"><a href="#">Temple Mount — Golden Gate &amp; East</a></li>
+            <li class="sub"><a href="#">Temple Mount — El Aqsa &amp; South</a></li>
+            <li class="sub"><a href="#">Temple Mount — West</a></li>
+            <li class="sub"><a href="#">Temple Mount — Antonia &amp; North</a></li>
+            <li class="sub"><a href="#">Temple Mount — Dome of the Rock &amp; Central</a></li>
+            <li class="sub"><a href="#">Temple Mount — Views &amp; Haram</a></li>
+            <li class="sub"><a href="#">Tombs — Old Testament Hinnom Valley</a></li>
+            <li class="sub"><a href="#">Tombs — OT Tombs Silwan</a></li>
+            <li class="sub"><a href="#">Tombs — OT (First Temple) Tumuli</a></li>
+            <li class="sub"><a href="#">Tombs — New Testament (Second Temple)</a></li>
+            <li class="sub"><a href="#">Tombs — Garden Tomb</a></li>
+            <li class="sub"><a href="#">Tombs — Kidron Valley</a></li>
+            <li class="sub"><a href="#">Tombs — Family Tomb of Herod</a></li>
+            <li class="sub"><a href="#">Tombs — Jason's Tomb</a></li>
+            <li class="sub"><a href="#">Tombs — Tomb of Grapes</a></li>
+            <li class="sub"><a href="#">Tombs — Tomb of Kings (Queen Helena of Adiabene)</a></li>
+            <li class="sub"><a href="#">Via Dolorosa</a></li>
+            <li class="sub"><a href="#">Water Systems — Pool of Siloam (NT)</a></li>
+            <li class="sub"><a href="#">Water Systems — Gihon Spring</a></li>
+            <li class="sub"><a href="#">Water Systems — Gihon Pool System</a></li>
+            <li class="sub"><a href="#">Water Systems — Middle Bronze Age Channel</a></li>
+            <li class="sub"><a href="#">Water Systems — Hezekiah's Tunnel</a></li>
+            <li class="sub"><a href="#">Water Systems — Diagonal Tunnel</a></li>
+            <li class="sub"><a href="#">Water Systems — Pool Tower</a></li>
+            <li class="sub"><a href="#">Water Systems — Warren's Shaft</a></li>
+            <li class="sub"><a href="#">Western Wall Area</a></li>
+            <li class="sub"><a href="#">Western Wall — Rabbinic Tunnels</a></li>
+            <li class="sub"><a href="#">Western Wall — Excavations</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Jezreel (city)</a></li>
+        <li><a href="#">Jezreel Valley (4 folders)</a></li>
+        <li><a href="#">Jezreel Valley Views</a></li>
+        <li><a href="#">Jordan River</a></li>
+        <li><a href="#">Lower Jordan River</a></li>
+        <li><a href="#">Jotapata</a></li>
+        <li><a href="#">K/Qatzrin — Qasrin</a></li>
+        <li><a href="#">Kedesh (Upper Galilee)</a></li>
+        <li><a href="#">Khirbet Umm el-Amud</a></li>
+        <li><a href="#">Kiriath Jearim (Abu Gosh)</a></li>
+        <li><a href="#">Korazin — Village</a></li>
+        <li><a href="#">Korazin — Synagogue</a></li>
+        <li><a href="#">Lachish</a></li>
+        <li><a href="#">Lower Galilee Views</a></li>
+        <li><a href="#">Magdala/Taricheae</a></li>
+        <li><a href="#">Maresha - Marisa (Beth Guvrin)</a></li>
+        <li>Masada
+          <ul class="site-list">
+            <li class="sub"><a href="#">Western Palace</a></li>
+            <li class="sub"><a href="#">Northern Palace</a></li>
+            <li class="sub"><a href="#">Synagogue</a></li>
+            <li class="sub"><a href="#">Roman Ramp and Camps</a></li>
+          </ul>
+        </li>
+        <li>Megiddo
+          <ul class="site-list">
+            <li class="sub"><a href="#">Bronze Age Remains</a></li>
+            <li class="sub"><a href="#">Israelite Remains</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Midras (Rolling Stone Tomb)</a></li>
+        <li><a href="#">Modiin (Synagogue Umm el–'Umdan)</a></li>
+        <li><a href="#">Mount of Beatitudes</a></li>
+        <li><a href="#">Mount Tabor</a></li>
+        <li><a href="#">Nabi Shu'ayb (= Jethro; Lower Galilee)</a></li>
+        <li><a href="#">Nain/Nein</a></li>
+        <li><a href="#">Nazareth</a></li>
+        <li><a href="#">Nebi Musa (Judean Wilderness)</a></li>
+        <li><a href="#">Nebi/Nabi Samwil (Hill of God)</a></li>
+        <li>Negev Highlands
+          <ul class="site-list">
+            <li class="sub"><a href="#">Haluqim</a></li>
+            <li class="sub"><a href="#">Middle Bronze I Settlements</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Omrit</a></li>
+        <li><a href="#">Qasr el-Yahud (Bethany, Jordan River)</a></li>
+        <li><a href="#">Qumran</a></li>
+        <li><a href="#">Rehoboth</a></li>
+        <li><a href="#">Sea of Galilee Views</a></li>
+        <li><a href="#">Shechem</a></li>
+        <li>Sepphoris
+          <ul class="site-list">
+            <li class="sub"><a href="#">Roman Villa</a></li>
+            <li class="sub"><a href="#">Synagogue</a></li>
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">The Nile Festival Building</a></li>
+          </ul>
+        </li>
+        <li>Shiloh
+          <ul class="site-list">
+            <li class="sub"><a href="#">Shiloh, Basilica</a></li>
+            <li class="sub"><a href="#">Shiloh, Sheik's Tomb/Church</a></li>
+            <li class="sub"><a href="#">Shiloh, the Tel</a></li>
+            <li class="sub"><a href="#">Shiloh, Divine Presence Structure</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Sower's Cove</a></li>
+        <li><a href="#">Tabgha</a></li>
+        <li><a href="#">Tell Jemmeh (T. Gamma; Yurza)</a></li>
+        <li><a href="#">Tiberias — Gate and Theater</a></li>
+        <li><a href="#">Umm el-Qanatir/Kanatir</a></li>
+        <li><a href="#">Wilderness of Judah Views</a></li>
+      </ul>
+    </div>
+
+    <!-- ITALY -->
+    <div class="country-block">
+      <h2 class="country-heading">Italy</h2>
+      <ul class="site-list">
+        <li><a href="#">Naples Museum</a></li>
+        <li><a href="#">Rome — Roman Forum West</a></li>
+        <li><a href="#">Rome — Roman Forum East (Arch of Titus)</a></li>
+        <li><a href="#">Rome — Fora Romanum</a></li>
+        <li><a href="#">Rome — Ara Pacis Altar of Augustus</a></li>
+        <li><a href="#">Rome — Mamertine Prison — Peter and Paul In Prison Here</a></li>
+        <li><a href="#">Rome — Exhibit of Statues of Athletes</a></li>
+        <li><a href="#">Rome — Tre Fontane Church — Place of Paul's Execution</a></li>
+        <li><a href="#">Rome — Church: St. Paul Outside the Walls — Burial Place of Paul</a></li>
+        <li><a href="#">Rome — Basilica of the Holy Cross</a></li>
+        <li><a href="#">Rome — Via Appia</a></li>
+        <li><a href="#">Rome — Porta Maggiore and Tomb of Baker</a></li>
+        <li>Ostia
+          <ul class="site-list">
+            <li class="sub"><a href="#">Commercial Structures</a></li>
+            <li class="sub"><a href="#">Public Structures</a></li>
+            <li class="sub"><a href="#">Religious Structures</a></li>
+          </ul>
+        </li>
+        <li>Pompeii
+          <ul class="site-list">
+            <li class="sub"><a href="#">Forum Area</a></li>
+            <li class="sub"><a href="#">Commercial Buildings</a></li>
+            <li class="sub"><a href="#">House of the Faun</a></li>
+            <li class="sub"><a href="#">House of Tragic Poet</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Portus — The Port of Rome</a></li>
+        <li><a href="#">Puteoli/Pozzuoli</a></li>
+        <li><a href="#">Herculaneum</a></li>
+        <li><a href="#">Emperor Worship</a></li>
+      </ul>
+    </div>
+
+    <!-- JORDAN -->
+    <div class="country-block">
+      <h2 class="country-heading">Jordan</h2>
+      <ul class="site-list">
+        <li><a href="#">Amman</a></li>
+        <li><a href="#">Amman Citadel — Temple of Heracles</a></li>
+        <li><a href="#">Bethany Beyond the Jordan</a></li>
+        <li><a href="#">Gerasa (Jarash/Jerash)</a></li>
+        <li><a href="#">Iraq el–Amir</a></li>
+        <li><a href="#">Jabbok River</a></li>
+        <li><a href="#">Madaba — St. George's Church</a></li>
+        <li><a href="#">Machaerus/Macharus</a></li>
+        <li><a href="#">Petra: Treasury (Khazneh) and Monastery (Deir)</a></li>
+        <li><a href="#">Petra: Qasr Al-Bint</a></li>
+        <li><a href="#">Umm Qeis (Gadara)</a></li>
+        <li><a href="#">Wadi Ram/Rum</a></li>
+      </ul>
+    </div>
+
+    <!-- LEBANON -->
+    <div class="country-block">
+      <h2 class="country-heading">Lebanon</h2>
+      <ul class="site-list">
+        <li><a href="#">Nahr el-Kalb River/Wadi Inscriptions</a></li>
+      </ul>
+    </div>
+
+    <!-- MALTA -->
+    <div class="country-block">
+      <h2 class="country-heading">Malta</h2>
+      <ul class="site-list">
+        <li><a href="#">Malta Maritime Museum</a></li>
+        <li><a href="#">Malta San Pawl Milqi</a></li>
+        <li><a href="#">Elite House on Malta</a></li>
+        <li><a href="#">Malta Valletta the Capital</a></li>
+        <li><a href="#">Bays of Malta</a></li>
+      </ul>
+    </div>
+
+    <!-- TURKEY -->
+    <div class="country-block">
+      <h2 class="country-heading">Turkey</h2>
+      <ul class="site-list">
+        <li><a href="#">Adada</a></li>
+        <li><a href="#">Adana</a></li>
+        <li><a href="#">Alalakh - Tell Atchana</a></li>
+        <li>Alexandria Troas
+          <ul class="site-list">
+            <li class="sub"><a href="#">Harbor and Structures</a></li>
+            <li class="sub"><a href="#">Forum and Area</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Aizanoi/Aezani</a></li>
+        <li><a href="#">Amisus (Samsun)</a></li>
+        <li><a href="#">Andriace (Andriake)</a></li>
+        <li>Ankara
+          <ul class="site-list">
+            <li class="sub"><a href="#">Temple of Augustus</a></li>
+            <li class="sub"><a href="#">Antiquities in Ankara — Museum of Anatolian Civilizations</a></li>
+            <li class="sub"><a href="#">Artifacts from Carchemish</a></li>
+          </ul>
+        </li>
+        <li>Antioch on the Orontes/Hatay
+          <ul class="site-list">
+            <li class="sub"><a href="#">Antioch on the Orontes</a></li>
+            <li class="sub"><a href="#">Antioch Roman Temple</a></li>
+            <li class="sub"><a href="#">Antioch/Hatay Earthquake</a></li>
+            <li class="sub"><a href="#">Antioch Museum Hotel</a></li>
+          </ul>
+        </li>
+        <li>Aphrodisias
+          <ul class="site-list">
+            <li class="sub"><a href="#">Major Structures</a></li>
+            <li class="sub"><a href="#">Museum</a></li>
+            <li class="sub"><a href="#">Sebasteion</a></li>
+            <li class="sub"><a href="#">Theater and Stadium</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Aspendos</a></li>
+        <li>Assos
+          <ul class="site-list">
+            <li class="sub"><a href="#">Citadel, Temple of Athena, Harbor</a></li>
+            <li class="sub"><a href="#">Agora, Necropolis, Theater</a></li>
+          </ul>
+        </li>
+        <li>Attalia/Antalya
+          <ul class="site-list">
+            <li class="sub"><a href="#">Antalya Museum — General</a></li>
+            <li class="sub"><a href="#">Antalya Museum — Emperor Statues</a></li>
+            <li class="sub"><a href="#">Antalya Museum — Male Deities</a></li>
+            <li class="sub"><a href="#">Antalya Museum — Female Deities</a></li>
+            <li class="sub"><a href="#">Antalya Museum — Statues from Caracalla Fountain</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Carchemish</a></li>
+        <li><a href="#">Cilician Gates</a></li>
+        <li><a href="#">Colossae</a></li>
+        <li><a href="#">Derbe</a></li>
+        <li><a href="#">Didyma</a></li>
+        <li><a href="#">Eflatunpinar</a></li>
+        <li>Ephesus
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Lower City</a></li>
+            <li class="sub"><a href="#">Middle City: Temple of Hadrian, Streets, Baths</a></li>
+            <li class="sub"><a href="#">Upper City</a></li>
+            <li class="sub"><a href="#">Museum — Artemis Room</a></li>
+            <li class="sub"><a href="#">Museum — Objects/Artifacts</a></li>
+            <li class="sub"><a href="#">Museum — Artifacts from Terrace Houses</a></li>
+            <li class="sub"><a href="#">Museum — Imperial Cult Room</a></li>
+            <li class="sub"><a href="#">Ephesus Artifacts</a></li>
+            <li class="sub"><a href="#">Area: Temple of Artemis, House of Mary, Ships</a></li>
+            <li class="sub"><a href="#">Paul and Thecla Cave</a></li>
+            <li class="sub"><a href="#">Terrace Houses</a></li>
+            <li class="sub"><a href="#">The Basilica of Saint John</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Euphrates River</a></li>
+        <li><a href="#">Euromos (Temple of Zeus)</a></li>
+        <li><a href="#">Gobekli — Göbekli Tepe</a></li>
+        <li><a href="#">Haran</a></li>
+        <li><a href="#">Hattusha — Hattusas</a></li>
+        <li>Hierapolis (4 folders)
+          <ul class="site-list">
+            <li class="sub"><a href="#">General</a></li>
+            <li class="sub"><a href="#">Plutonium and Temples</a></li>
+            <li class="sub"><a href="#">Theater</a></li>
+            <li class="sub"><a href="#">Necropolis</a></li>
+            <li class="sub"><a href="#">Martyrium of Philip</a></li>
+          </ul>
+        </li>
+        <li>Iconium (Konya)
+          <ul class="site-list">
+            <li class="sub"><a href="#">Konya — Mevlana Complex</a></li>
+            <li class="sub"><a href="#">Konya to Pisidian Antioch - via Sebastia</a></li>
+          </ul>
+        </li>
+        <li>Istanbul
+          <ul class="site-list">
+            <li class="sub"><a href="#">Archaeological Museum — Inscription</a></li>
+            <li class="sub"><a href="#">Archaeological Museum — Statues</a></li>
+            <li class="sub"><a href="#">Hagia Sophia</a></li>
+            <li class="sub"><a href="#">Blue Mosque</a></li>
+            <li class="sub"><a href="#">Hippodrome</a></li>
+            <li class="sub"><a href="#">Bosphorus</a></li>
+            <li class="sub"><a href="#">Museum of the Ancient Orient</a></li>
+            <li class="sub"><a href="#">Süleymania — The Tomb Complex of Suleiman the Magnificent</a></li>
+          </ul>
+        </li>
+        <li>Knidos
+          <ul class="site-list">
+            <li class="sub"><a href="#">Harbors</a></li>
+            <li class="sub"><a href="#">Site</a></li>
+            <li class="sub"><a href="#">Round Temple</a></li>
+          </ul>
+        </li>
+        <li>Laodicea
+          <ul class="site-list">
+            <li class="sub"><a href="#">Laodicea</a></li>
+            <li class="sub"><a href="#">Laodicea Temples</a></li>
+            <li class="sub"><a href="#">Laodicea North Agora</a></li>
+            <li class="sub"><a href="#">Laodicea: Christian Structures</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Lystra</a></li>
+        <li><a href="#">Miletus (Balat)</a></li>
+        <li>Myra
+          <ul class="site-list">
+            <li class="sub"><a href="#">Theater</a></li>
+            <li class="sub"><a href="#">Tombs</a></li>
+            <li class="sub"><a href="#">St. Nicholas' Church</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Nemrut Dagi</a></li>
+        <li><a href="#">Nemrut Dagi Area</a></li>
+        <li><a href="#">Nysa</a></li>
+        <li><a href="#">Patara</a></li>
+        <li><a href="#">Patara Lighthouse</a></li>
+        <li>Pergamum
+          <ul class="site-list">
+            <li class="sub"><a href="#">Acropolis</a></li>
+            <li class="sub"><a href="#">Asclepion</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+            <li class="sub"><a href="#">Red Basilica and Lower Level</a></li>
+          </ul>
+        </li>
+        <li>Perge
+          <ul class="site-list">
+            <li class="sub"><a href="#">Main Street Excavations</a></li>
+            <li class="sub"><a href="#">Artifacts &amp; Inscriptions</a></li>
+            <li class="sub"><a href="#">Western Excavations</a></li>
+            <li class="sub"><a href="#">Stadium and Theater</a></li>
+            <li class="sub"><a href="#">Southern Excavations</a></li>
+            <li class="sub"><a href="#">Eastern Excavations</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Phaselis</a></li>
+        <li><a href="#">Philadelphia</a></li>
+        <li>Pisidian Antioch
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+          </ul>
+        </li>
+        <li>Priene
+          <ul class="site-list">
+            <li class="sub"><a href="#">General</a></li>
+            <li class="sub"><a href="#">Religious Buildings</a></li>
+          </ul>
+        </li>
+        <li>Sagalassos
+          <ul class="site-list">
+            <li class="sub"><a href="#">Upper Agora</a></li>
+            <li class="sub"><a href="#">Upper City</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Sanliurfa</a></li>
+        <li>Sardis
+          <ul class="site-list">
+            <li class="sub"><a href="#">Synagogue, Gymnasium</a></li>
+            <li class="sub"><a href="#">Artemis Temple Plus</a></li>
+            <li class="sub"><a href="#">Special</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Sarikaya Roman Thermal Bath</a></li>
+        <li><a href="#">Seleucia Pieria</a></li>
+        <li><a href="#">Sinope</a></li>
+        <li><a href="#">Sinope Museum</a></li>
+        <li>Smyrna
+          <ul class="site-list">
+            <li class="sub"><a href="#">The Site</a></li>
+            <li class="sub"><a href="#">Artifacts</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Tarsus</a></li>
+        <li><a href="#">Tarsus (Roman Temple)</a></li>
+        <li><a href="#">Tell Tayinat</a></li>
+        <li><a href="#">Thyatira</a></li>
+        <li><a href="#">Xanthos</a></li>
+        <li><a href="#">Yazilikaya</a></li>
+        <li><a href="#">Yesemek (Stone Workshop)</a></li>
+        <li><a href="#">Zeugma Mosaic Museum (Gaziantep)</a></li>
+        <li><a href="#">Zincirli (Sam'al)</a></li>
+      </ul>
+    </div>
+
   </div>
 
   <footer class="story-footer">
