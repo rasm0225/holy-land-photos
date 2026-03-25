@@ -1,186 +1,674 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Holy Land Photos &mdash; Free High-Resolution Photos of the Holy Land</title>
-  <meta name="description" content="7,023 free, high-resolution photos of biblical and archaeological sites across 612 locations. Used by scholars, teachers, pastors, and pilgrims worldwide.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Holy Land Photos — Free High-Resolution Photos of the Biblical World</title>
+  <meta name="description" content="7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries. Captured by Dr. Carl Rasmussen over four decades of fieldwork.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Holy Land Photos &mdash; Free High-Resolution Photos of the Holy Land">
-  <meta property="og:description" content="7,023 free, high-resolution photos of biblical and archaeological sites across 612 locations. Used by scholars, teachers, pastors, and pilgrims worldwide.">
+  <meta property="og:title" content="Holy Land Photos — Free High-Resolution Photos of the Biblical World">
+  <meta property="og:description" content="7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.">
+  <meta property="og:image" content="https://img.holylandphotos.org/TWCSSM20.jpg">
   <meta property="og:site_name" content="Holy Land Photos">
-  <link rel="alternate" type="application/rss+xml" title="Holy Land Photos &mdash; Recent Additions" href="/rss.asp">
-  <link rel="stylesheet" href="style.css">
+  <link rel="alternate" type="application/rss+xml" title="Holy Land Photos — Recent Additions" href="/rss.asp">
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body {
+      background: #0D0B08;
+      color: #EDE8E1;
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+    a { color: #C47A4E; }
+    a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Tour alert ──────────────────────────────────────────── */
+    .tour-alert {
+      background: linear-gradient(135deg, rgba(184,92,44,.12), rgba(184,92,44,.06));
+      border-bottom: 1px solid rgba(184,92,44,.2);
+      padding: .75rem 2rem;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+      font-size: .82rem; letter-spacing: .02em;
+      color: rgba(237,232,225,.8);
+    }
+    .tour-alert strong { color: #C47A4E; font-weight: 600; }
+    .tour-alert a {
+      color: #C47A4E; text-decoration: none;
+      font-weight: 600; margin-left: .5rem;
+    }
+    .tour-alert a:hover { color: #E09060; text-decoration: underline; }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero {
+      padding: 6rem 2rem 4rem;
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: normal; line-height: 1.1;
+      color: #F5F0E8;
+      margin-bottom: 1.25rem;
+    }
+    .hero-tagline {
+      font-size: 1.05rem; line-height: 1.7;
+      color: rgba(237,232,225,.6);
+      max-width: 600px;
+      margin: 0 auto 1.75rem;
+    }
+    .hero-stats {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(237,232,225,.3);
+      margin-bottom: 3rem;
+    }
+    .hero-stats span { color: #B85C2C; }
+
+    /* ── Search ───────────────────────────────────────────────── */
+    .search-wrap {
+      max-width: 580px;
+      margin: 0 auto 1rem;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: .85rem 3.5rem .85rem 1.25rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: .95rem;
+      color: #EDE8E1;
+      background: rgba(237,232,225,.04);
+      border: 1px solid rgba(237,232,225,.12);
+      border-radius: 3px;
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .search-input::placeholder { color: rgba(237,232,225,.3); }
+    .search-input:focus {
+      border-color: rgba(184,92,44,.5);
+      background: rgba(237,232,225,.06);
+    }
+    .search-btn {
+      position: absolute; right: .5rem; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: rgba(237,232,225,.4); padding: .4rem;
+      transition: color .2s;
+    }
+    .search-btn:hover { color: #C47A4E; }
+    .search-hint {
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .03em;
+      color: rgba(237,232,225,.25);
+      text-align: center;
+    }
+
+    /* ── Section shared ──────────────────────────────────────── */
+    .home-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .section-label {
+      font-family: system-ui, sans-serif;
+      font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #B85C2C;
+      margin-bottom: .75rem;
+    }
+    .section-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(237,232,225,.1) 20%, rgba(237,232,225,.1) 80%, transparent);
+      margin: 4rem auto;
+      max-width: 1200px;
+    }
+
+    /* ── Browse + Topics grid ────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .card {
+      background: rgba(237,232,225,.025);
+      border: 1px solid rgba(237,232,225,.06);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color .3s, background .3s;
+      text-decoration: none; color: inherit;
+      display: block;
+    }
+    .card:hover {
+      border-color: rgba(184,92,44,.3);
+      background: rgba(237,232,225,.04);
+    }
+    .card-img {
+      width: 100%; height: 260px;
+      object-fit: cover;
+      opacity: .85;
+      filter: sepia(.1) contrast(1.05);
+      transition: opacity .3s;
+    }
+    .card:hover .card-img { opacity: 1; }
+    .card-body {
+      padding: 1.75rem 2rem 2rem;
+    }
+    .card-title {
+      font-size: 1.4rem; font-weight: normal;
+      line-height: 1.2; color: #F5F0E8;
+      margin-bottom: .75rem;
+    }
+    .card-desc {
+      font-size: .9rem; line-height: 1.75;
+      color: rgba(237,232,225,.6);
+      margin-bottom: 1.25rem;
+    }
+    .card-cta {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #C47A4E;
+    }
+    @media (max-width: 720px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── What's New ──────────────────────────────────────────── */
+    .recent-list {
+      list-style: none;
+    }
+    .recent-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(237,232,225,.06);
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-thumb {
+      width: 100px; height: 68px;
+      object-fit: cover; border-radius: 2px;
+      opacity: .8;
+    }
+    .recent-title {
+      font-size: 1rem; line-height: 1.4;
+      color: #F5F0E8;
+      margin-bottom: .25rem;
+    }
+    .recent-meta {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .04em;
+      color: rgba(237,232,225,.35);
+    }
+    .recent-more {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #C47A4E; text-decoration: none;
+      margin-top: 1.5rem;
+      transition: color .2s;
+    }
+    .recent-more:hover { color: #E09060; }
+
+    /* ── Featured collections ────────────────────────────────── */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .feat-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 3px;
+      min-height: 320px;
+      display: flex;
+      align-items: flex-end;
+      text-decoration: none;
+    }
+    .feat-card-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: .5;
+      filter: sepia(.2) contrast(1.1);
+      transition: opacity .4s, transform .4s;
+    }
+    .feat-card:hover .feat-card-bg { opacity: .65; transform: scale(1.03); }
+    .feat-card-overlay {
+      position: relative; z-index: 1;
+      padding: 2rem;
+      background: linear-gradient(to top, rgba(13,11,8,.85) 0%, transparent 100%);
+      width: 100%;
+    }
+    .feat-card-title {
+      font-size: 1.3rem; font-weight: normal;
+      line-height: 1.25; color: #F5F0E8;
+      margin-bottom: .4rem;
+    }
+    .feat-card-sub {
+      font-size: .85rem; line-height: 1.6;
+      color: rgba(237,232,225,.6);
+      margin-bottom: .75rem;
+    }
+    .feat-card-link {
+      font-family: system-ui, sans-serif;
+      font-size: .72rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #C47A4E;
+    }
+    @media (max-width: 720px) {
+      .feat-grid { grid-template-columns: 1fr; }
+      .feat-card { min-height: 260px; }
+    }
+
+    /* ── Signup ───────────────────────────────────────────────── */
+    .signup-section {
+      max-width: 620px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 3rem 2rem;
+      border: 1px solid rgba(237,232,225,.06);
+      border-radius: 3px;
+      background: rgba(237,232,225,.02);
+    }
+    .signup-title {
+      font-size: 1.4rem; font-weight: normal;
+      color: #F5F0E8;
+      margin-bottom: .6rem;
+    }
+    .signup-desc {
+      font-size: .88rem; line-height: 1.7;
+      color: rgba(237,232,225,.5);
+      margin-bottom: 1.75rem;
+    }
+    .signup-form {
+      display: flex; gap: .5rem;
+      max-width: 420px; margin: 0 auto;
+    }
+    .signup-input {
+      flex: 1;
+      padding: .7rem 1rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: .88rem;
+      color: #EDE8E1;
+      background: rgba(237,232,225,.04);
+      border: 1px solid rgba(237,232,225,.12);
+      border-radius: 2px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .signup-input::placeholder { color: rgba(237,232,225,.28); }
+    .signup-input:focus { border-color: rgba(184,92,44,.5); }
+    .signup-btn {
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #EDE8E1;
+      background: #B85C2C;
+      border: none; border-radius: 2px;
+      padding: .7rem 1.5rem;
+      cursor: pointer;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .signup-btn:hover { background: #C96A36; }
+    .signup-privacy {
+      font-family: system-ui, sans-serif;
+      font-size: .65rem; letter-spacing: .03em;
+      color: rgba(237,232,225,.25);
+      margin-top: 1rem;
+    }
+
+    /* ── Donate ───────────────────────────────────────────────── */
+    .donate-section {
+      text-align: center;
+      padding: 0 2rem;
+    }
+    .donate-text {
+      font-size: .95rem;
+      color: rgba(237,232,225,.5);
+      margin-bottom: 1.25rem;
+    }
+    .donate-btn {
+      display: inline-block;
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #C47A4E; text-decoration: none;
+      border: 1px solid rgba(196,122,78,.3);
+      padding: .6rem 1.75rem;
+      border-radius: 2px;
+      transition: all .2s;
+    }
+    .donate-btn:hover {
+      background: rgba(196,122,78,.08);
+      border-color: #C47A4E; color: #E09060;
+    }
+
+    /* ── Top navigation ────────────────────────────────────────── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 52px;
+      background: rgba(13,11,8,.97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex; align-items: center;
+      padding: 0 2rem;
+      border-bottom: 1px solid rgba(237,232,225,.09);
+    }
+    .nav-home {
+      font-family: system-ui, sans-serif;
+      font-size: .8rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #EDE8E1; text-decoration: none;
+      margin-right: auto; white-space: nowrap;
+      transition: color .2s;
+    }
+    .nav-home:hover { color: #B85C2C; }
+    .nav-links {
+      display: flex; align-items: center;
+      list-style: none; gap: 0;
+    }
+    .nav-links li a {
+      display: block;
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .05em;
+      color: rgba(237,232,225,.65);
+      text-decoration: none;
+      padding: 0 .95rem;
+      border-right: 1px solid rgba(237,232,225,.1);
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .nav-links li:last-child a { border-right: none; }
+    .nav-links li a:hover { color: #EDE8E1; }
+    .nav-toggle {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      padding: .4rem; color: rgba(237,232,225,.75);
+      line-height: 0; transition: color .2s;
+    }
+    .nav-toggle:hover { color: #EDE8E1; }
+    #nav-drawer {
+      display: none;
+      position: fixed; top: 52px; left: 0; right: 0; z-index: 199;
+      background: rgba(13,11,8,.98);
+      border-bottom: 1px solid rgba(237,232,225,.1);
+      padding: .75rem 2rem 1.25rem;
+    }
+    #nav-drawer.open { display: block; }
+    #nav-drawer a {
+      display: block;
+      font-family: system-ui, sans-serif;
+      font-size: .9rem; letter-spacing: .03em;
+      color: rgba(237,232,225,.75);
+      text-decoration: none;
+      padding: .6rem 0;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      transition: color .2s;
+    }
+    #nav-drawer a:last-child { border-bottom: none; }
+    #nav-drawer a:hover { color: #C47A4E; }
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+    }
+    /* body offset for fixed nav */
+    body { padding-top: 52px; }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    .site-footer {
+      border-top: 1px solid rgba(237,232,225,.08);
+      padding: 2.5rem 2rem 5rem;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+    }
+    .footer-copy {
+      font-size: .75rem; letter-spacing: .04em;
+      color: rgba(237,232,225,.28);
+      margin-bottom: 1.5rem;
+    }
+    .footer-links {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; align-items: center;
+      gap: .35rem .6rem;
+      line-height: 2;
+    }
+    .footer-links a {
+      font-size: .75rem; letter-spacing: .04em;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: #C47A4E; }
+    .footer-sep {
+      color: rgba(237,232,225,.18);
+      font-size: .75rem;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
-<nav class="topnav">
-  <div class="topnav-inner">
-    <a href="/" class="site-logo">Holy Land <span>Photos</span></a>
-    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button><ul class="topnav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/page.asp?page_ID=8">Complete Site List</a></li>
-      <li><a href="/search.asp">Search</a></li>
-      <li><a href="whats-new.html">What&#8217;s New?</a></li>
-      <li><a href="permission.html">Permission to Use</a></li>
-      <li><a href="mailto:holylandphotos@gmail.com">Contact Us</a></li>
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="index.html" class="nav-home">Holy Land Photos</a>
+    <ul class="nav-links">
+      <li><a href="countries-story.html">Country List</a></li>
+      <li><a href="topical.html">Topic List</a></li>
+      <li><a href="#">Recent Additions</a></li>
+      <li><a href="#">Search</a></li>
     </ul>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="2" y1="5" x2="18" y2="5"/>
+        <line x1="2" y1="10" x2="18" y2="10"/>
+        <line x1="2" y1="15" x2="18" y2="15"/>
+      </svg>
+    </button>
+  </nav>
+  <div id="nav-drawer" aria-hidden="true">
+    <a href="countries-story.html">Country List</a>
+    <a href="topical.html">Topic List</a>
+    <a href="#">Recent Additions</a>
+    <a href="reading.html">Reading Recommendations</a>
+    <a href="about.html">About</a>
+    <a href="#">Search</a>
   </div>
-</nav>
-<header class="site-header">
-  <div class="site-header-inner">
-    <div class="site-wordmark">
-      <a href="/"><h1>Holy Land Photos</h1>
-      <div class="tagline">Free &middot; High-Resolution &middot; Biblical &amp; Archaeological</div>
+
+  <!-- ── Tour Alert ──────────────────────────────────────────── -->
+  <div class="tour-alert">
+    <strong>Turkey &amp; Greece — April/May 2026</strong> &mdash;
+    Join Dr. Rasmussen's next study tour of the biblical world.
+    <a href="#">Learn more &rarr;</a>
+  </div>
+
+  <!-- ── Hero ────────────────────────────────────────────────── -->
+  <section class="hero">
+    <h1 class="hero-title">Holy Land Photos</h1>
+    <p class="hero-tagline">Free, high-resolution photographs of the biblical and ancient world &mdash; captured over four decades of fieldwork by Dr. Carl Rasmussen.</p>
+    <p class="hero-stats"><span>7,000+</span> photos &nbsp;&middot;&nbsp; <span>612</span> sites &nbsp;&middot;&nbsp; <span>12</span> countries</p>
+
+    <div class="search-wrap">
+      <form action="/search.asp" method="get">
+        <input class="search-input" type="text" name="searchText"
+               placeholder="Search photos &mdash; try &ldquo;Galilee&rdquo;, &ldquo;tomb&rdquo;, or &ldquo;Paul&rdquo;"
+               aria-label="Search photos">
+        <button class="search-btn" type="submit" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+    </div>
+    <p class="search-hint">Search by keyword &mdash; singular nouns work best</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- ── Browse + Topics ─────────────────────────────────────── -->
+  <div class="home-section">
+    <div class="card-grid">
+
+      <a class="card" href="countries-story.html">
+        <img class="card-img" src="http://s3.amazonaws.com/hlp-section-images/IsraelNCS3.jpg"
+             alt="Map of biblical Israel" loading="lazy">
+        <div class="card-body">
+          <p class="section-label">Browse</p>
+          <h2 class="card-title">Browse by Country</h2>
+          <p class="card-desc">Explore 12 countries of the ancient world &mdash; from Israel and Jordan to Turkey, Greece, Egypt, and beyond. Each collection is organized by region and site.</p>
+          <span class="card-cta">View all countries &rarr;</span>
+        </div>
       </a>
-    </div>
-    <div style="font-family:system-ui,sans-serif;font-size:.82rem;color:var(--text-muted);margin-left:auto">
-      <span class="stats-chip">612 sites &middot; 7,023 photos</span>
+
+      <a class="card" href="topical.html">
+        <img class="card-img" src="https://img.holylandphotos.org/TWCSSM20.jpg"
+             alt="Roman agora at Smyrna" loading="lazy">
+        <div class="card-body">
+          <p class="section-label">Discover</p>
+          <h2 class="card-title">Explore by Topic</h2>
+          <p class="card-desc">Find photos organized by theme &mdash; Paul's missionary journeys, the Seven Churches of Revelation, Old Testament chronological periods, and more.</p>
+          <span class="card-cta">Browse topics &rarr;</span>
+        </div>
+      </a>
+
     </div>
   </div>
-</header>
-<div class="search-hero">
-  <div class="search-hero-inner">
-    <form class="search-hero-form" action="/search.asp" method="get">
-      <input class="search-hero-input" type="text" name="searchText"
-             placeholder='Search by keyword (e.g. &ldquo;Paul First Journey&rdquo;, &ldquo;tomb&rdquo;, &ldquo;Galilee&rdquo;)'
-             aria-label="Search photos">
-      <button class="search-hero-btn" type="submit">Search</button>
-    </form>
-    <div class="search-hint">Enter singular noun keywords for best results.</div>
-  </div>
-</div>
-<div class="page-layout">
-  <aside class="sidebar"><div class="sidebar-section"><div class="sidebar-label">Browse Photos</div><ul class="nav-list">
-<li><a href="#">Daily Life and Artifacts</a></li>
-<li><a href="#">People</a></li>
-<li><a href="#">Atlas Images</a></li>
-<li><a href="#">Museums of the World</a></li>
-<li><a href="#">Browse by Countries</a></li>
-</ul></div><div class="sidebar-section"><div class="sidebar-label">Site Information</div><ul class="nav-list">
-<li><a href="#">Tour – Turkey &amp; Greece – Apr/May 2026</a></li>
-<li><a href="whats-new.html">Recent Additions</a></li>
-<li><a href="permission.html">Permission to Use</a></li>
-<li><a href="#">Complete Site List</a></li>
-<li><a href="#">How to Use this Site</a></li>
-<li><a href="#">Topical Easy Find</a></li>
-<li><a href="#">About this Site</a></li>
-<li><a href="#">Recommended Reading</a></li>
-</ul></div>
-<div class="newsletter-card">
-  <h3>Register for Updates</h3>
-  <p>Receive occasional notifications when new images are added. Your email will never be shared.</p>
-  <form class="newsletter-form" action="/register.asp" method="post">
-    <input type="email" name="email" placeholder="Email address" required>
-    <input type="text" name="name" placeholder="Your name">
-    <select name="country">
-      <option value="">Country&hellip;</option>
-      <option>United States</option>
-      <option>United Kingdom</option>
-      <option>Canada</option>
-      <option>Australia</option>
-      <option>Israel</option>
-      <option>Other</option>
-    </select>
-    <button type="submit">Subscribe</button>
-  </form>
-</div>
-<div class="rss-sidebar-link">
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent)"><circle cx="5" cy="19" r="3"/><path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V10z"/></svg>
-  <a href="/rss.asp">Subscribe via RSS</a>
-</div></aside>
-  <main class="main-content">
 
-    <h2 class="section-heading">Site News &amp; Recent Additions
-      <a href="whats-new.html">View all recent additions &rarr;</a>
-    </h2>
-    <hr class="section-divider" style="margin-top:.75rem">
+  <hr class="section-divider">
 
-    <div class="carousel-section">
-      <div class="carousel-title">Next Sunday is Palm Sunday</div>
-      <div class="carousel-static" id="carousel-1"><img src="https://img.holylandphotos.org/PPS0710.jpg" alt="Pilgrims from around the world join in." loading="lazy"><div class="carousel-caption">Pilgrims from around the world join in.</div><div class="carousel-count">5 photos in this collection</div></div>
-      <p class="carousel-note">Next week is Palm Sunday commemorating Jesus&rsquo; entry into the City of Jerusalem</p>
-    </div>
-
-    <div class="carousel-section">
-      <div class="carousel-title">Holy Week Images</div>
-      <div class="carousel-static" id="carousel-2"><img src="https://img.holylandphotos.org/ICSHMD20.jpg" alt="Rolling Stone Tomb at Khirbet Midras." loading="lazy"><div class="carousel-caption">Rolling Stone Tomb at Khirbet Midras.</div><div class="carousel-count">9 photos in this collection</div></div>
-    </div>
-
-    <hr class="section-divider">
-
-    <h3 style="font-size:1rem;font-family:system-ui,sans-serif;font-weight:700;color:var(--text);margin:0 0 .4rem">Explore Holy Week Sites</h3>
-    <ul class="holyweek-links">
-      <li>
-        <a href="#">Rolling Stone Tomb</a>
-        <span>Don&rsquo;t miss what WAS &ldquo;the best-preserved&rdquo; Rolling Stone Tomb in Israel &mdash; until it was destroyed.</span>
+  <!-- ── What's New ──────────────────────────────────────────── -->
+  <div class="home-section">
+    <p class="section-label">Recent Additions</p>
+    <ul class="recent-list">
+      <li class="recent-item">
+        <img class="recent-thumb" src="https://img.holylandphotos.org/PPS0710.jpg"
+             alt="Palm Sunday procession" loading="lazy">
+        <div>
+          <div class="recent-title">Palm Sunday Images from Jerusalem</div>
+          <div class="recent-meta">March 2026 &nbsp;&middot;&nbsp; 5 photos</div>
+        </div>
       </li>
-      <li>
-        <a href="#">Gordon&rsquo;s Calvary and Garden Tomb</a>
-        <span>Alternative Protestant site of crucifixion and burial/resurrection</span>
+      <li class="recent-item">
+        <img class="recent-thumb" src="https://img.holylandphotos.org/ICSHMD20.jpg"
+             alt="Rolling Stone Tomb at Khirbet Midras" loading="lazy">
+        <div>
+          <div class="recent-title">Holy Week Sites &mdash; Rolling Stone Tombs, Gethsemane, Via Dolorosa</div>
+          <div class="recent-meta">March 2026 &nbsp;&middot;&nbsp; 9 photos</div>
+        </div>
       </li>
-      <li>
-        <a href="#">Church of the Holy Sepulcher</a>
-        <span>Probable site of crucifixion and burial/resurrection</span>
-      </li>
-      <li>
-        <a href="#">Gethsemane / Church of All Nations</a>
-        <span>Site of Jesus&rsquo; prayer and arrest (note: lesser-known alternative site on grounds of Mary Magdalene Church)</span>
-      </li>
-      <li>
-        <a href="#">Mount of Olives</a>
-        <span>Palm Sunday entrance, Olivet Discourse</span>
-      </li>
-      <li>
-        <a href="#">Via Dolorosa</a>
-        <span>Sacred pilgrim route in Jerusalem</span>
-      </li>
-      <li>
-        <a href="#">Saint Peter in Gallicantu</a>
-        <span>Traditional site of House of Caiaphas; ossuary of Joseph son of Caiaphas</span>
+      <li class="recent-item">
+        <img class="recent-thumb" src="http://s3.amazonaws.com/hlp-section-images/TurkeyWCE.jpg"
+             alt="Western Turkey" loading="lazy">
+        <div>
+          <div class="recent-title">New photos from Western Turkey &mdash; Ephesus, Smyrna, Pergamum</div>
+          <div class="recent-meta">February 2026 &nbsp;&middot;&nbsp; 12 photos</div>
+        </div>
       </li>
     </ul>
-
-    <div class="callout-box">
-      <h3>Sunday Service Hint</h3>
-      <p>If you use PowerPoint presentations during your worship services, you are welcome to download
-      and use our images. Click &ldquo;Max Size Available&rdquo; for PowerPoint-ready images.</p>
-    </div>
-
-    <div class="donate-block">
-      <p>Help support HolyLandPhotos.org</p>
-      <a class="donate-btn" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener">Donate via PayPal</a>
-    </div>
-
-    <div class="featured-collection">
-      <h3>Featured Collection: Haran</h3>
-      <p>Haran (also Harran) is located in southern Turkey 28 mi. [45 km.] south-southeast of
-      &Scedil;anl&#305;urfa &mdash; about 56 mi. [90 km.] east of the Euphrates River. It is mentioned
-      11 times in the Old Testament. Abram settled here for a period of time on his way from Ur to
-      the Land of Canaan (Genesis 11&ndash;12).</p>
-      <a href="#">View Collection &rarr;</a>
-    </div>
-
-    <div class="video-section">
-      <h3>Video: Introduction to Holy Land Photos</h3>
-      <div class="video-wrap">
-        <iframe src="https://www.youtube.com/embed/eXC2VOKsXPc"
-                title="Introduction to Holy Land Photos"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
-      </div>
-    </div>
-
-  </main>
-</div>
-<footer>
-  <div>&copy; 2026 All images are the property of Dr. Carl Rasmussen unless otherwise noted.</div>
-  <div>
-    <a href="/">Home</a><span class="sep">|</span>
-    <a href="https://holylandphotos.wordpress.com" target="_blank">Dr. Rasmussen&#8217;s Blog</a><span class="sep">|</span>
-    <a href="mailto:holylandphotos@gmail.com">Contact / Feedback</a><span class="sep">|</span>
-    <a href="/page.asp?page_ID=5">Permission to Use</a>
+    <a class="recent-more" href="#">View all recent additions &rarr;</a>
   </div>
-</footer>
-<script>document.querySelector(".nav-toggle").addEventListener("click",function(){var open=this.getAttribute("aria-expanded")==="true";this.setAttribute("aria-expanded",!open);document.querySelector(".topnav-links").classList.toggle("open",!open)});</script>
 
-</body></html>
+  <hr class="section-divider">
+
+  <!-- ── Featured Collections ────────────────────────────────── -->
+  <div class="home-section">
+    <p class="section-label">Featured Collections</p>
+    <div class="feat-grid">
+
+      <a class="feat-card" href="#">
+        <img class="feat-card-bg" src="https://img.holylandphotos.org/PPS0710.jpg"
+             alt="Palm Sunday procession in Jerusalem" loading="lazy">
+        <div class="feat-card-overlay">
+          <div class="feat-card-title">Palm Sunday in Jerusalem</div>
+          <div class="feat-card-sub">Pilgrims retrace the ancient route from the Mount of Olives to the Old City.</div>
+          <span class="feat-card-link">View collection &rarr;</span>
+        </div>
+      </a>
+
+      <a class="feat-card" href="#">
+        <img class="feat-card-bg" src="https://img.holylandphotos.org/TWCSSM04.jpg"
+             alt="Ancient agora at Smyrna" loading="lazy">
+        <div class="feat-card-overlay">
+          <div class="feat-card-title">The Seven Churches of Revelation</div>
+          <div class="feat-card-sub">Archaeological sites of the seven churches addressed in Revelation 2&ndash;3.</div>
+          <span class="feat-card-link">View collection &rarr;</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ── Email Signup ────────────────────────────────────────── -->
+  <div class="home-section">
+    <div class="signup-section">
+      <h2 class="signup-title">Stay Updated</h2>
+      <p class="signup-desc">Receive occasional email updates when new photos and collections are added to the site.</p>
+      <form class="signup-form" action="/register.asp" method="post">
+        <input class="signup-input" type="email" name="email"
+               placeholder="Your email address" required>
+        <button class="signup-btn" type="submit">Subscribe</button>
+      </form>
+      <p class="signup-privacy">Your email will never be shared. Unsubscribe anytime.</p>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ── Donate ──────────────────────────────────────────────── -->
+  <div class="donate-section">
+    <p class="donate-text">Holy Land Photos is a free resource maintained by Dr. Rasmussen. Your support helps keep the collection growing.</p>
+    <a class="donate-btn" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener">Support This Project</a>
+  </div>
+
+  <hr class="section-divider" style="margin-bottom:0">
+
+  <!-- ── Footer ──────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; <span id="footer-year"></span>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+    <nav class="footer-links">
+      <a href="countries-story.html">Country List</a>
+      <span class="footer-sep">|</span>
+      <a href="topical.html">Topic List</a>
+      <span class="footer-sep">|</span>
+      <a href="reading.html">Reading Recommendations</a>
+      <span class="footer-sep">|</span>
+      <a href="site-list.html">Complete Site List</a>
+      <span class="footer-sep">|</span>
+      <a href="permission-story.html">Permission to Use</a>
+      <span class="footer-sep">|</span>
+      <a href="about.html">About</a>
+      <span class="footer-sep">|</span>
+      <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Dr. Rasmussen's Blog</a>
+      <span class="footer-sep">|</span>
+      <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Send Technical Feedback</a>
+    </nav>
+  </footer>
+
+  <script>
+    // ── Mobile nav ──────────────────────────────────────────────
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var drawer = document.getElementById('nav-drawer');
+      if (toggle && drawer) {
+        toggle.addEventListener('click', function () {
+          var open = drawer.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open);
+          drawer.setAttribute('aria-hidden', String(!open));
+        });
+      }
+      var fy = document.getElementById('footer-year');
+      if (fy) fy.textContent = new Date().getFullYear();
+    })();
+  </script>
+
+</body>
+</html>
