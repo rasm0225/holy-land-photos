@@ -12,10 +12,10 @@
     a { color: #C47A4E; } a:hover { color: #E09060; }
     img { display: block; max-width: 100%; }
 
-    #progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; width: 0%; background: #B85C2C; transition: width .05s linear; }
+    #progress { position: fixed; top: 0; left: 0; z-index: 300; height: 2px; width: 0%; background: #B85C2C; transition: width .05s linear; }
 
     #sticky-bc {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 95;
+      position: fixed; top: 52px; left: 0; right: 0; z-index: 95;
       background: rgba(13,11,8,.88);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -70,13 +70,104 @@
     .page-prose .credit-block { background: rgba(184,92,44,.08); border-left: 3px solid #B85C2C; padding: .75rem 1.25rem; border-radius: 0 3px 3px 0; margin: 1.25rem 0; font-style: italic; color: rgba(237,232,225,.85); }
 
     .text-wrap { max-width: 68ch; margin: 0 auto; padding: 0 2rem 6rem; }
-
-    .story-footer { border-top: 1px solid rgba(237,232,225,.08); padding: 2rem 2rem; font-family: system-ui,sans-serif; font-size: .72rem; color: rgba(237,232,225,.3); text-align: center; letter-spacing: .04em; }
-    .story-footer a { color: rgba(237,232,225,.4); text-decoration: none; }
-    .story-footer a:hover { color: rgba(237,232,225,.7); }
+    /* ── Top navigation ────────────────────────────────────────── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 52px;
+      background: rgba(13,11,8,.97);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex; align-items: center;
+      padding: 0 2rem;
+      border-bottom: 1px solid rgba(237,232,225,.09);
+    }
+    .nav-home {
+      font-family: system-ui, sans-serif;
+      font-size: .8rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #EDE8E1; text-decoration: none;
+      margin-right: auto; white-space: nowrap;
+      transition: color .2s;
+    }
+    .nav-home:hover { color: #B85C2C; }
+    .nav-links {
+      display: flex; align-items: center;
+      list-style: none; gap: 0;
+    }
+    .nav-links li a {
+      display: block;
+      font-family: system-ui, sans-serif;
+      font-size: .75rem; letter-spacing: .05em;
+      color: rgba(237,232,225,.65);
+      text-decoration: none;
+      padding: 0 .95rem;
+      border-right: 1px solid rgba(237,232,225,.1);
+      white-space: nowrap;
+      transition: color .2s;
+    }
+    .nav-links li:last-child a { border-right: none; }
+    .nav-links li a:hover { color: #EDE8E1; }
+    .nav-toggle {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      padding: .4rem; color: rgba(237,232,225,.75);
+      line-height: 0; transition: color .2s;
+    }
+    .nav-toggle:hover { color: #EDE8E1; }
+    #nav-drawer {
+      display: none;
+      position: fixed; top: 52px; left: 0; right: 0; z-index: 199;
+      background: rgba(13,11,8,.98);
+      border-bottom: 1px solid rgba(237,232,225,.1);
+      padding: .75rem 2rem 1.25rem;
+    }
+    #nav-drawer.open { display: block; }
+    #nav-drawer a {
+      display: block;
+      font-family: system-ui, sans-serif;
+      font-size: .9rem; letter-spacing: .03em;
+      color: rgba(237,232,225,.75);
+      text-decoration: none;
+      padding: .6rem 0;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      transition: color .2s;
+    }
+    #nav-drawer a:last-child { border-bottom: none; }
+    #nav-drawer a:hover { color: #C47A4E; }
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+    }
+    /* body offset for fixed nav */
+    body { padding-top: 52px; }
   </style>
 </head>
 <body>
+
+  <nav class="site-nav" aria-label="Site navigation">
+    <a href="index.html" class="nav-home">Holy Land Photos</a>
+    <ul class="nav-links">
+      <li><a href="countries-story.html">Country List</a></li>
+      <li><a href="topical.html">Topic List</a></li>
+      <li><a href="#">Recent Additions</a></li>
+      <li><a href="#">Search</a></li>
+    </ul>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="2" y1="5" x2="18" y2="5"/>
+        <line x1="2" y1="10" x2="18" y2="10"/>
+        <line x1="2" y1="15" x2="18" y2="15"/>
+      </svg>
+    </button>
+  </nav>
+  <div id="nav-drawer" aria-hidden="true">
+    <a href="countries-story.html">Country List</a>
+    <a href="topical.html">Topic List</a>
+    <a href="#">Recent Additions</a>
+    <a href="reading.html">Reading Recommendations</a>
+    <a href="about.html">About</a>
+    <a href="#">Search</a>
+  </div>
 
   <div id="progress"></div>
 
@@ -117,12 +208,38 @@
       <p>Those wishing to suggest images for the collection should contact Dr. Rasmussen via email.</p>
     </div>
   </div>
-
-  <footer class="story-footer">
-    © Dr. Carl Rasmussen &nbsp;·&nbsp; <a href="index.html">HolyLandPhotos.org</a>
+  <!-- ── Footer ──────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p class="footer-copy">© <span id="footer-year"></span>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+    <nav class="footer-links">
+      <a href="countries-story.html">Country List</a>
+      <a href="topical.html">Topic List</a>
+      <a href="reading.html">Reading Recommendations</a>
+      <a href="site-list.html">Complete Site List</a>
+      <a href="permission-story.html">Permission to Use</a>
+      <a href="about.html">About</a>
+      <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Dr. Rasmussen's Blog</a>
+      <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Send Technical Feedback</a>
+    </nav>
   </footer>
 
+
   <script>
+    // ── Mobile nav ──────────────────────────────────────────────
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var drawer = document.getElementById('nav-drawer');
+      if (toggle && drawer) {
+        toggle.addEventListener('click', function () {
+          var open = drawer.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open);
+          drawer.setAttribute('aria-hidden', String(!open));
+        });
+      }
+      var fy = document.getElementById('footer-year');
+      if (fy) fy.textContent = new Date().getFullYear();
+    })();
+
     const sbc = document.getElementById('sticky-bc');
     const header = document.querySelector('.page-header');
     const prog = document.getElementById('progress');
