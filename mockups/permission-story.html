@@ -140,6 +140,37 @@
     }
     /* body offset for fixed nav */
     body { padding-top: 52px; }
+  
+    /* ── Footer ────────────────────────────────────────────────── */
+    .site-footer {
+      border-top: 1px solid rgba(237,232,225,.08);
+      padding: 2.5rem 2rem 5rem;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+    }
+    .footer-copy {
+      font-size: .75rem; letter-spacing: .04em;
+      color: rgba(237,232,225,.28);
+      margin-bottom: 1.5rem;
+    }
+    .footer-links {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; align-items: center;
+      gap: .35rem .6rem;
+      line-height: 2;
+    }
+    .footer-links a {
+      font-size: .75rem; letter-spacing: .04em;
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: #C47A4E; }
+    .footer-sep {
+      color: rgba(237,232,225,.18);
+      font-size: .75rem;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -213,15 +244,23 @@
     <p class="footer-copy">© <span id="footer-year"></span>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
     <nav class="footer-links">
       <a href="countries-story.html">Country List</a>
+      <span class="footer-sep">|</span>
       <a href="topical.html">Topic List</a>
+      <span class="footer-sep">|</span>
       <a href="reading.html">Reading Recommendations</a>
+      <span class="footer-sep">|</span>
       <a href="site-list.html">Complete Site List</a>
+      <span class="footer-sep">|</span>
       <a href="permission-story.html">Permission to Use</a>
+      <span class="footer-sep">|</span>
       <a href="about.html">About</a>
+      <span class="footer-sep">|</span>
       <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Dr. Rasmussen's Blog</a>
+      <span class="footer-sep">|</span>
       <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Send Technical Feedback</a>
     </nav>
   </footer>
+
 
 
   <script>
