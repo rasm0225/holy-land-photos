@@ -201,33 +201,32 @@
     }
 
     /* ── End screen ───────────────────────────────────────────── */
-    .story-end {
-      min-height: 60vh;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      text-align: center; gap: 1rem;
-      padding: 4rem 2rem;
+    .site-footer {
       border-top: 1px solid rgba(237,232,225,.08);
-    }
-    .story-end p {
+      padding: 2.5rem 2rem;
+      text-align: center;
       font-family: system-ui, sans-serif;
-      font-size: .75rem; letter-spacing: .1em;
-      text-transform: uppercase;
-      color: rgba(237,232,225,.28);
     }
-    .end-btn {
-      display: inline-flex; align-items: center; gap: .5rem;
-      font-family: system-ui, sans-serif; font-size: .82rem;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: #C47A4E; text-decoration: none;
-      border: 1px solid rgba(196,122,78,.35);
-      padding: .65rem 1.5rem; border-radius: 2px;
-      transition: all .2s;
+    .site-footer .footer-copy {
+      font-size: .78rem;
+      color: rgba(237,232,225,.35);
+      margin-bottom: .85rem;
+      line-height: 1.6;
     }
-    .end-btn:hover {
-      background: rgba(196,122,78,.1);
-      border-color: #C47A4E; color: #E09060;
+    .site-footer .footer-links {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: .3rem .1rem;
+      font-size: .75rem;
     }
+    .site-footer .footer-links a {
+      color: rgba(237,232,225,.38);
+      text-decoration: none;
+      transition: color .2s;
+      padding: 0 .6rem;
+      border-right: 1px solid rgba(237,232,225,.12);
+    }
+    .site-footer .footer-links a:last-child { border-right: none; }
+    .site-footer .footer-links a:hover { color: #C47A4E; }
 
     /* ── Mobile ───────────────────────────────────────────────── */
     @media (max-width: 768px) {
@@ -450,15 +449,21 @@
     </article>
   </section>
 
-  <!-- ── End screen ─────────────────────────────────────────────── -->
-  <section class="story-end">
-    <a class="end-btn" href="turkey-story.html">← Return to Turkey overview</a>
-    <p>© Dr. Carl Rasmussen &nbsp;·&nbsp; All images courtesy of HolyLandPhotos.org</p>
-  </section>
+  <!-- ── Footer ────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p class="footer-copy">© <span id="footer-year"></span>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+    <nav class="footer-links">
+      <a href="permission-story.html">Permission to Use</a>
+      <a href="about.html">About</a>
+      <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Dr. Rasmussen's Blog</a>
+      <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Send Technical Feedback</a>
+    </nav>
+  </footer>
   </div>
 
   <script>
     // ── Progress bar ──────────────────────────────────────────────
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
     const bar = document.getElementById('progress');
     function updateProgress() {
       const scrolled = window.scrollY;
