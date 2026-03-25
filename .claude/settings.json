@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(cd *)",
+      "Bash(python3 *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(mkdir *)",
+      "Read",
+      "Write",
+      "Edit",
+      "mcp__Claude_Preview__*",
+      "mcp__Claude_in_Chrome__*"
+    ]
+  }
+}

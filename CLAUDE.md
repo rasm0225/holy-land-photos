@@ -230,6 +230,23 @@ Decision to be made after reviewing the current infrastructure.
 
 ---
 
+## Autonomy — Pre-Authorized Actions
+
+Peter has pre-authorized the following actions. Do them without asking for confirmation:
+
+- **`git commit` and `git push` to `main`** — commit and push whenever completing a task Peter requested. No need to ask "should I push this?"
+- **`python3 generate_mockups.py`** — run freely when content changes require regeneration
+- **`python3 apply_themes.py`** — run freely if it exists and theme changes need to be applied to story pages
+- **Reading, editing, and writing any file in this repo** — no confirmation needed
+- **Running any bash command scoped to this project directory** — grep, ls, cat, etc.
+
+The only things that still require Peter's explicit sign-off before proceeding:
+- Deleting files (use caution; ask first)
+- Force-pushing or rewriting git history
+- Any action that affects external services (MailChimp, PayPal, DNS, S3/CloudFront)
+
+---
+
 ## Conventions (to be added as build progresses)
 - Always use `npm run dev` to start the dev server
 - QA sign-off from Peter required before any section is considered done
