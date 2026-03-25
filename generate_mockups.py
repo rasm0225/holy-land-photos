@@ -172,10 +172,27 @@ COMMENTS = {
 }
 
 CSS = """\
-:root{--bg:#F9F7F4;--bg-sidebar:#F2EDE8;--accent:#B85C2C;--accent-hover:#96481F;
+/* ── Light theme (default) ──────────────────────────── */
+:root{--bg:#F9F7F4;--bg-sidebar:#F2EDE8;--bg-surface:#fff;
+--accent:#B85C2C;--accent-hover:#96481F;
 --text:#2C2C2C;--text-muted:#6B6156;--text-light:#9C8E84;--border:#DDD5CB;
 --link:#7A3B18;--nav-bg:#2C2416;--sidebar-w:264px;--radius:4px;
 --shadow:0 2px 10px rgba(0,0,0,.10)}
+/* ── Dark theme: manual override ────────────────────── */
+[data-theme="dark"]{
+--bg:#0E0C09;--bg-sidebar:#161210;--bg-surface:#1C1814;
+--accent:#C47A4E;--accent-hover:#D68A5E;
+--text:#EDE8E1;--text-muted:#9C8E84;--text-light:#6B6156;--border:#2A2016;
+--link:#C47A4E;--nav-bg:#0A0805;
+--shadow:0 2px 10px rgba(0,0,0,.4)}
+/* ── Dark theme: system preference ─────────────────── */
+@media(prefers-color-scheme:dark){
+  html:not([data-theme="light"]){
+    --bg:#0E0C09;--bg-sidebar:#161210;--bg-surface:#1C1814;
+    --accent:#C47A4E;--accent-hover:#D68A5E;
+    --text:#EDE8E1;--text-muted:#9C8E84;--text-light:#6B6156;--border:#2A2016;
+    --link:#C47A4E;--nav-bg:#0A0805;
+    --shadow:0 2px 10px rgba(0,0,0,.4)}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:17px}
 body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.7}
@@ -192,7 +209,7 @@ font-size:.88rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 .topnav-links a{color:#C4B8AE;text-decoration:none;padding:0 .7rem;line-height:46px;
 display:block;transition:color .15s}
 .topnav-links a:hover{color:#fff}
-.site-header{background:#fff;border-bottom:1px solid var(--border);padding:.9rem 1.5rem}
+.site-header{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:.9rem 1.5rem}
 .site-header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1.5rem}
 .site-wordmark a{text-decoration:none}
 .site-wordmark h1{font-size:1.35rem;font-weight:normal;color:var(--accent);line-height:1.2}
@@ -219,7 +236,7 @@ padding:1.5rem 1rem;font-family:system-ui,sans-serif;font-size:.82rem}
 .view-toggle{display:flex;margin-bottom:1rem}
 .view-toggle a{flex:1;text-align:center;padding:.28rem .5rem;font-size:.76rem;
 text-decoration:none;border:1px solid var(--border);color:var(--text-muted);
-background:#fff;transition:all .15s}
+background:var(--bg-surface);transition:all .15s}
 .view-toggle a:first-child{border-radius:var(--radius) 0 0 var(--radius)}
 .view-toggle a:last-child{border-radius:0 var(--radius) var(--radius) 0;border-left:none}
 .view-toggle a.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -246,7 +263,7 @@ margin-bottom:.3rem;line-height:1.3}
 color:var(--text-muted);margin-bottom:1.25rem}
 .photo-location a{color:var(--text-muted);text-decoration:none}
 .photo-location a:hover{color:var(--link);text-decoration:underline}
-.photo-frame{background:#1A1512;border-radius:var(--radius);overflow:hidden;
+.photo-frame{background:var(--bg-sidebar);border-radius:var(--radius);overflow:hidden;
 cursor:zoom-in;position:relative;margin-bottom:.85rem;
 box-shadow:var(--shadow);max-width:760px}
 .photo-frame img{width:100%;transition:opacity .2s}
@@ -260,7 +277,7 @@ gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap;max-width:760px}
 .pagination a,.pagination .pg-info,.pagination .pg-disabled{display:inline-flex;
 align-items:center;padding:.3rem .65rem;border:1px solid var(--border);
 border-radius:var(--radius);text-decoration:none;color:var(--link);
-background:#fff;font-size:.8rem;transition:all .15s}
+background:var(--bg-surface);font-size:.8rem;transition:all .15s}
 .pagination .pg-info{color:var(--text-muted);cursor:default}
 .pagination .pg-disabled{color:var(--text-light);cursor:default}
 .pagination a:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -271,7 +288,7 @@ font-weight:500;cursor:pointer;text-decoration:none;
 border:1px solid transparent;transition:all .15s}
 .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
-.btn-secondary{background:#fff;color:var(--text);border-color:var(--border)}
+.btn-secondary{background:var(--bg-surface);color:var(--text);border-color:var(--border)}
 .btn-secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--bg)}
 .photo-comments{max-width:65ch;margin-bottom:2rem}
 .comments-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;
@@ -286,7 +303,7 @@ padding-top:1rem;border-top:1px solid var(--border);max-width:65ch}
 .photo-meta a:hover{color:var(--accent)}
 .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem}
 .thumb-card{text-decoration:none;color:var(--link);display:block;border-radius:var(--radius);
-overflow:hidden;border:1px solid var(--border);background:#fff;transition:box-shadow .15s}
+overflow:hidden;border:1px solid var(--border);background:var(--bg-surface);transition:box-shadow .15s}
 .thumb-card:hover{box-shadow:var(--shadow);border-color:var(--accent)}
 .thumb-card img{width:100%;height:210px;object-fit:cover;display:block}
 .thumb-card-title{font-family:system-ui,sans-serif;font-size:.8rem;padding:.45rem .6rem;color:var(--text)}
@@ -302,7 +319,7 @@ font-family:sans-serif;transition:opacity .15s}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
 z-index:900;justify-content:center;align-items:center;padding:1rem}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:6px;padding:2rem;max-width:460px;width:100%;
+.modal{background:var(--bg-surface);border-radius:6px;padding:2rem;max-width:460px;width:100%;
 box-shadow:0 8px 40px rgba(0,0,0,.25)}
 .modal h2{font-size:1rem;color:var(--accent);margin-bottom:.9rem;
 font-family:system-ui,sans-serif}
@@ -322,7 +339,7 @@ font-family:system-ui,sans-serif;font-size:.82rem}
 .time-tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.75rem}
 .time-tabs a{font-family:system-ui,sans-serif;font-size:.78rem;padding:.3rem .75rem;
 border-radius:var(--radius);border:1px solid var(--border);text-decoration:none;
-color:var(--text-muted);background:#fff;transition:all .15s}
+color:var(--text-muted);background:var(--bg-surface);transition:all .15s}
 .time-tabs a:hover{border-color:var(--accent);color:var(--accent)}
 .time-tabs a.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .feed-list{margin-bottom:2rem}
@@ -357,7 +374,7 @@ padding:1.25rem 1.5rem;margin-bottom:0}
 .search-hero-form{display:flex;gap:.5rem}
 .search-hero-input{flex:1;padding:.55rem .9rem;border:1px solid var(--border);
 border-radius:var(--radius);font-family:Georgia,serif;font-size:1rem;
-background:#fff;transition:border-color .15s}
+background:var(--bg-surface);color:var(--text);transition:border-color .15s}
 .search-hero-input:focus{outline:none;border-color:var(--accent)}
 .search-hero-btn{padding:.55rem 1.25rem;background:var(--accent);color:#fff;
 border:none;border-radius:var(--radius);cursor:pointer;font-family:system-ui,sans-serif;
@@ -410,7 +427,7 @@ font-family:system-ui,sans-serif;font-size:.9rem;font-weight:600;
 cursor:pointer;text-decoration:none;transition:background .15s}
 .donate-btn:hover{background:#005c96}
 .featured-collection{border:1px solid var(--border);border-radius:var(--radius);
-padding:1rem 1.1rem;background:#fff;margin:1.5rem 0}
+padding:1rem 1.1rem;background:var(--bg-surface);margin:1.5rem 0}
 .featured-collection h3{font-size:1rem;font-family:system-ui,sans-serif;
 font-weight:700;color:var(--accent);margin:0 0 .5rem}
 .featured-collection p{font-size:.9rem;line-height:1.7;color:var(--text);margin:0 0 .65rem}
@@ -432,7 +449,7 @@ font-family:system-ui,sans-serif;line-height:1.5}
 .newsletter-form{display:flex;flex-direction:column;gap:.45rem}
 .newsletter-form input,.newsletter-form select{padding:.42rem .6rem;
 border:1px solid var(--border);border-radius:var(--radius);
-font-family:system-ui,sans-serif;font-size:.82rem;background:#fff;width:100%;box-sizing:border-box}
+font-family:system-ui,sans-serif;font-size:.82rem;background:var(--bg-surface);color:var(--text);width:100%;box-sizing:border-box}
 .newsletter-form input:focus,.newsletter-form select:focus{outline:none;border-color:var(--accent)}
 .newsletter-form button{padding:.45rem .8rem;background:var(--accent);color:#fff;
 border:none;border-radius:var(--radius);cursor:pointer;
@@ -473,6 +490,26 @@ background:var(--nav-bg);flex-direction:column;z-index:100;border-top:1px solid 
 .main-content{padding:1rem 1rem 2rem}
 .photo-title,.page-title{font-size:1.3rem}
 .photo-controls{flex-direction:column;align-items:flex-start}}
+/* ── Callout box dark mode ─────────────────────────── */
+[data-theme="dark"] .callout-box{background:rgba(184,92,44,.08);border-color:rgba(184,92,44,.22)}
+[data-theme="dark"] .callout-box h3{color:var(--accent)}
+@media(prefers-color-scheme:dark){
+  html:not([data-theme="light"]) .callout-box{background:rgba(184,92,44,.08);border-color:rgba(184,92,44,.22)}
+  html:not([data-theme="light"]) .callout-box h3{color:var(--accent)}}
+/* ── Theme toggle button ────────────────────────────── */
+.theme-btn{background:none;border:none;cursor:pointer;color:#C4B8AE;
+padding:0 .55rem;height:46px;display:flex;align-items:center;
+flex-shrink:0;transition:color .15s}
+.theme-btn:hover{color:#fff}
+.theme-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme-btn svg{width:16px;height:16px;display:block}
+.theme-btn .icon-sun{display:none}
+.theme-btn .icon-moon{display:block}
+[data-theme="dark"] .theme-btn .icon-sun{display:block}
+[data-theme="dark"] .theme-btn .icon-moon{display:none}
+@media(prefers-color-scheme:dark){
+  html:not([data-theme="light"]) .theme-btn .icon-sun{display:block}
+  html:not([data-theme="light"]) .theme-btn .icon-moon{display:none}}
 """
 
 TOPNAV = """<nav class="topnav">
@@ -486,6 +523,10 @@ TOPNAV = """<nav class="topnav">
       <li><a href="permission.html">Permission to Use</a></li>
       <li><a href="mailto:holylandphotos@gmail.com">Contact Us</a></li>
     </ul>
+    <button id="theme-toggle" class="theme-btn" aria-label="Toggle light/dark theme" title="Toggle light/dark theme">
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </div>
 </nav>"""
 
@@ -642,6 +683,7 @@ def photo_page(num, img_id, title, modified, comments_html):
   "about":{{"@type":"Place","name":"Smyrna/Izmir","address":{{"@type":"PostalAddress","addressCountry":"TR"}}}}}}
   </script>
   <link rel="stylesheet" href="../style.css">
+  <script src="../theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -726,6 +768,7 @@ def browse_page(css_path, title, sidebar_html, section_img, desc_html, meta_desc
   <meta name="twitter:description" content="{md}">
   <meta name="twitter:image" content="{section_img}">
   <link rel="stylesheet" href="{css_path}">
+  <script src="theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -888,6 +931,7 @@ def whats_new_page():
   <meta property="og:site_name" content="Holy Land Photos">
   <link rel="alternate" type="application/rss+xml" title="Holy Land Photos &mdash; Recent Additions" href="/rss.asp">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -925,6 +969,7 @@ def permission_page():
   <meta property="og:description" content="Images on Holy Land Photos are free for personal, classroom, and Bible study use with attribution. Learn about commercial and web usage permissions.">
   <meta property="og:site_name" content="Holy Land Photos">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -1003,6 +1048,7 @@ def thumb_page():
   <meta name="twitter:description" content="Browse all 14 photos of Smyrna/Izmir (ancient and modern Izmir, Turkey). Free high-resolution downloads for personal and classroom use.">
   <meta name="twitter:image" content="https://img.holylandphotos.org/TWCSSM20.jpg?w=1200&amp;h=630&amp;mode=crop">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -1097,6 +1143,7 @@ def homepage():
   <meta property="og:site_name" content="Holy Land Photos">
   <link rel="alternate" type="application/rss+xml" title="Holy Land Photos &mdash; Recent Additions" href="/rss.asp">
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
 </head>
 <body>
 {TOPNAV}
@@ -1264,9 +1311,9 @@ def main():
         f.write(permission_page())
     print("permission.html")
 
-    with open(os.path.join(MOCKUPS, "index.html"), "w") as f:
-        f.write(homepage())
-    print("index.html")
+    # index.html is hand-authored (dark hero design) — do not overwrite
+    # with open(os.path.join(MOCKUPS, "index.html"), "w") as f:
+    #     f.write(homepage())
 
     old = os.path.join(MOCKUPS, "photo-view.html")
     if os.path.exists(old):

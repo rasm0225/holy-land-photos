@@ -1,11 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>In the Footsteps of the Apostles — Tour — Holy Land Photos</title>
-  <meta name="description" content="In the Footsteps of the Apostles — Turkey &amp; Greece, April 20–May 7, 2026. An 18-day journey led by Dr. Carl Rasmussen.">
-  <style>
+#!/usr/bin/env python3
+"""Apply dark/light theme support to all hand-authored story pages."""
+import os, re
+
+MOCKUPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mockups")
+
+# Pages with .site-nav structure
+SITE_NAV_PAGES = [
+    "about.html", "aegean-story.html", "central-turkey-story.html",
+    "countries-story.html", "eastern-turkey-story.html", "how-to-use.html",
+    "index.html", "permission-story.html", "reading.html", "site-list.html",
+    "story.html", "topical.html", "tour.html", "turkey-story.html",
+    "western-turkey-story.html",
+]
+
+# Pages with .topnav structure (whats-new-story.html)
+TOPNAV_PAGES = ["whats-new-story.html"]
+
+CSS_VARS = """\
     /* ── Theme variables ─────────────────────────────────── */
     :root{
       --sp-bg:#0D0B08;--sp-text:#EDE8E1;--sp-head:#F5F0E8;
@@ -20,175 +31,33 @@
         --sp-bg:#F9F7F4;--sp-text:#2C2C2C;--sp-head:#1A1512;
         --sp-accent:#B85C2C;--sp-accent-h:#96481F;--sp-red:#96481F;--sp-link:#7A3B18;
         --sp-nav:rgba(44,36,22,.97);--sp-nav-d:rgba(44,36,22,.98);--sp-nav3:rgba(44,36,22,.88);}}
+"""
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 17px; }
-    body { background: var(--sp-bg); color: #EDE8E1; font-family: Georgia,'Times New Roman',serif; line-height: 1.75; overflow-x: hidden; }
-    a { color: var(--sp-link); } a:hover { color: var(--sp-accent-h); }
-    img { display: block; max-width: 100%; }
+TOGGLE_BTN_CSS = """\
+    /* ── Theme toggle button ─────────────────────────────── */
+    #theme-toggle{background:none;border:none;cursor:pointer;color:rgba(237,232,225,.65);
+      padding:.4rem;line-height:0;transition:color .2s;flex-shrink:0;}
+    #theme-toggle:hover{color:#EDE8E1;}
+    #theme-toggle:focus-visible{outline:1px solid var(--sp-accent);outline-offset:2px;}
+    #theme-toggle svg{width:17px;height:17px;display:block;}
+    #theme-toggle .icon-sun{display:none;}
+    #theme-toggle .icon-moon{display:block;}
+    [data-theme="dark"] #theme-toggle .icon-sun{display:block;}
+    [data-theme="dark"] #theme-toggle .icon-moon{display:none;}
+    @media(prefers-color-scheme:dark){
+      html:not([data-theme="light"]) #theme-toggle .icon-sun{display:block;}
+      html:not([data-theme="light"]) #theme-toggle .icon-moon{display:none;}}
+"""
 
-    #progress { position: fixed; top: 0; left: 0; z-index: 300; height: 2px; width: 0%; background: #B85C2C; transition: width .05s linear; }
+LIGHT_OVERRIDES = """\
+    /* ══ LIGHT THEME OVERRIDES ════════════════════════════ */
+    [data-theme="light"] body,
+    @media(prefers-color-scheme:light){html:not([data-theme="dark"]) body{background:var(--sp-bg);color:var(--sp-text);}}
+"""
 
-    #sticky-bc {
-      position: fixed; top: 52px; left: 0; right: 0; z-index: 95;
-      background: var(--sp-nav3);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(237,232,225,.07);
-      padding: .45rem 3.5rem;
-      font-family: system-ui, sans-serif;
-      font-size: .7rem; letter-spacing: .04em;
-      display: flex; align-items: center; gap: .25rem;
-      flex-wrap: wrap;
-      opacity: 0; transform: translateY(-100%);
-      transition: opacity .25s ease, transform .25s ease;
-      pointer-events: none;
-    }
-    #sticky-bc.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
-    #sticky-bc a { color: rgba(237,232,225,.45); text-decoration: none; transition: color .15s; }
-    #sticky-bc a:hover { color: #EDE8E1; }
-    #sticky-bc .sbc-sep { color: rgba(237,232,225,.18); margin: 0 .1rem; }
-    #sticky-bc .sbc-current { color: rgba(237,232,225,.7); }
-    @media (max-width: 700px) { #sticky-bc { padding: .4rem 1rem; font-size: .65rem; } }
-
-    .story-breadcrumb {
-      padding: 2.25rem 3.5rem 1.5rem;
-      font-family: system-ui, sans-serif;
-      font-size: .8rem; letter-spacing: .03em;
-      display: flex; align-items: center;
-      flex-wrap: wrap; gap: .3rem;
-      border-bottom: 1px solid rgba(237,232,225,.07);
-    }
-    .story-breadcrumb a { text-decoration: none; transition: color .2s; }
-    .story-breadcrumb .bc-root { color: #B85C2C; font-weight: 700; font-size: 1rem; letter-spacing: .01em; }
-    .story-breadcrumb .bc-root:hover { color: #D06830; }
-    .story-breadcrumb .bc-mid { color: rgba(237,232,225,.4); }
-    .story-breadcrumb .bc-mid:hover { color: rgba(237,232,225,.75); }
-    .story-breadcrumb .bc-sep { color: rgba(237,232,225,.18); font-size: .9rem; margin: 0 .1rem; }
-    .story-breadcrumb .bc-current { color: rgba(237,232,225,.65); }
-    @media (max-width: 780px) { .story-breadcrumb { padding: 1.5rem 1.5rem .75rem; } }
-
-    .page-kicker { font-family: system-ui,sans-serif; font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: #B85C2C; margin-bottom: .9rem; }
-    .page-title { font-size: clamp(2rem,4vw,3rem); font-weight: normal; color: #F5F0E8; line-height: 1.1; }
-
-    .page-prose { color: rgba(237,232,225,.78); font-size: 1rem; line-height: 1.85; }
-    .page-prose p { margin-bottom: 1rem; }
-    .page-prose p:last-child { margin-bottom: 0; }
-    .page-prose h2 { font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: #B85C2C; margin: 2.75rem 0 .85rem; }
-    .page-prose a { color: var(--sp-link); }
-    .page-prose a:hover { color: var(--sp-accent-h); }
-
-    .text-wrap { max-width: 68ch; margin: 0 auto; padding: 0 2rem 6rem; }
-    /* Tour hero */
-    .tour-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; min-height: 80vh; padding: 5rem 3.5rem 4rem; max-width: 1200px; margin: 0 auto; }
-    .tour-hero-image img { width: 100%; border-radius: 3px; opacity: .9; }
-    .tour-dates { font-family: system-ui,sans-serif; font-size: .88rem; letter-spacing: .06em; color: rgba(237,232,225,.5); margin-bottom: 1.5rem; }
-    .tour-contact { display: inline-block; margin-top: 2rem; padding: .75rem 2rem; border: 1px solid rgba(196,122,78,.5); border-radius: 3px; color: #C47A4E; text-decoration: none; font-family: system-ui,sans-serif; font-size: .82rem; letter-spacing: .06em; transition: all .2s; }
-    .tour-contact:hover { background: rgba(196,122,78,.1); border-color: #C47A4E; color: #E09060; }
-    @media (max-width: 768px) { .tour-hero { grid-template-columns: 1fr; padding: 3rem 1.5rem 2rem; min-height: auto; gap: 2rem; } }
-  
-    /* ── Top navigation ────────────────────────────────────────── */
-    .site-nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      height: 52px;
-      background: var(--sp-nav);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: flex; align-items: center;
-      padding: 0 2rem;
-      border-bottom: 1px solid rgba(237,232,225,.09);
-    }
-    .nav-home {
-      font-family: system-ui, sans-serif;
-      font-size: .8rem; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: #EDE8E1; text-decoration: none;
-      margin-right: auto; white-space: nowrap;
-      transition: color .2s;
-    }
-    .nav-home:hover { color: #B85C2C; }
-    .nav-links {
-      display: flex; align-items: center;
-      list-style: none; gap: 0;
-    }
-    .nav-links li a {
-      display: block;
-      font-family: system-ui, sans-serif;
-      font-size: .75rem; letter-spacing: .05em;
-      color: rgba(237,232,225,.65);
-      text-decoration: none;
-      padding: 0 .95rem;
-      border-right: 1px solid rgba(237,232,225,.1);
-      white-space: nowrap;
-      transition: color .2s;
-    }
-    .nav-links li:last-child a { border-right: none; }
-    .nav-links li a:hover { color: #EDE8E1; }
-    .nav-toggle {
-      display: none;
-      background: none; border: none; cursor: pointer;
-      padding: .4rem; color: rgba(237,232,225,.75);
-      line-height: 0; transition: color .2s;
-    }
-    .nav-toggle:hover { color: #EDE8E1; }
-    #nav-drawer {
-      display: none;
-      position: fixed; top: 52px; left: 0; right: 0; z-index: 199;
-      background: var(--sp-nav-d);
-      border-bottom: 1px solid rgba(237,232,225,.1);
-      padding: .75rem 2rem 1.25rem;
-    }
-    #nav-drawer.open { display: block; }
-    #nav-drawer a {
-      display: block;
-      font-family: system-ui, sans-serif;
-      font-size: .9rem; letter-spacing: .03em;
-      color: rgba(237,232,225,.75);
-      text-decoration: none;
-      padding: .6rem 0;
-      border-bottom: 1px solid rgba(237,232,225,.07);
-      transition: color .2s;
-    }
-    #nav-drawer a:last-child { border-bottom: none; }
-    #nav-drawer a:hover { color: #C47A4E; }
-    @media (max-width: 680px) {
-      .nav-links { display: none; }
-      .nav-toggle { display: block; }
-    }
-    /* body offset for fixed nav */
-    body { padding-top: 52px; }
-  
-    /* ── Footer ────────────────────────────────────────────────── */
-    .site-footer {
-      border-top: 1px solid rgba(237,232,225,.08);
-      padding: 2.5rem 2rem 5rem;
-      text-align: center;
-      font-family: system-ui, sans-serif;
-    }
-    .footer-copy {
-      font-size: .75rem; letter-spacing: .04em;
-      color: rgba(237,232,225,.28);
-      margin-bottom: 1.5rem;
-    }
-    .footer-links {
-      display: flex; flex-wrap: wrap;
-      justify-content: center; align-items: center;
-      gap: .35rem .6rem;
-      line-height: 2;
-    }
-    .footer-links a {
-      font-size: .75rem; letter-spacing: .04em;
-      color: rgba(237,232,225,.38);
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .footer-links a:hover { color: #C47A4E; }
-    .footer-sep {
-      color: rgba(237,232,225,.18);
-      font-size: .75rem;
-      user-select: none;
-    }
-      /* ══ LIGHT THEME CONTENT OVERRIDES ═══════════════════ */
+# All light-theme overrides (body is handled inline above but also here for completeness)
+LIGHT_BLOCK = """\
+    /* ══ LIGHT THEME CONTENT OVERRIDES ═══════════════════ */
     /* Body */
     [data-theme="light"] body{background:var(--sp-bg);color:var(--sp-text);}
     /* Links */
@@ -413,137 +282,89 @@
       html:not([data-theme="dark"]) .topnav-logo{color:#EDE8E1;}
       html:not([data-theme="dark"]) .topnav-links a{color:rgba(237,232,225,.65);}
       html:not([data-theme="dark"]) .topnav-links a:hover{color:#EDE8E1;}}
-    /* ── Theme toggle button ─────────────────────────────── */
-    #theme-toggle{background:none;border:none;cursor:pointer;color:rgba(237,232,225,.65);
-      padding:.4rem;line-height:0;transition:color .2s;flex-shrink:0;}
-    #theme-toggle:hover{color:#EDE8E1;}
-    #theme-toggle:focus-visible{outline:1px solid var(--sp-accent);outline-offset:2px;}
-    #theme-toggle svg{width:17px;height:17px;display:block;}
-    #theme-toggle .icon-sun{display:none;}
-    #theme-toggle .icon-moon{display:block;}
-    [data-theme="dark"] #theme-toggle .icon-sun{display:block;}
-    [data-theme="dark"] #theme-toggle .icon-moon{display:none;}
-    @media(prefers-color-scheme:dark){
-      html:not([data-theme="light"]) #theme-toggle .icon-sun{display:block;}
-      html:not([data-theme="light"]) #theme-toggle .icon-moon{display:none;}}
-  </style>
-  <script src="theme.js"></script>
-</head>
-<body>
+"""
 
-  <nav class="site-nav" aria-label="Site navigation">
-    <a href="index.html" class="nav-home">Holy Land Photos</a>
-    <ul class="nav-links">
-      <li><a href="countries-story.html">Country List</a></li>
-      <li><a href="topical.html">Topic List</a></li>
-      <li><a href="#">Recent Additions</a></li>
-      <li><a href="#">Search</a></li>
-    </ul>
-        <button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle light/dark theme">
+TOGGLE_BTN_HTML = '''\
+    <button id="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle light/dark theme">
       <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="2" y1="5" x2="18" y2="5"/>
-        <line x1="2" y1="10" x2="18" y2="10"/>
-        <line x1="2" y1="15" x2="18" y2="15"/>
-      </svg>
-    </button>
-  </nav>
-  <div id="nav-drawer" aria-hidden="true">
-    <a href="countries-story.html">Country List</a>
-    <a href="topical.html">Topic List</a>
-    <a href="#">Recent Additions</a>
-    <a href="reading.html">Reading Recommendations</a>
-    <a href="about.html">About</a>
-    <a href="#">Search</a>
-  </div>
+    </button>'''
 
-  <div id="progress"></div>
+def process_file(path, nav_type="site-nav"):
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
 
-  <div id="sticky-bc">
-    <a href="index.html">Holy Land Photos</a>
-    <span class="sbc-sep">›</span>
-    <span>Site Information</span>
-    <span class="sbc-sep">›</span>
-    <span class="sbc-current">Tour</span>
-  </div>
+    # 1. Skip if already processed
+    if "theme-toggle" in content:
+        print(f"  SKIP (already processed): {os.path.basename(path)}")
+        return
 
-  <nav class="story-breadcrumb" aria-label="Location">
-    <a href="index.html" class="bc-root">Holy Land Photos</a>
-    <span class="bc-sep">›</span>
-    <a href="#" class="bc-mid">Site Information</a>
-    <span class="bc-sep">›</span>
-    <span class="bc-current">Tour</span>
-  </nav>
+    # 2. Add theme.js script before </head>
+    content = content.replace("</head>", '  <script src="theme.js"></script>\n</head>', 1)
 
-  <div class="tour-hero">
-    <div class="tour-hero-image">
-      <img src="https://holylandphotos.org/userfiles/images/IFOTA%20202601.jpg"
-           alt="In the Footsteps of The Apostles: Turkey AND Greece">
-    </div>
-    <div class="tour-hero-text">
-      <p class="page-kicker">Tour — Turkey and Greece – April/May 2026</p>
-      <h1 class="page-title">In the Footsteps of The Apostles: Turkey AND Greece</h1>
-      <p class="tour-dates">April 20 – May 7, 2026 &nbsp;·&nbsp; 18 Days</p>
-      <div class="page-prose">
-        <p>You are invited to join our 18-day tour to Turkey and Greece that Mary and I are leading in response to those who have asked us to put together a "not for credit" study tour—April 20 – May 7, 2026. I will be giving mini-lectures along the way both on the bus and on the sites, drawing from my studies and from the 30 trips that we have led to Turkey and Greece. We will relate what we are seeing to the New Testament and the Early Christian Church. Thus, it is not a mere tour, but a hands-on experience as we study the New Testament and its Greco-Roman background together!</p>
-        <p>Noteworthy! We will visit all 7 churches mentioned in Revelation 1-3 and places where 15 of the 27 New Testament books were written to and/or from! You will be amazed at what you will be learning along the way and April/May is perfect—not too hot and not too cold!</p>
-        <p>To receive additional information contact Dr. Rasmussen at <a href="mailto:go2CarlRasm+HLP@gmail.com">go2CarlRasm+HLP@gmail.com</a>.</p>
-      </div>
-      <a href="mailto:go2CarlRasm+HLP@gmail.com" class="tour-contact">Inquire About This Tour →</a>
-    </div>
-  </div>
-  <!-- ── Footer ──────────────────────────────────────────────── -->
-  <footer class="site-footer">
-    <p class="footer-copy">© <span id="footer-year"></span>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
-    <nav class="footer-links">
-      <a href="countries-story.html">Country List</a>
-      <span class="footer-sep">|</span>
-      <a href="topical.html">Topic List</a>
-      <span class="footer-sep">|</span>
-      <a href="reading.html">Reading Recommendations</a>
-      <span class="footer-sep">|</span>
-      <a href="site-list.html">Complete Site List</a>
-      <span class="footer-sep">|</span>
-      <a href="permission-story.html">Permission to Use</a>
-      <span class="footer-sep">|</span>
-      <a href="about.html">About</a>
-      <span class="footer-sep">|</span>
-      <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Dr. Rasmussen's Blog</a>
-      <span class="footer-sep">|</span>
-      <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Send Technical Feedback</a>
-    </nav>
-  </footer>
+    # 3. Insert CSS variables right after <style> opening tag
+    content = re.sub(r'(<style>)\s*\n', r'\1\n' + CSS_VARS + '\n', content, count=1)
 
+    # 4. Replace body background/text with CSS variables
+    content = content.replace("background: #0D0B08;", "background: var(--sp-bg);", 1)
+    # Only replace color in body rule context (first occurrence near background)
+    content = re.sub(
+        r'(background:\s*var\(--sp-bg\);[^\n]*\n\s*)color:\s*#EDE8E1;',
+        r'\1color: var(--sp-text);',
+        content, count=1
+    )
 
+    # 5. Replace link colors (global a rule)
+    content = re.sub(r'\ba\s*\{\s*color:\s*#C47A4E;\s*\}', 'a { color: var(--sp-link); }', content)
+    content = re.sub(r'a:hover\s*\{\s*color:\s*#E09060;\s*\}', 'a:hover { color: var(--sp-accent-h); }', content)
 
-  <script>
-    // ── Mobile nav ──────────────────────────────────────────────
-    (function () {
-      var toggle = document.querySelector('.nav-toggle');
-      var drawer = document.getElementById('nav-drawer');
-      if (toggle && drawer) {
-        toggle.addEventListener('click', function () {
-          var open = drawer.classList.toggle('open');
-          toggle.setAttribute('aria-expanded', open);
-          drawer.setAttribute('aria-hidden', String(!open));
-        });
-      }
-      var fy = document.getElementById('footer-year');
-      if (fy) fy.textContent = new Date().getFullYear();
-    })();
+    # 6. Replace nav backgrounds with CSS variables
+    content = re.sub(r'background:\s*rgba\(13,11,8,\.97\)', 'background: var(--sp-nav)', content)
+    content = re.sub(r'background:\s*rgba\(13,11,8,\.98\)', 'background: var(--sp-nav-d)', content)
+    content = re.sub(r'background:\s*rgba\(13,11,8,\.88\)', 'background: var(--sp-nav3)', content)
 
-    const sbc = document.getElementById('sticky-bc');
-    const hero = document.querySelector('.tour-hero');
-    const prog = document.getElementById('progress');
-    const io = new IntersectionObserver(([e]) => sbc.classList.toggle('visible', !e.isIntersecting));
-    if (hero) io.observe(hero);
-    window.addEventListener('scroll', () => {
-      const s = document.documentElement, pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
-      if (prog) prog.style.width = pct + '%';
-    }, { passive: true });
-  </script>
-</body>
-</html>
+    # 7. Add light theme override block + toggle button CSS before </style>
+    content = content.replace("</style>", LIGHT_BLOCK + TOGGLE_BTN_CSS + "  </style>", 1)
+
+    # 8. Add toggle button HTML to nav
+    if nav_type == "site-nav":
+        # Insert before </nav> that closes .site-nav (the first </nav> after site-nav)
+        # The nav structure is: <nav class="site-nav"...> ... <button class="nav-toggle"...> ... </nav>
+        # Insert the toggle button before the nav-toggle button
+        content = re.sub(
+            r'(<button class="nav-toggle")',
+            TOGGLE_BTN_HTML + '\n    \\1',
+            content, count=1
+        )
+    elif nav_type == "topnav":
+        # Insert before </nav> of .topnav
+        content = re.sub(
+            r'(</ul>\s*</nav>)',
+            '</ul>\n' + TOGGLE_BTN_HTML + '\n  </nav>',
+            content, count=1
+        )
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  OK: {os.path.basename(path)}")
+
+def main():
+    print("Processing story pages...")
+    for name in SITE_NAV_PAGES:
+        path = os.path.join(MOCKUPS, name)
+        if os.path.exists(path):
+            process_file(path, nav_type="site-nav")
+        else:
+            print(f"  NOT FOUND: {name}")
+
+    for name in TOPNAV_PAGES:
+        path = os.path.join(MOCKUPS, name)
+        if os.path.exists(path):
+            process_file(path, nav_type="topnav")
+        else:
+            print(f"  NOT FOUND: {name}")
+
+    print("Done.")
+
+if __name__ == "__main__":
+    main()
