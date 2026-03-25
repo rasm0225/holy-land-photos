@@ -1,30 +1,24 @@
 (function () {
-  // Apply saved preference immediately to prevent flash of wrong theme
-  var t = localStorage.getItem('hlp-theme');
-  if (t === 'dark' || t === 'light') {
-    document.documentElement.setAttribute('data-theme', t);
-  }
+  // Determine theme: saved preference > system preference > dark default
+  var saved = localStorage.getItem('hlp-theme');
+  var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', theme);
 
   document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('theme-toggle');
     if (!btn) return;
 
-    function isDark() {
-      var a = document.documentElement.getAttribute('data-theme');
-      if (a === 'dark') return true;
-      if (a === 'light') return false;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
     btn.addEventListener('click', function () {
-      var next = isDark() ? 'light' : 'dark';
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('hlp-theme', next);
     });
+  });
 
-    // Keep button label current when system preference changes (no manual override)
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-      // CSS handles icon swap; nothing extra needed here
-    });
+  // Track system preference changes when user hasn't manually chosen
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+    if (!localStorage.getItem('hlp-theme')) {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    }
   });
 })();

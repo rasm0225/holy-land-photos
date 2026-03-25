@@ -1,0 +1,191 @@
+/* ══════════════════════════════════════════════════════════════
+   theme.css — Shared light/dark theme for Holy Land Photos
+
+   Dark is the default (hardcoded in each page's <style>).
+   theme.js always sets data-theme="light" or data-theme="dark"
+   on <html>, so we only need [data-theme="light"] selectors here.
+   No @media(prefers-color-scheme) duplication needed.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── CSS variables ──────────────────────────────────────────── */
+:root {
+  --hlp-bg: #0D0B08;
+  --hlp-text: #EDE8E1;
+  --hlp-head: #F5F0E8;
+  --hlp-accent: #C47A4E;
+  --hlp-accent-hover: #E09060;
+  --hlp-red: #B85C2C;
+  --hlp-link: #C47A4E;
+  --hlp-nav-bg: rgba(13,11,8,.97);
+  --hlp-nav-drawer: rgba(13,11,8,.98);
+  --hlp-nav-blur: rgba(13,11,8,.88);
+}
+
+[data-theme="light"] {
+  --hlp-bg: #F9F7F4;
+  --hlp-text: #2C2C2C;
+  --hlp-head: #1A1512;
+  --hlp-accent: #B85C2C;
+  --hlp-accent-hover: #96481F;
+  --hlp-red: #96481F;
+  --hlp-link: #7A3B18;
+  --hlp-nav-bg: rgba(44,36,22,.97);
+  --hlp-nav-drawer: rgba(44,36,22,.98);
+  --hlp-nav-blur: rgba(44,36,22,.88);
+}
+
+/* ── Theme toggle button ────────────────────────────────────── */
+#theme-toggle {
+  background: none; border: none; cursor: pointer;
+  color: rgba(237,232,225,.65);
+  padding: .4rem; line-height: 0;
+  transition: color .2s; flex-shrink: 0;
+}
+#theme-toggle:hover { color: #EDE8E1; }
+#theme-toggle:focus-visible { outline: 1px solid var(--hlp-accent); outline-offset: 2px; }
+#theme-toggle svg { width: 17px; height: 17px; display: block; }
+#theme-toggle .icon-sun  { display: none; }
+#theme-toggle .icon-moon { display: block; }
+[data-theme="dark"]  #theme-toggle .icon-sun  { display: block; }
+[data-theme="dark"]  #theme-toggle .icon-moon { display: none; }
+
+/* ── Light theme overrides ──────────────────────────────────── */
+
+/* Body & links */
+[data-theme="light"] body { background: var(--hlp-bg); color: var(--hlp-text); }
+[data-theme="light"] a { color: var(--hlp-link); }
+[data-theme="light"] a:hover { color: var(--hlp-accent); }
+
+/* Breadcrumbs */
+[data-theme="light"] .story-breadcrumb { border-bottom-color: rgba(44,44,44,.12); }
+[data-theme="light"] .story-breadcrumb .bc-root { color: var(--hlp-accent); }
+[data-theme="light"] .story-breadcrumb .bc-mid { color: rgba(44,44,44,.45); }
+[data-theme="light"] .story-breadcrumb .bc-mid:hover { color: rgba(44,44,44,.8); }
+[data-theme="light"] .story-breadcrumb .bc-sep { color: rgba(44,44,44,.22); }
+[data-theme="light"] .story-breadcrumb .bc-current { color: rgba(44,44,44,.7); }
+
+/* Sticky breadcrumb */
+[data-theme="light"] #sticky-bc { background: rgba(249,247,244,.92); border-bottom-color: rgba(44,44,44,.1); }
+[data-theme="light"] #sticky-bc a { color: rgba(44,44,44,.5); }
+[data-theme="light"] #sticky-bc a:hover { color: var(--hlp-text); }
+[data-theme="light"] #sticky-bc .sbc-sep { color: rgba(44,44,44,.22); }
+[data-theme="light"] #sticky-bc .sbc-current { color: rgba(44,44,44,.75); }
+
+/* Page header (about, reading, etc.) */
+[data-theme="light"] .page-header { border-bottom-color: rgba(44,44,44,.1); }
+[data-theme="light"] .page-kicker { color: var(--hlp-accent); }
+[data-theme="light"] .page-title { color: var(--hlp-head); }
+[data-theme="light"] .page-prose { color: rgba(44,44,44,.75); }
+[data-theme="light"] .page-prose h2 { color: var(--hlp-accent); }
+[data-theme="light"] .page-prose h3 { color: var(--hlp-head); }
+[data-theme="light"] .page-prose strong { color: var(--hlp-head); }
+
+/* Story intro */
+[data-theme="light"] .story-kicker { color: var(--hlp-accent); }
+[data-theme="light"] .story-main-title { color: var(--hlp-head); }
+[data-theme="light"] .story-desc { color: rgba(44,44,44,.7); }
+[data-theme="light"] .story-meta { color: rgba(44,44,44,.45); }
+[data-theme="light"] .story-intro-body { color: rgba(44,44,44,.7); }
+[data-theme="light"] .text-wrap { color: rgba(44,44,44,.75); }
+
+/* Chapters */
+[data-theme="light"] .ch-kicker { color: var(--hlp-accent); }
+[data-theme="light"] .ch-title { color: var(--hlp-head); }
+[data-theme="light"] .ch-desc { color: rgba(44,44,44,.68); }
+[data-theme="light"] .ch-meta { color: rgba(44,44,44,.45); }
+[data-theme="light"] .ch-body { color: rgba(44,44,44,.75); }
+[data-theme="light"] .ch-body a { color: var(--hlp-link); }
+[data-theme="light"] .ch-body a:hover { color: var(--hlp-accent); }
+[data-theme="light"] .ch-link { color: var(--hlp-link); border-bottom-color: rgba(44,44,44,.2); }
+[data-theme="light"] .ch-link:hover { color: var(--hlp-accent); border-bottom-color: var(--hlp-accent); }
+[data-theme="light"] .chapter-figure { background: #F0EDE8; }
+
+/* Dividers */
+[data-theme="light"] .section-divider { background: linear-gradient(to right, transparent, rgba(44,44,44,.12) 20%, rgba(44,44,44,.12) 80%, transparent); }
+
+/* Section labels & hero */
+[data-theme="light"] .section-label { color: var(--hlp-accent); }
+[data-theme="light"] .hero-title { color: var(--hlp-head); }
+[data-theme="light"] .hero-tagline { color: rgba(44,44,44,.6); }
+[data-theme="light"] .hero-stats { color: rgba(44,44,44,.4); }
+[data-theme="light"] .hero-stats span { color: var(--hlp-accent); }
+[data-theme="light"] .hero-kicker { color: var(--hlp-accent); }
+[data-theme="light"] .hero-sub { color: rgba(44,44,44,.6); }
+
+/* Search */
+[data-theme="light"] .search-input { color: var(--hlp-text); background: rgba(44,44,44,.04); border-color: rgba(44,44,44,.15); }
+[data-theme="light"] .search-input::placeholder { color: rgba(44,44,44,.35); }
+[data-theme="light"] .search-input:focus { border-color: rgba(184,92,44,.5); background: #fff; }
+[data-theme="light"] .search-btn { color: rgba(44,44,44,.45); }
+[data-theme="light"] .search-hint { color: rgba(44,44,44,.4); }
+
+/* Cards */
+[data-theme="light"] .card { background: rgba(44,44,44,.025); border-color: rgba(44,44,44,.1); }
+[data-theme="light"] .card:hover { border-color: rgba(184,92,44,.3); background: rgba(44,44,44,.04); }
+[data-theme="light"] .card-title { color: var(--hlp-head); }
+[data-theme="light"] .card-desc { color: rgba(44,44,44,.6); }
+[data-theme="light"] .card-cta { color: var(--hlp-accent); }
+
+/* Recent additions list */
+[data-theme="light"] .recent-item { border-bottom-color: rgba(44,44,44,.1); }
+[data-theme="light"] .recent-title { color: var(--hlp-head); }
+[data-theme="light"] .recent-meta { color: rgba(44,44,44,.45); }
+[data-theme="light"] .recent-more { color: var(--hlp-accent); }
+[data-theme="light"] .recent-more:hover { color: var(--hlp-accent-hover); }
+
+/* Email signup */
+[data-theme="light"] .signup-section { border-color: rgba(44,44,44,.12); background: rgba(44,44,44,.025); }
+[data-theme="light"] .signup-title { color: var(--hlp-head); }
+[data-theme="light"] .signup-desc { color: rgba(44,44,44,.55); }
+[data-theme="light"] .signup-input { color: var(--hlp-text); background: #fff; border-color: rgba(44,44,44,.2); }
+[data-theme="light"] .signup-input::placeholder { color: rgba(44,44,44,.3); }
+[data-theme="light"] .signup-input:focus { border-color: rgba(184,92,44,.5); }
+[data-theme="light"] .signup-btn { background: var(--hlp-accent); }
+[data-theme="light"] .signup-btn:hover { background: var(--hlp-accent-hover); }
+[data-theme="light"] .signup-privacy { color: rgba(44,44,44,.35); }
+
+/* Donate */
+[data-theme="light"] .donate-text { color: rgba(44,44,44,.55); }
+[data-theme="light"] .donate-btn { color: var(--hlp-accent); border-color: rgba(184,92,44,.35); }
+[data-theme="light"] .donate-btn:hover { background: rgba(184,92,44,.08); border-color: var(--hlp-accent); }
+
+/* Tour alert */
+[data-theme="light"] .tour-alert { background: linear-gradient(135deg, rgba(184,92,44,.08), rgba(184,92,44,.04)); border-bottom-color: rgba(184,92,44,.2); color: rgba(44,44,44,.75); }
+[data-theme="light"] .tour-alert strong { color: var(--hlp-accent); }
+[data-theme="light"] .tour-alert a { color: var(--hlp-accent); }
+[data-theme="light"] .tour-alert a:hover { color: var(--hlp-accent-hover); }
+
+/* Footer */
+[data-theme="light"] .site-footer { border-top-color: rgba(44,44,44,.12); }
+[data-theme="light"] .footer-copy { color: rgba(44,44,44,.4); }
+[data-theme="light"] .footer-links a { color: rgba(44,44,44,.5); }
+[data-theme="light"] .footer-links a:hover { color: var(--hlp-accent); }
+[data-theme="light"] .footer-sep { color: rgba(44,44,44,.22); }
+
+/* Progress bar */
+[data-theme="light"] #progress { background: var(--hlp-accent); }
+
+/* What's New page */
+[data-theme="light"] .time-filter a { color: rgba(44,44,44,.55); border-color: rgba(44,44,44,.15); }
+[data-theme="light"] .time-filter a.active { background: var(--hlp-accent); color: #fff; }
+[data-theme="light"] .time-filter a:hover { color: var(--hlp-accent); border-color: var(--hlp-accent); }
+[data-theme="light"] .entry-card { border-bottom-color: rgba(44,44,44,.1); }
+[data-theme="light"] .entry-title { color: var(--hlp-head); }
+[data-theme="light"] .entry-meta { color: rgba(44,44,44,.45); }
+[data-theme="light"] .entry-keywords { color: rgba(44,44,44,.4); }
+
+/* Nav always stays dark in both modes */
+[data-theme="light"] .site-nav { background: var(--hlp-nav-bg); }
+[data-theme="light"] .nav-home { color: #EDE8E1; }
+[data-theme="light"] .nav-home:hover { color: var(--hlp-accent); }
+[data-theme="light"] .nav-links li a { color: rgba(237,232,225,.65); border-right-color: rgba(237,232,225,.1); }
+[data-theme="light"] .nav-links li a:hover { color: #EDE8E1; }
+[data-theme="light"] .nav-toggle { color: rgba(237,232,225,.75); }
+[data-theme="light"] .nav-toggle:hover { color: #EDE8E1; }
+[data-theme="light"] #nav-drawer { background: var(--hlp-nav-drawer); border-bottom-color: rgba(237,232,225,.1); }
+[data-theme="light"] #nav-drawer a { color: rgba(237,232,225,.75); border-bottom-color: rgba(237,232,225,.07); }
+[data-theme="light"] #nav-drawer a:hover { color: var(--hlp-accent); }
+[data-theme="light"] .topnav { background: var(--hlp-nav-bg); }
+[data-theme="light"] .topnav-logo { color: #EDE8E1; }
+[data-theme="light"] .topnav-links a { color: rgba(237,232,225,.65); }
+[data-theme="light"] .topnav-links a:hover { color: #EDE8E1; }
