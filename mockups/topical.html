@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Topical Easy Find — Holy Land Photos</title>
+  <meta name="description" content="Browse HolyLandPhotos.org images by topic — biblical history periods, New Testament sites, Paul's journeys, and the Seven Churches of Revelation.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body { background: #0D0B08; color: #EDE8E1; font-family: Georgia,'Times New Roman',serif; line-height: 1.75; overflow-x: hidden; }
+    a { color: #C47A4E; } a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    #progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; width: 0%; background: #B85C2C; transition: width .05s linear; }
+
+    .return-link { position: fixed; top: 1rem; left: 1.25rem; z-index: 99; font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(237,232,225,.45); text-decoration: none; transition: color .2s; }
+    .return-link:hover { color: #EDE8E1; }
+
+    #sticky-bc {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 95;
+      background: rgba(13,11,8,.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      padding: .45rem 3.5rem;
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .04em;
+      display: flex; align-items: center; gap: .25rem;
+      flex-wrap: wrap;
+      opacity: 0; transform: translateY(-100%);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+    }
+    #sticky-bc.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    #sticky-bc a { color: rgba(237,232,225,.45); text-decoration: none; transition: color .15s; }
+    #sticky-bc a:hover { color: #EDE8E1; }
+    #sticky-bc .sbc-sep { color: rgba(237,232,225,.18); margin: 0 .1rem; }
+    #sticky-bc .sbc-current { color: rgba(237,232,225,.7); }
+    @media (max-width: 700px) { #sticky-bc { padding: .4rem 1rem; font-size: .65rem; } }
+
+    .story-breadcrumb {
+      padding: 2.25rem 3.5rem 1.5rem;
+      font-family: system-ui, sans-serif;
+      font-size: .8rem; letter-spacing: .03em;
+      display: flex; align-items: center;
+      flex-wrap: wrap; gap: .3rem;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+    }
+    .story-breadcrumb a { text-decoration: none; transition: color .2s; }
+    .story-breadcrumb .bc-root { color: #B85C2C; font-weight: 700; font-size: 1rem; letter-spacing: .01em; }
+    .story-breadcrumb .bc-root:hover { color: #D06830; }
+    .story-breadcrumb .bc-mid { color: rgba(237,232,225,.4); }
+    .story-breadcrumb .bc-mid:hover { color: rgba(237,232,225,.75); }
+    .story-breadcrumb .bc-sep { color: rgba(237,232,225,.18); font-size: .9rem; margin: 0 .1rem; }
+    .story-breadcrumb .bc-current { color: rgba(237,232,225,.65); }
+    @media (max-width: 780px) { .story-breadcrumb { padding: 1.5rem 1.5rem .75rem; } }
+
+    .page-header { padding: 5rem 0 2.5rem; border-bottom: 1px solid rgba(237,232,225,.08); margin-bottom: 2.5rem; }
+    .page-kicker { font-family: system-ui,sans-serif; font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: #B85C2C; margin-bottom: .9rem; }
+    .page-title { font-size: clamp(2rem,4vw,3rem); font-weight: normal; color: #F5F0E8; line-height: 1.1; }
+
+    .page-prose { color: rgba(237,232,225,.78); font-size: 1rem; line-height: 1.85; }
+    .page-prose p { margin-bottom: 1rem; }
+    .page-prose p:last-child { margin-bottom: 0; }
+    .page-prose h2 { font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: #B85C2C; margin: 2.75rem 0 .85rem; }
+    .page-prose h3 { font-size: 1rem; font-weight: normal; color: #F5F0E8; margin: 1.5rem 0 .5rem; font-style: italic; }
+    .page-prose a { color: #C47A4E; }
+    .page-prose a:hover { color: #E09060; }
+    .page-prose strong { color: #F5F0E8; font-weight: 700; }
+
+    .text-wrap { max-width: 68ch; margin: 0 auto; padding: 0 2rem 6rem; }
+
+    .story-footer { border-top: 1px solid rgba(237,232,225,.08); padding: 2rem 2rem; font-family: system-ui,sans-serif; font-size: .72rem; color: rgba(237,232,225,.3); text-align: center; letter-spacing: .04em; }
+    .story-footer a { color: rgba(237,232,225,.4); text-decoration: none; }
+    .story-footer a:hover { color: rgba(237,232,225,.7); }
+
+    /* Topical specific */
+    .topic-section { margin-bottom: 3rem; }
+    .topic-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: .4rem; margin-top: .75rem; }
+    .topic-list li a { font-family: system-ui,sans-serif; font-size: .88rem; color: rgba(237,232,225,.65); text-decoration: none; transition: color .2s; display: flex; align-items: center; gap: .4rem; }
+    .topic-list li a::before { content: '›'; color: #B85C2C; flex-shrink: 0; }
+    .topic-list li a:hover { color: #C47A4E; }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+  <a class="return-link" href="index.html">← Holy Land Photos</a>
+
+  <div id="sticky-bc">
+    <a href="index.html">Holy Land Photos</a>
+    <span class="sbc-sep">›</span>
+    <span>Site Information</span>
+    <span class="sbc-sep">›</span>
+    <span class="sbc-current">Topical Easy Find</span>
+  </div>
+
+  <nav class="story-breadcrumb" aria-label="Location">
+    <a href="index.html" class="bc-root">Holy Land Photos</a>
+    <span class="bc-sep">›</span>
+    <a href="#" class="bc-mid">Site Information</a>
+    <span class="bc-sep">›</span>
+    <span class="bc-current">Topical Easy Find</span>
+  </nav>
+
+  <div class="text-wrap">
+    <div class="page-header">
+      <p class="page-kicker">Site Information</p>
+      <h1 class="page-title">Topical Easy Find</h1>
+    </div>
+    <div class="page-prose">
+      <p>For your convenience I have assembled suggestions for images related to a variety of topics. For example, if you are studying the life of Solomon, I have assembled images related to that topic. Images are free for use in PowerPoint presentations with attribution to www.HolyLandPhotos.org.</p>
+
+      <h2>History of Israel</h2>
+      <div class="topic-section">
+        <ul class="topic-list">
+          <li><a href="#">Early Bronze Age (3150–2200 B.C.)</a></li>
+          <li><a href="#">Intermediate Bronze Age (2250–2000 B.C.)</a></li>
+          <li><a href="#">Middle Bronze Age II (2000–1500 B.C.)</a></li>
+          <li><a href="#">Late Bronze Age (1500–1200 B.C.)</a></li>
+          <li><a href="#">Iron Age I (1200–1000 B.C.)</a></li>
+          <li><a href="#">United Monarchy — David &amp; Solomon (ca. 1000–930 B.C.)</a></li>
+          <li><a href="#">Divided Monarchy</a></li>
+          <li><a href="#">Assyrian Period</a></li>
+          <li><a href="#">Babylonian Period</a></li>
+          <li><a href="#">Persian Period</a></li>
+          <li><a href="#">Hellenistic Period</a></li>
+          <li><a href="#">Hasmonean Period</a></li>
+          <li><a href="#">Herodian Period</a></li>
+        </ul>
+      </div>
+
+      <h2>New Testament</h2>
+
+      <h3>Places Mentioned in the Gospels</h3>
+      <div class="topic-section">
+        <ul class="topic-list">
+          <li><a href="#">Nazareth</a></li>
+          <li><a href="#">Bethlehem</a></li>
+          <li><a href="#">Jerusalem</a></li>
+          <li><a href="#">Capernaum</a></li>
+          <li><a href="#">Sea of Galilee</a></li>
+          <li><a href="#">Jordan River</a></li>
+          <li><a href="#">Caesarea Philippi</a></li>
+          <li><a href="#">Jericho</a></li>
+          <li><a href="#">Bethany</a></li>
+          <li><a href="#">Gethsemane</a></li>
+          <li><a href="#">Calvary</a></li>
+          <li><a href="#">Garden Tomb</a></li>
+        </ul>
+      </div>
+
+      <h3>Paul's Missionary Journeys</h3>
+      <div class="topic-section">
+        <ul class="topic-list">
+          <li><a href="#">First Journey (Cyprus, Antioch of Pisidia, Iconium, Lystra, Derbe)</a></li>
+          <li><a href="#">Second Journey (Philippi, Thessalonica, Berea, Athens, Corinth)</a></li>
+          <li><a href="#">Third Journey (Ephesus, Macedonia, Greece, Troas, Miletus)</a></li>
+        </ul>
+      </div>
+
+      <h3>Seven Churches of Revelation</h3>
+      <div class="topic-section">
+        <ul class="topic-list">
+          <li><a href="#">Ephesus</a></li>
+          <li><a href="#">Smyrna</a></li>
+          <li><a href="#">Pergamum</a></li>
+          <li><a href="#">Thyatira</a></li>
+          <li><a href="#">Sardis</a></li>
+          <li><a href="#">Philadelphia</a></li>
+          <li><a href="#">Laodicea</a></li>
+        </ul>
+      </div>
+
+      <h2>Recommended Resources</h2>
+      <p>Zondervan has released a 13-lesson video series filmed in the Holy Land, featuring an 18-minute introduction to the ancient Middle East. Dr. Rasmussen is also the author of the <em>Zondervan Atlas of the Bible</em> (2010) — see <a href="reading.html">Recommended Reading</a> for the full book list.</p>
+    </div>
+  </div>
+
+  <footer class="story-footer">
+    © Dr. Carl Rasmussen &nbsp;·&nbsp; <a href="index.html">HolyLandPhotos.org</a>
+  </footer>
+
+  <script>
+    const sbc = document.getElementById('sticky-bc');
+    const header = document.querySelector('.page-header');
+    const prog = document.getElementById('progress');
+    const io = new IntersectionObserver(([e]) => sbc.classList.toggle('visible', !e.isIntersecting));
+    if (header) io.observe(header);
+    window.addEventListener('scroll', () => {
+      const s = document.documentElement, pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+      if (prog) prog.style.width = pct + '%';
+    }, { passive: true });
+  </script>
+</body>
+</html>

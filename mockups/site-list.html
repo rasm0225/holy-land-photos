@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Complete Site List — Holy Land Photos</title>
+  <meta name="description" content="Alphabetical list of all sites on HolyLandPhotos.org — Israel, Turkey, Greece, Italy, Jordan, Egypt, and more.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 17px; }
+    body { background: #0D0B08; color: #EDE8E1; font-family: Georgia,'Times New Roman',serif; line-height: 1.75; overflow-x: hidden; }
+    a { color: #C47A4E; } a:hover { color: #E09060; }
+    img { display: block; max-width: 100%; }
+
+    #progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; width: 0%; background: #B85C2C; transition: width .05s linear; }
+
+    .return-link { position: fixed; top: 1rem; left: 1.25rem; z-index: 99; font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(237,232,225,.45); text-decoration: none; transition: color .2s; }
+    .return-link:hover { color: #EDE8E1; }
+
+    #sticky-bc {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 95;
+      background: rgba(13,11,8,.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(237,232,225,.07);
+      padding: .45rem 3.5rem;
+      font-family: system-ui, sans-serif;
+      font-size: .7rem; letter-spacing: .04em;
+      display: flex; align-items: center; gap: .25rem;
+      flex-wrap: wrap;
+      opacity: 0; transform: translateY(-100%);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+    }
+    #sticky-bc.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    #sticky-bc a { color: rgba(237,232,225,.45); text-decoration: none; transition: color .15s; }
+    #sticky-bc a:hover { color: #EDE8E1; }
+    #sticky-bc .sbc-sep { color: rgba(237,232,225,.18); margin: 0 .1rem; }
+    #sticky-bc .sbc-current { color: rgba(237,232,225,.7); }
+    @media (max-width: 700px) { #sticky-bc { padding: .4rem 1rem; font-size: .65rem; } }
+
+    .story-breadcrumb {
+      padding: 2.25rem 3.5rem 1.5rem;
+      font-family: system-ui, sans-serif;
+      font-size: .8rem; letter-spacing: .03em;
+      display: flex; align-items: center;
+      flex-wrap: wrap; gap: .3rem;
+      border-bottom: 1px solid rgba(237,232,225,.07);
+    }
+    .story-breadcrumb a { text-decoration: none; transition: color .2s; }
+    .story-breadcrumb .bc-root { color: #B85C2C; font-weight: 700; font-size: 1rem; letter-spacing: .01em; }
+    .story-breadcrumb .bc-root:hover { color: #D06830; }
+    .story-breadcrumb .bc-mid { color: rgba(237,232,225,.4); }
+    .story-breadcrumb .bc-mid:hover { color: rgba(237,232,225,.75); }
+    .story-breadcrumb .bc-sep { color: rgba(237,232,225,.18); font-size: .9rem; margin: 0 .1rem; }
+    .story-breadcrumb .bc-current { color: rgba(237,232,225,.65); }
+    @media (max-width: 780px) { .story-breadcrumb { padding: 1.5rem 1.5rem .75rem; } }
+
+    .page-header { padding: 5rem 0 2.5rem; border-bottom: 1px solid rgba(237,232,225,.08); margin-bottom: 2.5rem; }
+    .page-kicker { font-family: system-ui,sans-serif; font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: #B85C2C; margin-bottom: .9rem; }
+    .page-title { font-size: clamp(2rem,4vw,3rem); font-weight: normal; color: #F5F0E8; line-height: 1.1; }
+
+    .page-prose { color: rgba(237,232,225,.78); font-size: 1rem; line-height: 1.85; }
+    .page-prose p { margin-bottom: 1rem; }
+
+    .text-wrap { max-width: 68ch; margin: 0 auto; padding: 0 2rem 6rem; }
+
+    .story-footer { border-top: 1px solid rgba(237,232,225,.08); padding: 2rem 2rem; font-family: system-ui,sans-serif; font-size: .72rem; color: rgba(237,232,225,.3); text-align: center; letter-spacing: .04em; }
+    .story-footer a { color: rgba(237,232,225,.4); text-decoration: none; }
+    .story-footer a:hover { color: rgba(237,232,225,.7); }
+
+    /* Site list specific */
+    .list-outer { max-width: 900px; margin: 0 auto; padding: 0 2rem 6rem; }
+    .list-header { padding: 5rem 0 2.5rem; border-bottom: 1px solid rgba(237,232,225,.08); margin-bottom: 2.5rem; }
+    .site-list-intro { max-width: 68ch; margin: 0 auto 2.5rem; color: rgba(237,232,225,.78); font-size: 1rem; line-height: 1.85; }
+    .country-section { margin: 0 auto 3rem; }
+    .country-heading { font-family: system-ui,sans-serif; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: #B85C2C; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid rgba(184,92,44,.25); }
+    .site-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .3rem .5rem; list-style: none; padding: 0; }
+    .site-grid li a { font-size: .88rem; color: rgba(237,232,225,.65); text-decoration: none; transition: color .2s; font-family: system-ui,sans-serif; }
+    .site-grid li a:hover { color: #C47A4E; }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+  <a class="return-link" href="index.html">← Holy Land Photos</a>
+
+  <div id="sticky-bc">
+    <a href="index.html">Holy Land Photos</a>
+    <span class="sbc-sep">›</span>
+    <span>Site Information</span>
+    <span class="sbc-sep">›</span>
+    <span class="sbc-current">Complete Site List</span>
+  </div>
+
+  <nav class="story-breadcrumb" aria-label="Location">
+    <a href="index.html" class="bc-root">Holy Land Photos</a>
+    <span class="bc-sep">›</span>
+    <a href="#" class="bc-mid">Site Information</a>
+    <span class="bc-sep">›</span>
+    <span class="bc-current">Complete Site List</span>
+  </nav>
+
+  <div class="list-outer">
+    <div class="list-header">
+      <p class="page-kicker">Site Information</p>
+      <h1 class="page-title">Complete Site List</h1>
+    </div>
+
+    <p class="site-list-intro">Sites from twelve countries, listed alphabetically within each region. Scroll to the relevant section or use your browser's Find function (⌘F / Ctrl+F).</p>
+
+    <div class="country-section">
+      <h2 class="country-heading">Cyprus</h2>
+      <ul class="site-grid">
+        <li><a href="#">Paphos Harbor</a></li>
+        <li><a href="#">Paphos Mosaics</a></li>
+        <li><a href="#">Paphos Houses</a></li>
+        <li><a href="#">Salamis</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Egypt</h2>
+      <ul class="site-grid">
+        <li><a href="#">Egyptian Landscapes</a></li>
+        <li><a href="#">Hieroglyphic Inscriptions</a></li>
+        <li><a href="#">Sinai</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">France</h2>
+      <ul class="site-grid">
+        <li><a href="#">Lyon (Lugdunum)</a></li>
+        <li><a href="#">Louvre Museum</a></li>
+        <li><a href="#">Paris</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Greece</h2>
+      <ul class="site-grid">
+        <li><a href="#">Athens Acropolis</a></li>
+        <li><a href="#">Athens Agora</a></li>
+        <li><a href="#">Athens Museums</a></li>
+        <li><a href="#">Corinth</a></li>
+        <li><a href="#">Delphi</a></li>
+        <li><a href="#">Olympia</a></li>
+        <li><a href="#">Philippi</a></li>
+        <li><a href="#">Thessalonica</a></li>
+        <li><a href="#">Berea</a></li>
+        <li><a href="#">Ephesus (visited by Paul)</a></li>
+        <li><a href="#">Nicopolis</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Israel — North</h2>
+      <ul class="site-grid">
+        <li><a href="#">Capernaum</a></li>
+        <li><a href="#">Caesarea Philippi</a></li>
+        <li><a href="#">Chorazin</a></li>
+        <li><a href="#">Hazor</a></li>
+        <li><a href="#">Jezreel Valley</a></li>
+        <li><a href="#">Megiddo</a></li>
+        <li><a href="#">Nazareth</a></li>
+        <li><a href="#">Sepphoris</a></li>
+        <li><a href="#">Tiberias</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Israel — Central</h2>
+      <ul class="site-grid">
+        <li><a href="#">Dead Sea Scrolls</a></li>
+        <li><a href="#">En Gedi</a></li>
+        <li><a href="#">Gezer</a></li>
+        <li><a href="#">Herodium</a></li>
+        <li><a href="#">Jerusalem Old City</a></li>
+        <li><a href="#">Jerusalem Temple Mount</a></li>
+        <li><a href="#">Jericho</a></li>
+        <li><a href="#">Masada</a></li>
+        <li><a href="#">Qumran</a></li>
+        <li><a href="#">Shiloh</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Israel — South</h2>
+      <ul class="site-grid">
+        <li><a href="#">Arad</a></li>
+        <li><a href="#">Beer Sheba</a></li>
+        <li><a href="#">Negev Landscapes</a></li>
+        <li><a href="#">Petra approach</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Italy</h2>
+      <ul class="site-grid">
+        <li><a href="#">Rome Forum</a></li>
+        <li><a href="#">Rome Churches</a></li>
+        <li><a href="#">Ostia</a></li>
+        <li><a href="#">Pompeii</a></li>
+        <li><a href="#">Herculaneum</a></li>
+        <li><a href="#">Naples Museum</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Jordan</h2>
+      <ul class="site-grid">
+        <li><a href="#">Amman (Rabbath Ammon)</a></li>
+        <li><a href="#">Gerasa (Jerash)</a></li>
+        <li><a href="#">Madaba</a></li>
+        <li><a href="#">Petra</a></li>
+        <li><a href="#">Dibon</a></li>
+        <li><a href="#">Heshbon</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Turkey — Western</h2>
+      <ul class="site-grid">
+        <li><a href="#">Assos</a></li>
+        <li><a href="#">Ephesus</a></li>
+        <li><a href="#">Hierapolis</a></li>
+        <li><a href="#">Laodicea</a></li>
+        <li><a href="#">Miletus</a></li>
+        <li><a href="#">Pergamum</a></li>
+        <li><a href="#">Philadelphia</a></li>
+        <li><a href="#">Sardis</a></li>
+        <li><a href="#">Smyrna/Izmir</a></li>
+        <li><a href="#">Thyatira</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Turkey — Central</h2>
+      <ul class="site-grid">
+        <li><a href="#">Ankara Museum</a></li>
+        <li><a href="#">Antioch of Pisidia</a></li>
+        <li><a href="#">Iconium</a></li>
+        <li><a href="#">Lystra</a></li>
+        <li><a href="#">Derbe</a></li>
+      </ul>
+    </div>
+
+    <div class="country-section">
+      <h2 class="country-heading">Turkey — Eastern</h2>
+      <ul class="site-grid">
+        <li><a href="#">Antioch on the Orontes</a></li>
+        <li><a href="#">Harran</a></li>
+        <li><a href="#">Mt. Ararat</a></li>
+      </ul>
+    </div>
+
+    <p style="margin-top:2rem;font-family:system-ui,sans-serif;font-size:.8rem;color:rgba(237,232,225,.35);text-align:center">This list is representative. The full database contains 600+ sites across 12 countries.</p>
+  </div>
+
+  <footer class="story-footer">
+    © Dr. Carl Rasmussen &nbsp;·&nbsp; <a href="index.html">HolyLandPhotos.org</a>
+  </footer>
+
+  <script>
+    const sbc = document.getElementById('sticky-bc');
+    const header = document.querySelector('.list-header');
+    const prog = document.getElementById('progress');
+    const io = new IntersectionObserver(([e]) => sbc.classList.toggle('visible', !e.isIntersecting));
+    if (header) io.observe(header);
+    window.addEventListener('scroll', () => {
+      const s = document.documentElement, pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+      if (prog) prog.style.width = pct + '%';
+    }, { passive: true });
+  </script>
+</body>
+</html>
