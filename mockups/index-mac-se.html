@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Holy Land Photos — Macintosh SE Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chicago:wght@400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --mac-white: #f0f0e8;
+      --mac-black: #1a1a1a;
+      --mac-gray: #888;
+      --mac-highlight: #000;
+      --mac-selection-bg: #000;
+      --mac-selection-fg: #fff;
+      --mac-border: #1a1a1a;
+      --mac-window-title: #ddd;
+      --mac-scrollbar: #ccc;
+    }
+
+    html { font-size: 13px; }
+
+    body {
+      background: #a8a8a8;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,.02) 1px, rgba(0,0,0,.02) 2px);
+      font-family: 'Chicago', 'Geneva', 'Lucida Grande', 'Helvetica Neue', sans-serif;
+      color: var(--mac-black);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+
+    /* ── Menu bar ─────────────────────────────────── */
+    .menu-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: 20px;
+      background: var(--mac-white);
+      border-bottom: 2px solid var(--mac-black);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .menu-bar .apple-logo {
+      margin-right: 16px;
+      font-size: 14px;
+    }
+    .menu-bar span {
+      margin-right: 16px;
+      cursor: default;
+    }
+    .menu-bar .right-menu {
+      margin-left: auto;
+      font-weight: normal;
+      font-size: 11px;
+    }
+
+    /* ── Window ───────────────────────────────────── */
+    .mac-window {
+      margin: 36px auto 24px;
+      width: 512px;
+      max-width: calc(100vw - 16px);
+      background: var(--mac-white);
+      border: 2px solid var(--mac-black);
+      border-radius: 4px 4px 0 0;
+      box-shadow: 4px 4px 0 rgba(0,0,0,.35);
+    }
+
+    .window-titlebar {
+      height: 20px;
+      background: var(--mac-white);
+      border-bottom: 2px solid var(--mac-black);
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      position: relative;
+    }
+    .window-close {
+      width: 12px; height: 12px;
+      border: 1.5px solid var(--mac-black);
+      border-radius: 0;
+      background: var(--mac-white);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .window-title {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      letter-spacing: .02em;
+    }
+    .window-stripes {
+      flex: 1;
+      margin: 0 24px 0 8px;
+      height: 10px;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 1px,
+        var(--mac-black) 1px, var(--mac-black) 2px,
+        transparent 2px, transparent 3px
+      );
+    }
+    .window-stripes-r {
+      flex: 1;
+      margin: 0 6px 0 24px;
+      height: 10px;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 1px,
+        var(--mac-black) 1px, var(--mac-black) 2px,
+        transparent 2px, transparent 3px
+      );
+    }
+
+    .window-body {
+      padding: 16px;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+    }
+
+    /* ── Scrollbar ────────────────────────────────── */
+    .window-body::-webkit-scrollbar { width: 16px; }
+    .window-body::-webkit-scrollbar-track {
+      background: var(--mac-white);
+      border-left: 2px solid var(--mac-black);
+    }
+    .window-body::-webkit-scrollbar-thumb {
+      background: var(--mac-white);
+      border: 2px solid var(--mac-black);
+    }
+
+    /* ── Typography ───────────────────────────────── */
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    h2 {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 16px 0 6px;
+      border-bottom: 1px solid var(--mac-black);
+      padding-bottom: 3px;
+    }
+    p {
+      margin: 6px 0;
+      font-size: 12px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: var(--mac-gray);
+      margin-bottom: 4px;
+    }
+
+    a {
+      color: var(--mac-black);
+      text-decoration: underline;
+    }
+    a:hover {
+      background: var(--mac-selection-bg);
+      color: var(--mac-selection-fg);
+      text-decoration: none;
+    }
+
+    /* ── Dividers ─────────────────────────────────── */
+    .mac-hr {
+      border: none;
+      border-top: 1px solid var(--mac-black);
+      margin: 12px 0;
+    }
+    .mac-hr-double {
+      border: none;
+      border-top: 2px solid var(--mac-black);
+      border-bottom: 1px solid var(--mac-black);
+      height: 4px;
+      margin: 14px 0;
+    }
+
+    /* ── Stats bar ────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 8px 0 12px;
+    }
+
+    /* ── Search ───────────────────────────────────── */
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 0;
+    }
+    .search-row label {
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .search-row input {
+      flex: 1;
+      font-family: 'Geneva', 'Lucida Grande', sans-serif;
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 2px solid var(--mac-black);
+      border-radius: 0;
+      background: #fff;
+      color: var(--mac-black);
+      outline: none;
+    }
+    .search-row input:focus {
+      box-shadow: 0 0 0 1px var(--mac-black);
+    }
+    .mac-btn {
+      font-family: 'Chicago', 'Geneva', sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 16px;
+      border: 2px solid var(--mac-black);
+      border-radius: 8px;
+      background: var(--mac-white);
+      color: var(--mac-black);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .mac-btn:hover {
+      background: var(--mac-black);
+      color: var(--mac-white);
+    }
+    .mac-btn-default {
+      box-shadow: 0 0 0 2px var(--mac-black);
+      border-radius: 8px;
+    }
+
+    /* ── Menu list ────────────────────────────────── */
+    .menu-list {
+      list-style: none;
+      border: 1px solid var(--mac-black);
+      margin: 8px 0;
+    }
+    .menu-list li {
+      font-size: 12px;
+      padding: 3px 12px;
+      border-bottom: 1px dotted var(--mac-gray);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .menu-list li:last-child { border-bottom: none; }
+    .menu-list li a {
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+    .menu-list li a:hover {
+      background: var(--mac-selection-bg);
+      color: var(--mac-selection-fg);
+    }
+    .menu-list .shortcut {
+      margin-left: auto;
+      color: var(--mac-gray);
+      font-size: 10px;
+    }
+
+    /* ── Recent items ─────────────────────────────── */
+    .recent-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 6px 0;
+      border-bottom: 1px dotted var(--mac-gray);
+      font-size: 12px;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-icon {
+      width: 32px; height: 32px;
+      border: 1px solid var(--mac-black);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      background: #fff;
+    }
+    .recent-title { font-weight: bold; }
+    .recent-meta { color: var(--mac-gray); font-size: 10px; }
+
+    /* ── Featured ─────────────────────────────────── */
+    .feat-item {
+      border: 1px solid var(--mac-black);
+      padding: 8px 10px;
+      margin: 6px 0;
+      background: #fff;
+    }
+    .feat-item .feat-title { font-weight: bold; font-size: 12px; }
+    .feat-item .feat-desc { font-size: 11px; color: var(--mac-gray); margin-top: 2px; }
+
+    /* ── Signup ────────────────────────────────────── */
+    .signup-box {
+      border: 2px solid var(--mac-black);
+      padding: 12px;
+      margin: 8px 0;
+      text-align: center;
+    }
+    .signup-box input {
+      font-family: 'Geneva', sans-serif;
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 2px solid var(--mac-black);
+      width: 220px;
+      max-width: 100%;
+      margin: 6px 4px;
+    }
+
+    /* ── Footer ───────────────────────────────────── */
+    .mac-footer {
+      text-align: center;
+      font-size: 10px;
+      color: var(--mac-gray);
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid var(--mac-black);
+    }
+    .mac-footer a {
+      color: var(--mac-gray);
+      margin: 0 4px;
+      font-size: 10px;
+    }
+    .mac-footer a:hover {
+      color: var(--mac-selection-fg);
+      background: var(--mac-selection-bg);
+    }
+
+    /* ── Alert box ────────────────────────────────── */
+    .alert-box {
+      border: 2px solid var(--mac-black);
+      padding: 10px 12px;
+      margin: 8px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #fff;
+    }
+    .alert-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .alert-text {
+      font-size: 11px;
+    }
+
+    @media (max-width: 540px) {
+      .mac-window { border-radius: 0; }
+      .stats-bar { gap: 12px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Menu Bar -->
+<div class="menu-bar">
+  <span class="apple-logo">&#63743;</span>
+  <span>File</span>
+  <span>Edit</span>
+  <span>View</span>
+  <span>Special</span>
+  <span class="right-menu">9:41 AM</span>
+</div>
+
+<!-- Main Window -->
+<div class="mac-window">
+  <div class="window-titlebar">
+    <div class="window-close"></div>
+    <div class="window-stripes"></div>
+    <span class="window-title">Holy Land Photos</span>
+    <div class="window-stripes-r"></div>
+  </div>
+
+  <div class="window-body">
+
+    <h1>Holy Land Photos</h1>
+    <p class="subtitle">Free High-Resolution Photographs of the Biblical and Ancient World</p>
+    <p class="subtitle">Captured over four decades of fieldwork by Dr. Carl Rasmussen</p>
+
+    <div class="stats-bar">
+      <span>7,000+ Photos</span>
+      <span>612 Sites</span>
+      <span>12 Countries</span>
+    </div>
+
+    <hr class="mac-hr-double">
+
+    <!-- Search -->
+    <form action="/search.asp" method="get">
+      <div class="search-row">
+        <label for="search-field">Find:</label>
+        <input id="search-field" type="text" name="searchText" placeholder="Galilee, tomb, Paul..." aria-label="Search photos">
+        <button class="mac-btn mac-btn-default" type="submit">Search</button>
+      </div>
+    </form>
+    <p style="font-size:10px; color:var(--mac-gray); text-align:center;">Singular nouns work best</p>
+
+    <hr class="mac-hr">
+
+    <!-- Menu -->
+    <h2>Main Menu</h2>
+    <ul class="menu-list">
+      <li><a href="countries-story.html">Browse by Country</a> <span class="shortcut">&#8984;1</span></li>
+      <li><a href="topical.html">Explore by Topic</a> <span class="shortcut">&#8984;2</span></li>
+      <li><a href="#">Recent Additions</a> <span class="shortcut">&#8984;3</span></li>
+      <li><a href="#">Search Photos</a> <span class="shortcut">&#8984;F</span></li>
+      <li><a href="reading.html">Reading Recommendations</a></li>
+      <li><a href="site-list.html">Complete Site List</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+
+    <hr class="mac-hr">
+
+    <!-- Browse descriptions -->
+    <h2>Browse by Country</h2>
+    <p>Explore 12 countries of the ancient world &mdash; from Israel and Jordan to Turkey, Greece, Egypt, and beyond. Each collection is organized by region and site.</p>
+
+    <h2>Explore by Topic</h2>
+    <p>Find photos organized by theme &mdash; Paul's missionary journeys, the Seven Churches of Revelation, Old Testament chronological periods, and more.</p>
+
+    <hr class="mac-hr">
+
+    <!-- What's New -->
+    <h2>Recent Additions</h2>
+
+    <div class="recent-item">
+      <div class="recent-icon">&#128247;</div>
+      <div>
+        <div class="recent-title">Palm Sunday Images from Jerusalem</div>
+        <div class="recent-meta">March 2026 &middot; 5 photos</div>
+      </div>
+    </div>
+
+    <div class="recent-item">
+      <div class="recent-icon">&#128247;</div>
+      <div>
+        <div class="recent-title">Holy Week Sites &mdash; Rolling Stone Tombs, Gethsemane, Via Dolorosa</div>
+        <div class="recent-meta">March 2026 &middot; 9 photos</div>
+      </div>
+    </div>
+
+    <div class="recent-item">
+      <div class="recent-icon">&#128247;</div>
+      <div>
+        <div class="recent-title">New photos from Western Turkey &mdash; Ephesus, Smyrna, Pergamum</div>
+        <div class="recent-meta">February 2026 &middot; 12 photos</div>
+      </div>
+    </div>
+
+    <hr class="mac-hr">
+
+    <!-- Featured -->
+    <h2>Featured Collections</h2>
+
+    <div class="feat-item">
+      <div class="feat-title">Palm Sunday in Jerusalem</div>
+      <div class="feat-desc">Pilgrims retrace the ancient route from the Mount of Olives to the Old City.</div>
+    </div>
+
+    <div class="feat-item">
+      <div class="feat-title">The Seven Churches of Revelation</div>
+      <div class="feat-desc">Archaeological sites of the seven churches addressed in Revelation 2&ndash;3.</div>
+    </div>
+
+    <hr class="mac-hr">
+
+    <!-- Signup -->
+    <div class="signup-box">
+      <p style="font-weight:bold;">Stay Updated</p>
+      <p style="font-size:11px;">Receive occasional email updates when new photos and collections are added.</p>
+      <form action="/register.asp" method="post">
+        <input type="email" name="email" placeholder="Your email address" required>
+        <button class="mac-btn" type="submit">Subscribe</button>
+      </form>
+      <p style="font-size:9px; color:var(--mac-gray); margin-top:6px;">Your email will never be shared. Unsubscribe anytime.</p>
+    </div>
+
+    <hr class="mac-hr">
+
+    <!-- Donate -->
+    <p style="text-align:center; font-size:11px;">
+      Holy Land Photos is a free resource maintained by Dr. Rasmussen.<br>
+      Your support helps keep the collection growing.
+    </p>
+    <p style="text-align:center; margin:8px 0;">
+      <a class="mac-btn" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener" style="text-decoration:none;">Support This Project</a>
+    </p>
+
+    <hr class="mac-hr">
+
+    <!-- Tour Alert -->
+    <div class="alert-box">
+      <span class="alert-icon">&#9888;</span>
+      <div class="alert-text">
+        <strong>Turkey &amp; Greece &mdash; April/May 2026</strong><br>
+        Join Dr. Rasmussen's next study tour of the biblical world.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mac-footer">
+      <p>&copy; <script>document.write(new Date().getFullYear())</script>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+      <p style="margin-top:4px;">
+        <a href="permission-story.html">Permission</a> |
+        <a href="about.html">About</a> |
+        <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Blog</a> |
+        <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Feedback</a>
+      </p>
+    </div>
+
+  </div><!-- .window-body -->
+</div><!-- .mac-window -->
+
+</body>
+</html>

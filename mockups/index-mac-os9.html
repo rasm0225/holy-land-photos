@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Holy Land Photos — Mac OS 9 Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Charcoal&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 13px; }
+
+    body {
+      /* Classic OS 9 desktop pattern */
+      background: #6688bb;
+      background-image:
+        linear-gradient(45deg, rgba(255,255,255,.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,.04) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.04) 75%);
+      background-size: 4px 4px;
+      font-family: 'Charcoal', 'Lucida Grande', Geneva, Verdana, sans-serif;
+      color: #000;
+      line-height: 1.45;
+      min-height: 100vh;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+    }
+
+    /* ── Menu bar (Platinum) ──────────────────────── */
+    .menu-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: 22px;
+      background: linear-gradient(180deg, #eee 0%, #ccc 100%);
+      border-bottom: 1px solid #999;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    }
+    .menu-bar span {
+      margin-right: 18px;
+      cursor: default;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .menu-bar .apple-logo {
+      color: #36c;
+      font-size: 15px;
+      margin-right: 18px;
+    }
+    .menu-bar .right-items {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: normal;
+      color: #333;
+    }
+
+    /* ── Platinum window ──────────────────────────── */
+    .os9-window {
+      margin: 38px auto 24px;
+      width: 580px;
+      max-width: calc(100vw - 16px);
+      background: #ddd;
+      border: 1px solid #777;
+      border-radius: 8px 8px 4px 4px;
+      box-shadow: 2px 3px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.6);
+      overflow: hidden;
+    }
+
+    .window-titlebar {
+      height: 22px;
+      background: linear-gradient(180deg, #f4f4f4 0%, #bbb 40%, #ccc 60%, #ddd 100%);
+      border-bottom: 1px solid #999;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      position: relative;
+    }
+    .window-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .window-btn {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 1px solid #777;
+      cursor: pointer;
+    }
+    .btn-close { background: linear-gradient(135deg, #ff6b6b, #cc3333); }
+    .btn-minimize { background: linear-gradient(135deg, #ffd93d, #ccaa00); }
+    .btn-zoom { background: linear-gradient(135deg, #6bff6b, #33aa33); }
+    .window-title {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      text-shadow: 0 1px 0 rgba(255,255,255,.5);
+      white-space: nowrap;
+    }
+    /* Platinum stripes */
+    .titlebar-stripes {
+      flex: 1;
+      height: 12px;
+      margin: 0 16px 0 8px;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent, transparent 1px,
+        rgba(0,0,0,.08) 1px, rgba(0,0,0,.08) 2px,
+        transparent 2px, transparent 3px
+      );
+    }
+    .titlebar-stripes-r {
+      flex: 1;
+      height: 12px;
+      margin: 0 8px 0 16px;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent, transparent 1px,
+        rgba(0,0,0,.08) 1px, rgba(0,0,0,.08) 2px,
+        transparent 2px, transparent 3px
+      );
+    }
+
+    .window-body {
+      background: #fff;
+      padding: 16px 18px;
+      overflow-y: auto;
+      max-height: calc(100vh - 80px);
+      border-top: 1px solid #aaa;
+    }
+
+    /* ── Scrollbar (Platinum) ─────────────────────── */
+    .window-body::-webkit-scrollbar { width: 16px; }
+    .window-body::-webkit-scrollbar-track {
+      background: #eee;
+      border-left: 1px solid #aaa;
+    }
+    .window-body::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #ddd, #aaa);
+      border: 1px solid #888;
+      border-radius: 3px;
+    }
+
+    /* ── Typography ───────────────────────────────── */
+    h1 {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 2px;
+      color: #003;
+    }
+    h2 {
+      font-size: 13px;
+      font-weight: bold;
+      color: #003;
+      margin: 14px 0 6px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #ccc;
+    }
+    p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #222;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 3px;
+    }
+
+    a { color: #0000cc; text-decoration: underline; }
+    a:hover { color: #cc0000; }
+    a:visited { color: #551a8b; }
+
+    /* ── OS 9 dividers ────────────────────────────── */
+    .os9-hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(180deg, #aaa 0%, #fff 100%);
+      margin: 12px 0;
+    }
+
+    /* ── Stats ────────────────────────────────────── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 6px 0 10px;
+      color: #003;
+    }
+    .stats-bar .num { color: #0000cc; }
+
+    /* ── Search ───────────────────────────────────── */
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 8px 0;
+      background: #eee;
+      padding: 8px 10px;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+    }
+    .search-row label {
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .search-row input {
+      flex: 1;
+      font-family: Geneva, 'Lucida Grande', sans-serif;
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 2px inset #ccc;
+      background: #fff;
+      color: #000;
+      outline: none;
+    }
+    .search-row input:focus {
+      border-color: #6688bb;
+    }
+
+    /* ── OS 9 buttons ─────────────────────────────── */
+    .os9-btn {
+      font-family: 'Charcoal', Geneva, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 3px 18px;
+      border: 1px solid #777;
+      border-radius: 5px;
+      background: linear-gradient(180deg, #f4f4f4 0%, #ccc 100%);
+      color: #000;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      white-space: nowrap;
+    }
+    .os9-btn:hover {
+      background: linear-gradient(180deg, #fff 0%, #ddd 100%);
+    }
+    .os9-btn:active {
+      background: linear-gradient(180deg, #aaa 0%, #ccc 100%);
+    }
+    .os9-btn-default {
+      border: 2px solid #333;
+      border-radius: 6px;
+    }
+
+    /* ── Nav list ─────────────────────────────────── */
+    .nav-list {
+      list-style: none;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      margin: 8px 0;
+      background: #fff;
+      overflow: hidden;
+    }
+    .nav-list li {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-list li:last-child { border-bottom: none; }
+    .nav-list li:nth-child(even) { background: #f5f5ff; }
+    .nav-list li a {
+      text-decoration: none;
+      color: #000;
+      flex: 1;
+    }
+    .nav-list li:hover {
+      background: #3366cc;
+      color: #fff;
+    }
+    .nav-list li:hover a { color: #fff; }
+    .nav-list li:hover .nav-shortcut { color: rgba(255,255,255,.7); }
+    .nav-icon {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+    }
+    .nav-shortcut {
+      margin-left: auto;
+      color: #999;
+      font-size: 10px;
+    }
+
+    /* ── Recent items ─────────────────────────────── */
+    .recent-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 6px 0;
+      border-bottom: 1px solid #e8e8e8;
+      font-size: 12px;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-icon-box {
+      width: 36px; height: 36px;
+      border: 1px solid #bbb;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #f8f8ff, #e8e8f0);
+    }
+    .recent-title { font-weight: bold; color: #003; }
+    .recent-meta { color: #888; font-size: 10px; }
+
+    /* ── Featured ─────────────────────────────────── */
+    .feat-item {
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: linear-gradient(180deg, #f8f8ff, #eeeef4);
+    }
+    .feat-item .feat-title { font-weight: bold; font-size: 12px; color: #003; }
+    .feat-item .feat-desc { font-size: 11px; color: #555; margin-top: 2px; }
+    .feat-item:hover { background: linear-gradient(180deg, #fff, #f0f0ff); border-color: #88a; }
+
+    /* ── Signup box ────────────────────────────────── */
+    .signup-box {
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      padding: 12px;
+      margin: 8px 0;
+      text-align: center;
+      background: linear-gradient(180deg, #f0f0f8, #e4e4ee);
+    }
+    .signup-box input[type="email"] {
+      font-family: Geneva, sans-serif;
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 2px inset #ccc;
+      width: 200px;
+      max-width: 100%;
+      margin: 6px 4px;
+      background: #fff;
+    }
+
+    /* ── Alert box (tour) ─────────────────────────── */
+    .alert-box {
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin: 8px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: linear-gradient(180deg, #fffff0, #f8f0d8);
+    }
+    .alert-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .alert-text { font-size: 11px; color: #333; }
+    .alert-text strong { color: #003; }
+
+    /* ── Footer ───────────────────────────────────── */
+    .os9-footer {
+      text-align: center;
+      font-size: 10px;
+      color: #888;
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #ccc;
+    }
+    .os9-footer a {
+      color: #666;
+      font-size: 10px;
+      margin: 0 3px;
+    }
+    .os9-footer a:hover { color: #cc0000; }
+
+    /* ── Resize grip ──────────────────────────────── */
+    .resize-grip {
+      text-align: right;
+      padding: 2px 4px 0 0;
+      font-size: 10px;
+      color: #aaa;
+      background: #ddd;
+      border-top: 1px solid #bbb;
+      line-height: 1;
+    }
+
+    @media (max-width: 600px) {
+      .os9-window { border-radius: 4px 4px 2px 2px; }
+      .stats-bar { gap: 10px; font-size: 11px; flex-wrap: wrap; justify-content: center; }
+      .search-row { flex-wrap: wrap; }
+      .search-row input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Menu Bar -->
+<div class="menu-bar">
+  <span class="apple-logo">&#63743;</span>
+  <span>File</span>
+  <span>Edit</span>
+  <span>View</span>
+  <span>Go</span>
+  <span>Window</span>
+  <span>Help</span>
+  <div class="right-items">
+    <span>&#9654;&#xFE0E;</span>
+    <span>Thu 9:41 AM</span>
+  </div>
+</div>
+
+<!-- Main Window -->
+<div class="os9-window">
+  <div class="window-titlebar">
+    <div class="window-controls">
+      <div class="window-btn btn-close"></div>
+      <div class="window-btn btn-minimize"></div>
+      <div class="window-btn btn-zoom"></div>
+    </div>
+    <div class="titlebar-stripes"></div>
+    <span class="window-title">Holy Land Photos</span>
+    <div class="titlebar-stripes-r"></div>
+  </div>
+
+  <div class="window-body">
+
+    <h1>Holy Land Photos</h1>
+    <p class="subtitle">Free High-Resolution Photographs of the Biblical and Ancient World</p>
+    <p class="subtitle">Captured over four decades of fieldwork by Dr. Carl Rasmussen</p>
+
+    <div class="stats-bar">
+      <span><span class="num">7,000+</span> Photos</span>
+      <span><span class="num">612</span> Sites</span>
+      <span><span class="num">12</span> Countries</span>
+    </div>
+
+    <hr class="os9-hr">
+
+    <!-- Search -->
+    <form action="/search.asp" method="get">
+      <div class="search-row">
+        <label for="search-field">Search:</label>
+        <input id="search-field" type="text" name="searchText" placeholder="Galilee, tomb, Paul..." aria-label="Search photos">
+        <button class="os9-btn os9-btn-default" type="submit">Find</button>
+      </div>
+    </form>
+    <p style="font-size:10px; color:#999; text-align:center;">Hint: singular nouns work best</p>
+
+    <hr class="os9-hr">
+
+    <!-- Navigation -->
+    <h2>Main Menu</h2>
+    <ul class="nav-list">
+      <li><span class="nav-icon">&#127758;</span><a href="countries-story.html">Browse by Country</a><span class="nav-shortcut">&#8984;1</span></li>
+      <li><span class="nav-icon">&#128218;</span><a href="topical.html">Explore by Topic</a><span class="nav-shortcut">&#8984;2</span></li>
+      <li><span class="nav-icon">&#10024;</span><a href="#">Recent Additions</a><span class="nav-shortcut">&#8984;3</span></li>
+      <li><span class="nav-icon">&#128269;</span><a href="#">Search Photos</a><span class="nav-shortcut">&#8984;F</span></li>
+      <li><span class="nav-icon">&#128214;</span><a href="reading.html">Reading Recommendations</a></li>
+      <li><span class="nav-icon">&#128203;</span><a href="site-list.html">Complete Site List</a></li>
+      <li><span class="nav-icon">&#8505;&#xFE0E;</span><a href="about.html">About</a></li>
+    </ul>
+
+    <hr class="os9-hr">
+
+    <!-- Browse -->
+    <h2>Browse by Country</h2>
+    <p>Explore 12 countries of the ancient world &mdash; from Israel and Jordan to Turkey, Greece, Egypt, and beyond. Each collection is organized by region and site.</p>
+
+    <h2>Explore by Topic</h2>
+    <p>Find photos organized by theme &mdash; Paul's missionary journeys, the Seven Churches of Revelation, Old Testament chronological periods, and more.</p>
+
+    <hr class="os9-hr">
+
+    <!-- Recent -->
+    <h2>Recent Additions</h2>
+
+    <div class="recent-item">
+      <div class="recent-icon-box">&#128247;</div>
+      <div>
+        <div class="recent-title">Palm Sunday Images from Jerusalem</div>
+        <div class="recent-meta">March 2026 &middot; 5 photos</div>
+      </div>
+    </div>
+
+    <div class="recent-item">
+      <div class="recent-icon-box">&#128247;</div>
+      <div>
+        <div class="recent-title">Holy Week Sites &mdash; Rolling Stone Tombs, Gethsemane, Via Dolorosa</div>
+        <div class="recent-meta">March 2026 &middot; 9 photos</div>
+      </div>
+    </div>
+
+    <div class="recent-item">
+      <div class="recent-icon-box">&#128247;</div>
+      <div>
+        <div class="recent-title">New photos from Western Turkey &mdash; Ephesus, Smyrna, Pergamum</div>
+        <div class="recent-meta">February 2026 &middot; 12 photos</div>
+      </div>
+    </div>
+
+    <hr class="os9-hr">
+
+    <!-- Featured -->
+    <h2>Featured Collections</h2>
+
+    <div class="feat-item">
+      <div class="feat-title">Palm Sunday in Jerusalem</div>
+      <div class="feat-desc">Pilgrims retrace the ancient route from the Mount of Olives to the Old City.</div>
+    </div>
+
+    <div class="feat-item">
+      <div class="feat-title">The Seven Churches of Revelation</div>
+      <div class="feat-desc">Archaeological sites of the seven churches addressed in Revelation 2&ndash;3.</div>
+    </div>
+
+    <hr class="os9-hr">
+
+    <!-- Signup -->
+    <div class="signup-box">
+      <p style="font-weight:bold; color:#003;">Stay Updated</p>
+      <p style="font-size:11px; color:#555;">Receive occasional email updates when new photos and collections are added.</p>
+      <form action="/register.asp" method="post">
+        <input type="email" name="email" placeholder="Your email address" required>
+        <button class="os9-btn" type="submit">Subscribe</button>
+      </form>
+      <p style="font-size:9px; color:#999; margin-top:6px;">Your email will never be shared. Unsubscribe anytime.</p>
+    </div>
+
+    <hr class="os9-hr">
+
+    <!-- Donate -->
+    <p style="text-align:center; font-size:11px; color:#444;">
+      Holy Land Photos is a free resource maintained by Dr. Rasmussen.<br>
+      Your support helps keep the collection growing.
+    </p>
+    <p style="text-align:center; margin:8px 0;">
+      <a class="os9-btn" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener" style="text-decoration:none; color:#000;">Support This Project</a>
+    </p>
+
+    <hr class="os9-hr">
+
+    <!-- Tour Alert -->
+    <div class="alert-box">
+      <span class="alert-icon">&#9888;&#xFE0E;</span>
+      <div class="alert-text">
+        <strong>Turkey &amp; Greece &mdash; April/May 2026</strong><br>
+        Join Dr. Rasmussen's next study tour of the biblical world.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="os9-footer">
+      <p>&copy; <script>document.write(new Date().getFullYear())</script>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+      <p style="margin-top:4px;">
+        <a href="permission-story.html">Permission</a> |
+        <a href="about.html">About</a> |
+        <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Blog</a> |
+        <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Feedback</a>
+      </p>
+    </div>
+
+  </div><!-- .window-body -->
+
+  <div class="resize-grip">&#9698;</div>
+</div><!-- .os9-window -->
+
+</body>
+</html>

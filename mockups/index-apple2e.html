@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HOLY LAND PHOTOS — Apple IIe Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #33ff33;
+      --green-dim: #1a9a1a;
+      --green-faint: #0d4d0d;
+      --green-glow: rgba(51, 255, 51, 0.15);
+      --black: #0a0a0a;
+    }
+
+    html { font-size: 14px; }
+
+    body {
+      background: var(--black);
+      color: var(--green);
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      line-height: 2;
+      padding: 2rem;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* CRT vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Phosphor glow on text */
+    .screen {
+      max-width: 720px;
+      margin: 0 auto;
+      text-shadow: 0 0 8px var(--green-glow), 0 0 2px var(--green-glow);
+    }
+
+    a {
+      color: var(--green);
+      text-decoration: none;
+    }
+    a:hover, a:focus {
+      background: var(--green);
+      color: var(--black);
+      outline: none;
+    }
+
+    .border-top {
+      border-top: 2px solid var(--green-dim);
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    h1, h2 {
+      font-size: 1rem;
+      font-weight: normal;
+      color: var(--green);
+    }
+
+    .title-art {
+      color: var(--green);
+      font-size: .55rem;
+      line-height: 1.2;
+      white-space: pre;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .prompt { color: var(--green-dim); }
+    .highlight { color: #66ff66; }
+    .dim { color: var(--green-dim); }
+    .cursor {
+      display: inline-block;
+      width: .6em;
+      height: 1em;
+      background: var(--green);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .menu-item {
+      display: block;
+      padding: .25rem .5rem;
+      margin: .25rem 0;
+    }
+
+    .hr {
+      color: var(--green-dim);
+      overflow: hidden;
+      white-space: nowrap;
+      letter-spacing: .1em;
+    }
+
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 3rem;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .search-box input {
+      background: var(--black);
+      color: var(--green);
+      border: 2px solid var(--green-dim);
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: .75rem;
+      padding: .5rem .75rem;
+      width: 320px;
+      max-width: 100%;
+      outline: none;
+      caret-color: var(--green);
+      text-shadow: 0 0 8px var(--green-glow);
+    }
+    .search-box input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 10px var(--green-glow);
+    }
+    .search-box input::placeholder {
+      color: var(--green-faint);
+    }
+    .search-box button {
+      background: var(--green-dim);
+      color: var(--black);
+      border: none;
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: .65rem;
+      padding: .5rem 1rem;
+      cursor: pointer;
+    }
+    .search-box button:hover {
+      background: var(--green);
+    }
+
+    .recent-entry {
+      margin: .5rem 0;
+    }
+
+    .footer-links a {
+      margin-right: 1rem;
+      font-size: .6rem;
+    }
+
+    @media (max-width: 600px) {
+      html { font-size: 11px; }
+      body { padding: 1rem; }
+      .title-art { font-size: .4rem; }
+      .search-box input { width: 100%; }
+    }
+
+    /* Flicker effect — subtle */
+    @media (prefers-reduced-motion: no-preference) {
+      .screen {
+        animation: flicker 0.15s infinite alternate;
+      }
+      @keyframes flicker {
+        0% { opacity: .97; }
+        100% { opacity: 1; }
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="screen">
+
+<pre class="title-art">
+ _  _  ___  _  __   __  _      _   _  _  ___
+| || |/ _ \| | \ \ / / | |    /_\ | \| ||   \
+| __ | (_) | |__\ V /  | |__ / _ \| .` || |) |
+|_||_|\___/|____|_|_|  |____/_/ \_\_|\_||___/
+ ___  _  _  ___  _____  ___  ___
+| _ \| || |/ _ \|_   _|/ _ \/ __|
+|  _/| __ | (_) | | | | (_) \__ \
+|_|  |_||_|\___/  |_|  \___/|___/
+</pre>
+
+<p>
+  <span class="highlight">FREE HIGH-RESOLUTION PHOTOGRAPHS</span><br>
+  OF THE BIBLICAL AND ANCIENT WORLD
+</p>
+<p class="dim" style="margin-top:.5rem; font-size:.7rem;">
+  CAPTURED OVER FOUR DECADES OF FIELDWORK<br>
+  BY DR. CARL RASMUSSEN
+</p>
+
+<div class="hr" style="margin:1.5rem 0;">========================================</div>
+
+<div class="stats-row">
+  <span><span class="highlight">7,000+</span> PHOTOS</span>
+  <span><span class="highlight">612</span> SITES</span>
+  <span><span class="highlight">12</span> COUNTRIES</span>
+</div>
+
+<div class="hr" style="margin:1.5rem 0;">========================================</div>
+
+<!-- Search -->
+<p><span class="prompt">]</span> SEARCH THE COLLECTION:</p>
+<form class="search-box" action="/search.asp" method="get">
+  <input type="text" name="searchText" placeholder="GALILEE, TOMB, PAUL..." aria-label="Search photos">
+  <button type="submit">GO</button>
+</form>
+<p class="dim" style="font-size:.6rem;">HINT: SINGULAR NOUNS WORK BEST</p>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- Main Menu -->
+<h2><span class="prompt">]</span> MAIN MENU</h2>
+<br>
+<a class="menu-item" href="countries-story.html">[1] BROWSE BY COUNTRY</a>
+<a class="menu-item" href="topical.html">[2] EXPLORE BY TOPIC</a>
+<a class="menu-item" href="#">[3] RECENT ADDITIONS</a>
+<a class="menu-item" href="#">[4] SEARCH PHOTOS</a>
+<a class="menu-item" href="reading.html">[5] READING RECOMMENDATIONS</a>
+<a class="menu-item" href="site-list.html">[6] COMPLETE SITE LIST</a>
+<a class="menu-item" href="about.html">[7] ABOUT</a>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- Browse descriptions -->
+<h2><span class="prompt">]</span> BROWSE BY COUNTRY</h2>
+<p style="margin-top:.75rem; font-size:.75rem;">
+  EXPLORE 12 COUNTRIES OF THE ANCIENT<br>
+  WORLD -- FROM ISRAEL AND JORDAN TO<br>
+  TURKEY, GREECE, EGYPT, AND BEYOND.<br>
+  EACH COLLECTION IS ORGANIZED BY<br>
+  REGION AND SITE.
+</p>
+
+<br>
+
+<h2><span class="prompt">]</span> EXPLORE BY TOPIC</h2>
+<p style="margin-top:.75rem; font-size:.75rem;">
+  FIND PHOTOS ORGANIZED BY THEME --<br>
+  PAUL'S MISSIONARY JOURNEYS, THE<br>
+  SEVEN CHURCHES OF REVELATION, OLD<br>
+  TESTAMENT CHRONOLOGICAL PERIODS,<br>
+  AND MORE.
+</p>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- What's New -->
+<h2><span class="prompt">]</span> RECENT ADDITIONS</h2>
+<br>
+
+<div class="recent-entry">
+  <span class="dim">MAR 2026 |</span> <span class="highlight">PALM SUNDAY IMAGES FROM JERUSALEM</span><br>
+  <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 NEW PHOTOS</span>
+</div>
+
+<div class="recent-entry">
+  <span class="dim">MAR 2026 |</span> <span class="highlight">HOLY WEEK SITES</span><br>
+  <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ROLLING STONE TOMBS, GETHSEMANE,</span><br>
+  <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VIA DOLOROSA -- 9 NEW PHOTOS</span>
+</div>
+
+<div class="recent-entry">
+  <span class="dim">FEB 2026 |</span> <span class="highlight">NEW PHOTOS FROM WESTERN TURKEY</span><br>
+  <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EPHESUS, SMYRNA, PERGAMUM</span><br>
+  <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12 NEW PHOTOS</span>
+</div>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- Featured -->
+<h2><span class="prompt">]</span> FEATURED COLLECTIONS</h2>
+<br>
+<p style="font-size:.75rem;">
+  <span class="highlight">*</span> PALM SUNDAY IN JERUSALEM<br>
+  <span class="dim">&nbsp;&nbsp;PILGRIMS RETRACE THE ANCIENT ROUTE</span><br>
+  <span class="dim">&nbsp;&nbsp;FROM THE MOUNT OF OLIVES TO THE</span><br>
+  <span class="dim">&nbsp;&nbsp;OLD CITY.</span>
+</p>
+<br>
+<p style="font-size:.75rem;">
+  <span class="highlight">*</span> THE SEVEN CHURCHES OF REVELATION<br>
+  <span class="dim">&nbsp;&nbsp;ARCHAEOLOGICAL SITES OF THE SEVEN</span><br>
+  <span class="dim">&nbsp;&nbsp;CHURCHES ADDRESSED IN REVELATION</span><br>
+  <span class="dim">&nbsp;&nbsp;2-3.</span>
+</p>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- Signup -->
+<h2><span class="prompt">]</span> STAY UPDATED</h2>
+<p style="margin-top:.75rem; font-size:.75rem;">
+  RECEIVE OCCASIONAL EMAIL UPDATES<br>
+  WHEN NEW PHOTOS AND COLLECTIONS<br>
+  ARE ADDED TO THE SITE.
+</p>
+<p class="dim" style="margin-top:.5rem; font-size:.6rem;">
+  YOUR EMAIL WILL NEVER BE SHARED.<br>
+  UNSUBSCRIBE ANYTIME.
+</p>
+
+<div class="hr" style="margin:1.5rem 0;">----------------------------------------</div>
+
+<!-- Donate -->
+<p style="font-size:.75rem;">
+  HOLY LAND PHOTOS IS A FREE RESOURCE<br>
+  MAINTAINED BY DR. RASMUSSEN. YOUR<br>
+  SUPPORT HELPS KEEP THE COLLECTION<br>
+  GROWING.
+</p>
+<br>
+<a href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener" style="font-size:.7rem;">
+  [ SUPPORT THIS PROJECT ]
+</a>
+
+<div class="hr" style="margin:1.5rem 0;">========================================</div>
+
+<!-- Tour -->
+<p style="font-size:.7rem;">
+  <span class="highlight">*** ANNOUNCEMENT ***</span><br>
+  TURKEY &amp; GREECE -- APRIL/MAY 2026<br>
+  JOIN DR. RASMUSSEN'S NEXT STUDY<br>
+  TOUR OF THE BIBLICAL WORLD.
+</p>
+
+<div class="hr" style="margin:1.5rem 0;">========================================</div>
+
+<!-- Footer -->
+<p class="dim" style="font-size:.55rem;">
+  (C) <script>document.write(new Date().getFullYear())</script>.
+  ALL IMAGES ARE THE PROPERTY OF<br>
+  DR. CARL RASMUSSEN UNLESS OTHERWISE<br>
+  NOTED.
+</p>
+<br>
+<nav class="footer-links">
+  <a href="permission-story.html">PERMISSION</a>
+  <a href="about.html">ABOUT</a>
+  <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">BLOG</a>
+  <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">FEEDBACK</a>
+</nav>
+
+<br>
+<p>
+  <span class="prompt">]</span> <span class="cursor"></span>
+</p>
+
+</div><!-- .screen -->
+
+</body>
+</html>
