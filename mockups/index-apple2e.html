@@ -379,5 +379,104 @@
 
 </div><!-- .screen -->
 
+<script>
+// Play real Apple II disk drive WAV files in random order on page load
+(function () {
+  var sounds = [
+    'Apple_2_Disk_Drive_Sounds/Spin Up Search 1.wav',
+    'Apple_2_Disk_Drive_Sounds/Spin Up Search 2.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 1.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 2.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 3.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 4.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 5.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 6.wav',
+    'Apple_2_Disk_Drive_Sounds/Read 7.wav',
+    'Apple_2_Disk_Drive_Sounds/Search Skip Search 1.wav',
+    'Apple_2_Disk_Drive_Sounds/Search Skip Search 2.wav',
+    'Apple_2_Disk_Drive_Sounds/Search Skip Search 3.wav',
+    'Apple_2_Disk_Drive_Sounds/Search Skip Search 4.wav',
+    'Apple_2_Disk_Drive_Sounds/Search Skip Search 5.wav',
+    'Apple_2_Disk_Drive_Sounds/Grunt Grind 1.wav',
+    'Apple_2_Disk_Drive_Sounds/Grunt Grind 2.wav',
+    'Apple_2_Disk_Drive_Sounds/Spin.wav',
+    'Apple_2_Disk_Drive_Sounds/Sqweak.wav',
+    'Apple_2_Disk_Drive_Sounds/Beep.wav',
+    'Apple_2_Disk_Drive_Sounds/Beep Beep.wav'
+  ];
+
+  var started = false;
+  var queue = [];
+  var current = null;
+  var totalTime = 0;
+  var maxTime = 10; // stop after ~10 seconds
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function playNext() {
+    if (queue.length === 0 || totalTime >= maxTime) return;
+    var file = queue.shift();
+    current = new Audio(file);
+    current.volume = 0.6;
+    current.addEventListener('loadedmetadata', function () {
+      if (totalTime + current.duration > maxTime + 2) {
+        // Skip if this would go way over time
+        return;
+      }
+    });
+    current.addEventListener('ended', function () {
+      totalTime += current.duration;
+      playNext();
+    });
+    current.addEventListener('error', function () {
+      playNext(); // skip broken files
+    });
+    current.play().catch(function () { playNext(); });
+  }
+
+  function start() {
+    if (started) return;
+    started = true;
+    document.removeEventListener('click', start);
+    var hint = document.getElementById('disk-hint');
+    if (hint) hint.style.display = 'none';
+    queue = shuffle(sounds.slice());
+    totalTime = 0;
+    playNext();
+  }
+
+  window.addEventListener('load', function () {
+    // Test if autoplay is allowed
+    var test = new Audio();
+    test.volume = 0;
+    test.src = sounds[0];
+    var p = test.play();
+    if (p && p.then) {
+      p.then(function () {
+        test.pause();
+        start();
+      }).catch(function () {
+        test.pause();
+        // Need user gesture — show hint
+        document.addEventListener('click', start, { once: true });
+        var hint = document.createElement('p');
+        hint.id = 'disk-hint';
+        hint.className = 'dim';
+        hint.style.cssText = 'text-align:center; font-size:.55rem; margin-top:1rem; cursor:pointer;';
+        hint.textContent = '[ CLICK ANYWHERE TO START DISK DRIVE ]';
+        hint.addEventListener('click', start);
+        document.querySelector('.screen').appendChild(hint);
+      });
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
