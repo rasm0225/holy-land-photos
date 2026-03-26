@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>~*~Holy Land Photos~*~ Welcome to My Homepage!!</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000080;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='8' y='28' font-size='20' fill='rgba(255,255,255,0.04)'%3E%E2%9C%A1%3C/text%3E%3C/svg%3E");
+      color: #ffff00;
+      font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    a { color: #00ffff; }
+    a:visited { color: #ff99ff; }
+    a:hover { color: #ff0000; }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    /* ── Under construction banner ────────────────── */
+    .construction {
+      text-align: center;
+      padding: 6px;
+      background: #ff0000;
+      color: #ffff00;
+      font-weight: bold;
+      font-size: 12px;
+      letter-spacing: 2px;
+      animation: blink-slow 1.5s step-end infinite;
+    }
+    @keyframes blink-slow {
+      50% { opacity: .5; }
+    }
+
+    /* ── Marquee ──────────────────────────────────── */
+    .marquee-wrapper {
+      overflow: hidden;
+      background: #000000;
+      border: 2px inset #808080;
+      padding: 4px 0;
+      margin: 8px 0;
+    }
+    .marquee-text {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scroll-left 18s linear infinite;
+      color: #00ff00;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    @keyframes scroll-left {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ── Title area ───────────────────────────────── */
+    .title-area {
+      text-align: center;
+      padding: 16px 0 8px;
+    }
+    .title-area h1 {
+      font-size: 32px;
+      color: #ff6600;
+      text-shadow: 2px 2px #000, -1px -1px #880000;
+      margin-bottom: 4px;
+    }
+    .title-area .sparkle {
+      color: #ffff00;
+      font-size: 18px;
+    }
+    .subtitle {
+      color: #00ffff;
+      font-size: 16px;
+      font-style: italic;
+    }
+    .welcome-msg {
+      color: #ffffff;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* ── Hit counter ──────────────────────────────── */
+    .hit-counter {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 11px;
+      color: #cccccc;
+    }
+    .counter-box {
+      display: inline-block;
+      background: #000;
+      border: 2px inset #808080;
+      padding: 2px 8px;
+      font-family: 'Courier New', monospace;
+      color: #00ff00;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    /* ── Dividers ─────────────────────────────────── */
+    .rainbow-hr {
+      height: 6px;
+      border: none;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      margin: 12px 0;
+    }
+    .fire-hr {
+      height: 8px;
+      border: none;
+      background: linear-gradient(90deg, #ff0000, #ff6600, #ffcc00, #ff6600, #ff0000, #ff6600, #ffcc00, #ff6600, #ff0000);
+      margin: 12px 0;
+      animation: fire-shift 2s linear infinite;
+    }
+    @keyframes fire-shift {
+      0% { background-position: 0 0; }
+      100% { background-position: 200px 0; }
+    }
+
+    /* ── Stats table ──────────────────────────────── */
+    .stats-table {
+      margin: 8px auto;
+      border-collapse: collapse;
+    }
+    .stats-table td {
+      padding: 4px 16px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .stats-table .num {
+      color: #00ff00;
+      font-size: 22px;
+      font-family: 'Impact', 'Arial Black', sans-serif;
+    }
+    .stats-table .label {
+      color: #ffffff;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    /* ── Search ───────────────────────────────────── */
+    .search-area {
+      background: #000000;
+      border: 3px ridge #808080;
+      padding: 10px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .search-area label {
+      color: #00ff00;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .search-area input[type="text"] {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 13px;
+      padding: 4px 8px;
+      border: 2px inset #808080;
+      width: 260px;
+      max-width: 80%;
+      margin: 6px 4px;
+    }
+    .search-area input[type="submit"] {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 16px;
+      background: #c0c0c0;
+      border: 2px outset #808080;
+      cursor: pointer;
+    }
+    .search-area input[type="submit"]:active {
+      border-style: inset;
+    }
+
+    /* ── Navigation table ─────────────────────────── */
+    .nav-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+    .nav-sidebar {
+      width: 180px;
+      vertical-align: top;
+      padding-right: 10px;
+    }
+    .nav-main {
+      vertical-align: top;
+    }
+
+    .sidebar-box {
+      background: #000000;
+      border: 3px ridge #c0c0c0;
+      padding: 8px;
+    }
+    .sidebar-box h3 {
+      color: #ff6600;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 6px;
+      text-decoration: underline;
+    }
+    .sidebar-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar-box li {
+      padding: 3px 0;
+      font-size: 12px;
+    }
+    .sidebar-box li::before {
+      content: ">> ";
+      color: #ff6600;
+    }
+    .sidebar-box li a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+    .sidebar-box li a:hover {
+      color: #ff0000;
+      text-decoration: underline;
+    }
+
+    /* ── Guestbook / Webring ──────────────────────── */
+    .guestbook {
+      text-align: center;
+      margin: 8px 0;
+    }
+    .guestbook a {
+      display: inline-block;
+      background: #c0c0c0;
+      border: 2px outset #808080;
+      padding: 4px 14px;
+      color: #000080;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 12px;
+      margin: 3px;
+    }
+    .guestbook a:hover {
+      border-style: inset;
+      color: #ff0000;
+    }
+
+    /* ── Main content ─────────────────────────────── */
+    .content-box {
+      background: #000033;
+      border: 2px inset #808080;
+      padding: 10px;
+      margin: 6px 0;
+    }
+    .content-box h2 {
+      color: #ff6600;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    .content-box p {
+      color: #ffffff;
+      font-size: 12px;
+      margin: 4px 0;
+    }
+
+    .new-badge {
+      display: inline-block;
+      background: #ff0000;
+      color: #ffff00;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 1px 5px;
+      animation: blink-slow 1s step-end infinite;
+      vertical-align: super;
+    }
+
+    .recent-entry {
+      border-bottom: 1px dashed #444;
+      padding: 5px 0;
+    }
+    .recent-entry:last-child { border-bottom: none; }
+    .recent-date { color: #999; font-size: 10px; }
+    .recent-title { color: #00ffff; font-weight: bold; }
+    .recent-count { color: #00ff00; font-size: 11px; }
+
+    /* ── Featured ─────────────────────────────────── */
+    .featured-box {
+      background: #330033;
+      border: 3px double #ff00ff;
+      padding: 10px;
+      margin: 6px 0;
+    }
+    .featured-box h2 {
+      color: #ff00ff;
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .feat-entry {
+      margin: 6px 0;
+      padding-left: 16px;
+    }
+    .feat-entry .feat-title { color: #ffff00; font-weight: bold; font-size: 13px; }
+    .feat-entry .feat-desc { color: #cc99cc; font-size: 11px; }
+
+    /* ── Signup ────────────────────────────────────── */
+    .signup-box {
+      background: #003300;
+      border: 3px ridge #00ff00;
+      padding: 12px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .signup-box h2 { color: #00ff00; font-size: 16px; margin-bottom: 4px; }
+    .signup-box p { color: #88ff88; font-size: 12px; }
+    .signup-box input[type="email"] {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 12px;
+      padding: 4px 8px;
+      border: 2px inset #808080;
+      width: 220px;
+      max-width: 80%;
+      margin: 6px 4px;
+    }
+    .signup-box input[type="submit"] {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 14px;
+      background: #00cc00;
+      color: #000;
+      border: 2px outset #808080;
+      cursor: pointer;
+    }
+
+    /* ── Donate ────────────────────────────────────── */
+    .donate-area {
+      text-align: center;
+      margin: 10px 0;
+      padding: 8px;
+    }
+    .donate-area p { color: #ffcc99; font-size: 12px; }
+    .donate-area a.donate-link {
+      display: inline-block;
+      background: #ffcc00;
+      color: #000080;
+      font-weight: bold;
+      font-size: 13px;
+      border: 2px outset #808080;
+      padding: 4px 16px;
+      text-decoration: none;
+      margin-top: 6px;
+    }
+    .donate-area a.donate-link:hover {
+      background: #ffff00;
+      border-style: inset;
+    }
+
+    /* ── Tour alert ───────────────────────────────── */
+    .tour-box {
+      background: #880000;
+      border: 3px double #ffff00;
+      padding: 10px;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .tour-box p { color: #ffff00; font-size: 13px; }
+    .tour-box strong { color: #ffffff; }
+
+    /* ── Footer ───────────────────────────────────── */
+    .gc-footer {
+      text-align: center;
+      margin-top: 16px;
+      padding: 10px;
+      font-size: 10px;
+      color: #999999;
+      border-top: 1px solid #444;
+    }
+    .gc-footer a {
+      color: #888;
+      font-size: 10px;
+      margin: 0 3px;
+    }
+    .gc-footer a:hover { color: #ffff00; }
+
+    .badges {
+      text-align: center;
+      margin: 12px 0 6px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid #888;
+      padding: 2px 8px;
+      font-size: 9px;
+      font-family: 'Verdana', 'Arial', sans-serif;
+      font-weight: bold;
+      color: #fff;
+      background: #333;
+      text-decoration: none;
+    }
+    .badge:hover { background: #555; }
+
+    .email-link {
+      font-size: 12px;
+      text-align: center;
+      margin: 8px 0;
+    }
+    .email-link a { color: #ffff00; }
+
+    /* ── Animated star background ─────────────────── */
+    .stars {
+      text-align: center;
+      font-size: 10px;
+      color: #ffff00;
+      letter-spacing: 4px;
+      animation: twinkle 2s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: .4; }
+      100% { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-table, .nav-sidebar, .nav-main { display: block; width: 100%; }
+      .nav-sidebar { padding-right: 0; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Under Construction -->
+  <div class="construction">
+    &#9888; UNDER CONSTRUCTION &#9888; UNDER CONSTRUCTION &#9888; UNDER CONSTRUCTION &#9888;
+  </div>
+
+  <!-- Marquee -->
+  <div class="marquee-wrapper">
+    <div class="marquee-text">
+      *** Welcome to Holy Land Photos!! *** 7,000+ FREE photos of the Biblical World *** Updated Weekly *** Best viewed in Netscape Navigator 4.0 at 800x600 ***
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="title-area">
+    <p class="sparkle">&#10025; &#10025; &#10025; &#10025; &#10025;</p>
+    <h1>~*~ Holy Land Photos ~*~</h1>
+    <p class="subtitle">Free High-Resolution Photographs of the Biblical &amp; Ancient World</p>
+    <p class="welcome-msg">Welcome to my homepage!! I'm Dr. Carl Rasmussen and I've been photographing the Holy Land for over FOUR DECADES!! All photos are FREE to use!!</p>
+  </div>
+
+  <!-- Hit Counter -->
+  <div class="hit-counter">
+    You are visitor number <span class="counter-box">007022</span> since Jan 1, 1998
+  </div>
+
+  <hr class="rainbow-hr">
+
+  <!-- Stats -->
+  <table class="stats-table">
+    <tr>
+      <td><div class="num">7,000+</div><div class="label">Photos</div></td>
+      <td><div class="num">612</div><div class="label">Sites</div></td>
+      <td><div class="num">12</div><div class="label">Countries</div></td>
+    </tr>
+  </table>
+
+  <hr class="fire-hr">
+
+  <!-- Search -->
+  <div class="search-area">
+    <form action="/search.asp" method="get">
+      <label for="search-field">&#128269; Search My Photos!!</label><br>
+      <input id="search-field" type="text" name="searchText" placeholder="try Galilee, tomb, Paul..." aria-label="Search photos">
+      <input type="submit" value="Search!!">
+    </form>
+    <p style="font-size:10px; color:#888; margin-top:4px;">(hint: singular nouns work best)</p>
+  </div>
+
+  <hr class="rainbow-hr">
+
+  <!-- Layout Table -->
+  <table class="nav-table">
+    <tr>
+      <!-- Sidebar -->
+      <td class="nav-sidebar">
+        <div class="sidebar-box">
+          <h3>&#9733; Navigate &#9733;</h3>
+          <ul>
+            <li><a href="countries-story.html">Browse by Country</a></li>
+            <li><a href="topical.html">Explore by Topic</a></li>
+            <li><a href="#">Recent Additions</a> <span class="new-badge">NEW!</span></li>
+            <li><a href="#">Search Photos</a></li>
+            <li><a href="reading.html">Reading List</a></li>
+            <li><a href="site-list.html">Site List</a></li>
+            <li><a href="about.html">About Me</a></li>
+            <li><a href="permission-story.html">Permission</a></li>
+          </ul>
+        </div>
+
+        <br>
+
+        <div class="guestbook">
+          <a href="#">&#128221; Sign My Guestbook!!</a>
+          <a href="#">&#128214; View Guestbook</a>
+        </div>
+
+        <br>
+
+        <div class="sidebar-box" style="border-color:#ff00ff;">
+          <h3 style="color:#ff00ff;">&#127760; Webrings</h3>
+          <p style="font-size:10px; color:#cc99cc; text-align:center;">
+            [ <a href="#" style="color:#ff99ff;">Prev</a> |
+            <a href="#" style="color:#ff99ff;">Next</a> |
+            <a href="#" style="color:#ff99ff;">Random</a> ]<br>
+            <em>Bible Sites Webring</em>
+          </p>
+          <br>
+          <p style="font-size:10px; color:#cc99cc; text-align:center;">
+            [ <a href="#" style="color:#ff99ff;">Prev</a> |
+            <a href="#" style="color:#ff99ff;">Next</a> |
+            <a href="#" style="color:#ff99ff;">Random</a> ]<br>
+            <em>Archaeology Ring</em>
+          </p>
+        </div>
+      </td>
+
+      <!-- Main Content -->
+      <td class="nav-main">
+
+        <!-- Browse -->
+        <div class="content-box">
+          <h2>&#127758; Browse by Country</h2>
+          <p>Explore 12 countries of the ancient world &mdash; from Israel and Jordan to Turkey, Greece, Egypt, and beyond. Each collection is organized by region and site.</p>
+          <p><a href="countries-story.html">&gt;&gt; Click here to browse!! &lt;&lt;</a></p>
+        </div>
+
+        <div class="content-box">
+          <h2>&#128218; Explore by Topic</h2>
+          <p>Find photos organized by theme &mdash; Paul's missionary journeys, the Seven Churches of Revelation, Old Testament chronological periods, and more.</p>
+          <p><a href="topical.html">&gt;&gt; Click here to explore!! &lt;&lt;</a></p>
+        </div>
+
+        <hr class="rainbow-hr">
+
+        <!-- What's New -->
+        <div class="content-box">
+          <h2>&#10024; What's New!! <span class="new-badge">NEW!</span></h2>
+
+          <div class="recent-entry">
+            <span class="recent-date">Mar 2026</span> &mdash;
+            <span class="recent-title">Palm Sunday Images from Jerusalem</span><br>
+            <span class="recent-count">5 new photos!!</span>
+          </div>
+
+          <div class="recent-entry">
+            <span class="recent-date">Mar 2026</span> &mdash;
+            <span class="recent-title">Holy Week Sites &mdash; Rolling Stone Tombs, Gethsemane, Via Dolorosa</span><br>
+            <span class="recent-count">9 new photos!!</span>
+          </div>
+
+          <div class="recent-entry">
+            <span class="recent-date">Feb 2026</span> &mdash;
+            <span class="recent-title">New photos from Western Turkey &mdash; Ephesus, Smyrna, Pergamum</span><br>
+            <span class="recent-count">12 new photos!!</span>
+          </div>
+        </div>
+
+        <hr class="fire-hr">
+
+        <!-- Featured -->
+        <div class="featured-box">
+          <h2>&#9733; Featured Collections &#9733;</h2>
+
+          <div class="feat-entry">
+            <div class="feat-title">&#10148; Palm Sunday in Jerusalem</div>
+            <div class="feat-desc">Pilgrims retrace the ancient route from the Mount of Olives to the Old City.</div>
+          </div>
+
+          <div class="feat-entry">
+            <div class="feat-title">&#10148; The Seven Churches of Revelation</div>
+            <div class="feat-desc">Archaeological sites of the seven churches addressed in Revelation 2&ndash;3.</div>
+          </div>
+        </div>
+
+        <hr class="rainbow-hr">
+
+        <!-- Signup -->
+        <div class="signup-box">
+          <h2>&#9993; Join My Mailing List!!</h2>
+          <p>Get email updates when new photos are added!!</p>
+          <form action="/register.asp" method="post">
+            <input type="email" name="email" placeholder="your@email.com" required>
+            <input type="submit" value="Subscribe!!">
+          </form>
+          <p style="font-size:9px; color:#559955; margin-top:6px;">I will NEVER spam you!! Unsubscribe anytime!!</p>
+        </div>
+
+        <!-- Donate -->
+        <div class="donate-area">
+          <p>Holy Land Photos is a FREE resource!! Your support helps keep the collection growing!!</p>
+          <a class="donate-link" href="https://www.paypal.com/donate/?hosted_button_id=HLPDONATION" target="_blank" rel="noopener">&#128176; Support This Project!!</a>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+
+  <hr class="fire-hr">
+
+  <!-- Tour -->
+  <div class="tour-box">
+    <p>&#9992; <strong>Turkey &amp; Greece &mdash; April/May 2026</strong> &#9992;<br>
+    Join Dr. Rasmussen's next study tour of the biblical world!!</p>
+  </div>
+
+  <hr class="rainbow-hr">
+
+  <!-- Badges -->
+  <div class="badges">
+    <span class="badge" style="background:#00008b;">Netscape NOW!</span>
+    <span class="badge" style="background:#006600;">Made on a Mac</span>
+    <span class="badge" style="background:#880000;">Best at 800x600</span>
+    <span class="badge" style="background:#444;">HTML 3.2</span>
+    <span class="badge" style="background:#553388;">GeoCities</span>
+  </div>
+
+  <!-- Email -->
+  <div class="email-link">
+    &#9993; Email me: <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">holylandphotos@gmail.com</a>
+  </div>
+
+  <div class="stars">&#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025;</div>
+
+  <!-- Footer -->
+  <div class="gc-footer">
+    <p>&copy; <script>document.write(new Date().getFullYear())</script>. All Images are the property of Dr. Carl Rasmussen unless otherwise noted.</p>
+    <p style="margin-top:4px;">
+      <a href="permission-story.html">Permission</a> |
+      <a href="about.html">About</a> |
+      <a href="https://holylandphotos.wordpress.com" target="_blank" rel="noopener">Blog</a> |
+      <a href="mailto:holylandphotos@gmail.com?subject=Technical%20Feedback">Feedback</a>
+    </p>
+    <p style="margin-top:8px; font-size:9px; color:#666;">
+      This site is a member of the Bible Sites Webring<br>
+      Hosted on GeoCities/Athens/Parthenon/4221
+    </p>
+  </div>
+
+  <div class="stars">&#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025; &#10025;</div>
+
+</div><!-- .container -->
+
+</body>
+</html>
