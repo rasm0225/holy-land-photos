@@ -8,6 +8,7 @@ export const Photos: CollectionConfig = {
   },
   upload: {
     mimeTypes: ['image/*'],
+    staticDir: process.env.VERCEL ? '/tmp/photos' : 'photos',
   },
   fields: [
     {
