@@ -69,7 +69,6 @@ export interface Config {
   collections: {
     users: User;
     sections: Section;
-    'section-images': SectionImage;
     photos: Photo;
     'section-photos': SectionPhoto;
     pages: Page;
@@ -80,11 +79,17 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    sections: {
+      photos: 'section-photos';
+    };
+    photos: {
+      sections: 'section-photos';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
-    'section-images': SectionImagesSelect<false> | SectionImagesSelect<true>;
     photos: PhotosSelect<false> | PhotosSelect<true>;
     'section-photos': SectionPhotosSelect<false> | SectionPhotosSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -180,13 +185,21 @@ export interface Section {
     };
     [k: string]: unknown;
   } | null;
-  primaryImage?: (number | null) | SectionImage;
+  primaryImage?: (number | null) | Photo;
   keywords?:
     | {
         keyword: string;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Photos in this section (managed via Section Photos)
+   */
+  photos?: {
+    docs?: (number | SectionPhoto)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   /**
    * Internal notes (not shown on public site)
    */
@@ -202,25 +215,6 @@ export interface Section {
     | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "section-images".
- */
-export interface SectionImage {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -257,6 +251,14 @@ export interface Photo {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Sections this photo appears in
+   */
+  sections?: {
+    docs?: (number | SectionPhoto)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   /**
    * Internal notes (not shown on public site)
    */
@@ -439,10 +441,6 @@ export interface PayloadLockedDocument {
         value: number | Section;
       } | null)
     | ({
-        relationTo: 'section-images';
-        value: number | SectionImage;
-      } | null)
-    | ({
         relationTo: 'photos';
         value: number | Photo;
       } | null)
@@ -544,6 +542,7 @@ export interface SectionsSelect<T extends boolean = true> {
         keyword?: T;
         id?: T;
       };
+  photos?: T;
   notes?: T;
   parent?: T;
   breadcrumbs?:
@@ -559,24 +558,6 @@ export interface SectionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "section-images_select".
- */
-export interface SectionImagesSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "photos_select".
  */
 export interface PhotosSelect<T extends boolean = true> {
@@ -589,6 +570,7 @@ export interface PhotosSelect<T extends boolean = true> {
         keyword?: T;
         id?: T;
       };
+  sections?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
