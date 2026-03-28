@@ -1,10 +1,29 @@
 import type { CollectionConfig } from 'payload'
 
+const formatSlug = (val: string): string =>
+  val
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+
 export const Sections: CollectionConfig = {
   slug: 'sections',
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'sectionType', 'updatedAt'],
+  },
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data?.title && !data.slug) {
+          data.slug = formatSlug(data.title)
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -19,6 +38,7 @@ export const Sections: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
+        description: 'Auto-generated from title if left blank',
       },
     },
     {
