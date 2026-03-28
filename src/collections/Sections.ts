@@ -56,6 +56,15 @@ export const Sections: CollectionConfig = {
       ],
     },
     {
+      name: 'photos',
+      type: 'join',
+      collection: 'section-photos',
+      on: 'section',
+      admin: {
+        description: 'Photos in this section (managed via Section Photos)',
+      },
+    },
+    {
       name: 'notes',
       type: 'textarea',
       admin: {
