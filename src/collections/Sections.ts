@@ -42,7 +42,7 @@ export const Sections: CollectionConfig = {
     {
       name: 'primaryImage',
       type: 'upload',
-      relationTo: 'section-images',
+      relationTo: 'photos',
     },
     {
       name: 'keywords',

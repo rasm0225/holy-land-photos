@@ -8,7 +8,6 @@ import { fileURLToPath } from 'url'
 
 import { Users } from './src/collections/Users'
 import { Sections } from './src/collections/Sections'
-import { SectionImages } from './src/collections/SectionImages'
 import { Photos } from './src/collections/Photos'
 import { SectionPhotos } from './src/collections/SectionPhotos'
 import { Pages } from './src/collections/Pages'
@@ -28,7 +27,6 @@ export default buildConfig({
   collections: [
     Users,
     Sections,
-    SectionImages,
     Photos,
     SectionPhotos,
     Pages,
