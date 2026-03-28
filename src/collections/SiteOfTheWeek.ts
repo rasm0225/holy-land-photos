@@ -2,6 +2,10 @@ import type { CollectionConfig } from 'payload'
 
 export const SiteOfTheWeek: CollectionConfig = {
   slug: 'site-of-the-week',
+  labels: {
+    singular: 'Site of the Week',
+    plural: 'Site of the Week',
+  },
   admin: {
     useAsTitle: 'imageId',
     defaultColumns: ['section', 'imageId', 'isCurrent', 'createdAt'],
