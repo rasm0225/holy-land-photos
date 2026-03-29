@@ -77,12 +77,18 @@ export const Sections: CollectionConfig = {
     },
     {
       name: 'photos',
-      type: 'join',
-      collection: 'section-photos',
-      on: 'section',
+      type: 'array',
       admin: {
-        description: 'Photos in this section (managed via Section Photos)',
+        description: 'Drag to reorder. Photos display in this order on the public site.',
       },
+      fields: [
+        {
+          name: 'photo',
+          type: 'upload',
+          relationTo: 'photos',
+          required: true,
+        },
+      ],
     },
     {
       name: 'notes',

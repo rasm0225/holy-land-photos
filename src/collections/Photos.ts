@@ -45,15 +45,6 @@ export const Photos: CollectionConfig = {
       ],
     },
     {
-      name: 'sections',
-      type: 'join',
-      collection: 'section-photos',
-      on: 'photo',
-      admin: {
-        description: 'Sections this photo appears in',
-      },
-    },
-    {
       name: 'notes',
       type: 'textarea',
       admin: {
