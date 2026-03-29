@@ -39,6 +39,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   db: sqliteAdapter({
+    push: true, // Auto-sync schema in all environments (remove before production launch)
     client: {
       url: process.env.DATABASE_URL || '',
       authToken: process.env.DATABASE_AUTH_TOKEN || '',
