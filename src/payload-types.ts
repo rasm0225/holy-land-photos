@@ -79,14 +79,7 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {
-    sections: {
-      photos: 'section-photos';
-    };
-    photos: {
-      sections: 'section-photos';
-    };
-  };
+  collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
@@ -168,6 +161,9 @@ export interface User {
 export interface Section {
   id: number;
   title: string;
+  /**
+   * Auto-generated from title if left blank
+   */
   slug: string;
   sectionType?: ('top-level' | 'country' | 'region' | 'site' | 'artifact') | null;
   body?: {
@@ -193,13 +189,14 @@ export interface Section {
       }[]
     | null;
   /**
-   * Photos in this section (managed via Section Photos)
+   * Drag to reorder. Photos display in this order on the public site.
    */
-  photos?: {
-    docs?: (number | SectionPhoto)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
+  photos?:
+    | {
+        photo: number | Photo;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Internal notes (not shown on public site)
    */
@@ -252,14 +249,6 @@ export interface Photo {
       }[]
     | null;
   /**
-   * Sections this photo appears in
-   */
-  sections?: {
-    docs?: (number | SectionPhoto)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  /**
    * Internal notes (not shown on public site)
    */
   notes?: string | null;
@@ -297,6 +286,9 @@ export interface SectionPhoto {
 export interface Page {
   id: number;
   title: string;
+  /**
+   * Auto-generated from title if left blank
+   */
   slug: string;
   /**
    * Show this page on the public site
@@ -542,7 +534,12 @@ export interface SectionsSelect<T extends boolean = true> {
         keyword?: T;
         id?: T;
       };
-  photos?: T;
+  photos?:
+    | T
+    | {
+        photo?: T;
+        id?: T;
+      };
   notes?: T;
   parent?: T;
   breadcrumbs?:
@@ -570,7 +567,6 @@ export interface PhotosSelect<T extends boolean = true> {
         keyword?: T;
         id?: T;
       };
-  sections?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
