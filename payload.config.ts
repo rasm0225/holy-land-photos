@@ -5,7 +5,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import sharp from 'sharp'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { migrations } from './src/migrations'
+// import { migrations } from './src/migrations'
 
 import { Users } from './src/collections/Users'
 import { Sections } from './src/collections/Sections'
@@ -40,7 +40,6 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
   db: sqliteAdapter({
-    prodMigrations: migrations,
     client: {
       url: process.env.DATABASE_URL || '',
       authToken: process.env.DATABASE_AUTH_TOKEN || '',
