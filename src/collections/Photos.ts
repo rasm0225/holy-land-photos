@@ -42,6 +42,17 @@ export const Photos: CollectionConfig = {
       },
     },
     {
+      name: 'internalKeywords',
+      type: 'text',
+      label: 'Internal Keywords',
+      admin: {
+        description: 'Not shown on the public site — for search and organization only',
+        components: {
+          Field: '/src/components/KeywordTagInput/index.tsx#KeywordTagInput',
+        },
+      },
+    },
+    {
       name: 'notes',
       type: 'textarea',
       admin: {
