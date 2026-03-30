@@ -34,14 +34,12 @@ export const Photos: CollectionConfig = {
     },
     {
       name: 'keywords',
-      type: 'array',
-      fields: [
-        {
-          name: 'keyword',
-          type: 'text',
-          required: true,
+      type: 'text',
+      admin: {
+        components: {
+          Field: '/src/components/KeywordTagInput/index.tsx#KeywordTagInput',
         },
-      ],
+      },
     },
     {
       name: 'notes',
