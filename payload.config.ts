@@ -25,6 +25,17 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      views: {
+        'section-hierarchy': {
+          Component: '/src/components/SectionHierarchy/index.tsx',
+          path: '/section-hierarchy',
+        },
+      },
+      afterNavLinks: [
+        '/src/components/SectionHierarchy/NavLink.tsx#SectionHierarchyNavLink',
+      ],
+    },
   },
   collections: [
     Users,
