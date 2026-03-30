@@ -149,7 +149,7 @@ export const KeywordTagInput: TextFieldClientComponent = ({ field, path }) => {
           color: 'var(--theme-elevation-400)',
         }}
       >
-        {field.admin?.description || 'Type a keyword and press comma to add'}
+        Type a keyword and press comma to add
       </p>
     </div>
   )
