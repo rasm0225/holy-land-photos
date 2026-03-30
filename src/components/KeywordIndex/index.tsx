@@ -50,14 +50,16 @@ export default async function KeywordIndexView({}: AdminViewServerProps) {
 
   for (const doc of sections.docs) {
     const item = { id: doc.id as number, title: doc.title }
-    addKeywords(doc.keywords as string, 'sections', item)
-    addKeywords(doc.internalKeywords as string, 'sections', item)
+    const d = doc as unknown as Record<string, unknown>
+    addKeywords(d.keywords as string, 'sections', item)
+    addKeywords(d.internalKeywords as string, 'sections', item)
   }
 
   for (const doc of photos.docs) {
     const item = { id: doc.id as number, title: doc.title }
-    addKeywords(doc.keywords as string, 'photos', item)
-    addKeywords(doc.internalKeywords as string, 'photos', item)
+    const d = doc as unknown as Record<string, unknown>
+    addKeywords(d.keywords as string, 'photos', item)
+    addKeywords(d.internalKeywords as string, 'photos', item)
   }
 
   // Sort keywords alphabetically and build serializable data
