@@ -31,9 +31,14 @@ export default buildConfig({
           Component: '/src/components/SectionHierarchy/index.tsx',
           path: '/section-hierarchy',
         },
+        'keyword-index': {
+          Component: '/src/components/KeywordIndex/index.tsx',
+          path: '/keyword-index',
+        },
       },
       afterNavLinks: [
         '/src/components/SectionHierarchy/NavLink.tsx#SectionHierarchyNavLink',
+        '/src/components/KeywordIndex/NavLink.tsx#KeywordIndexNavLink',
       ],
     },
   },
