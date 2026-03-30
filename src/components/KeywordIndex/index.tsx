@@ -1,10 +1,12 @@
 import type { AdminViewServerProps } from 'payload'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { DefaultTemplate } from '@payloadcms/next/templates'
 import React from 'react'
 import { KeywordIndexClient } from './client'
 
-export default async function KeywordIndexView({}: AdminViewServerProps) {
+export default async function KeywordIndexView(props: AdminViewServerProps) {
+  const { initPageResult, params, searchParams } = props
   const payload = await getPayload({ config })
 
   const [sections, photos] = await Promise.all([
@@ -74,34 +76,45 @@ export default async function KeywordIndexView({}: AdminViewServerProps) {
     }))
 
   return (
-    <div
-      style={{
-        padding: '40px',
-        maxWidth: '900px',
-        fontFamily: 'var(--font-body)',
-      }}
+    <DefaultTemplate
+      i18n={initPageResult.req.i18n}
+      locale={initPageResult.locale}
+      params={params}
+      payload={initPageResult.req.payload}
+      permissions={initPageResult.permissions}
+      searchParams={searchParams}
+      user={initPageResult.req.user || undefined}
+      visibleEntities={initPageResult.visibleEntities}
     >
-      <h1
+      <div
         style={{
-          fontSize: '24px',
-          fontWeight: 600,
-          marginBottom: '8px',
-          color: 'var(--theme-elevation-1000)',
+          padding: '40px',
+          maxWidth: '900px',
+          fontFamily: 'var(--font-body)',
         }}
       >
-        Keyword Index
-      </h1>
-      <p
-        style={{
-          marginBottom: '24px',
-          color: 'var(--theme-elevation-500)',
-          fontSize: '14px',
-        }}
-      >
-        {keywords.length} unique keywords across {sections.totalDocs} sections and{' '}
-        {photos.totalDocs} photos
-      </p>
-      <KeywordIndexClient keywords={keywords} />
-    </div>
+        <h1
+          style={{
+            fontSize: '24px',
+            fontWeight: 600,
+            marginBottom: '8px',
+            color: 'var(--theme-elevation-1000)',
+          }}
+        >
+          Keyword Index
+        </h1>
+        <p
+          style={{
+            marginBottom: '24px',
+            color: 'var(--theme-elevation-500)',
+            fontSize: '14px',
+          }}
+        >
+          {keywords.length} unique keywords across {sections.totalDocs} sections and{' '}
+          {photos.totalDocs} photos
+        </p>
+        <KeywordIndexClient keywords={keywords} />
+      </div>
+    </DefaultTemplate>
   )
 }
