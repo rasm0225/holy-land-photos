@@ -71,7 +71,13 @@ export default buildConfig({
         docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
     }),
     s3Storage({
-      collections: { photos: true },
+      collections: {
+        photos: {
+          generateFileURL: ({ filename }) =>
+            `https://img.holylandphotos.org/${filename}`,
+          disablePayloadAccessControl: true,
+        },
+      },
       bucket: process.env.S3_BUCKET || '',
       config: {
         credentials: {
