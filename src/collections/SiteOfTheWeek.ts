@@ -53,7 +53,6 @@ export const SiteOfTheWeek: CollectionConfig = {
       type: 'textarea',
       admin: {
         description: 'Imported HTML content (read-only, will be migrated to rich text)',
-        readOnly: true,
         condition: (data) => Boolean(data?.htmlBody),
       },
     },
