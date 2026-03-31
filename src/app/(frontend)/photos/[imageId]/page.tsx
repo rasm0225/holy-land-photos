@@ -3,12 +3,63 @@ import config from '@payload-config'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import React from 'react'
+import type { Metadata } from 'next'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
 type Props = {
   params: Promise<{ imageId: string }>
   searchParams: Promise<{ s?: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { imageId } = await params
+  const payload = await getPayload({ config })
+
+  const { docs } = await payload.find({
+    collection: 'photos',
+    where: { imageId: { equals: imageId } },
+    limit: 1,
+    depth: 0,
+  })
+
+  const photo = docs[0]
+  if (!photo) return { title: 'Photo Not Found' }
+
+  // Find the section for context in the title
+  const { docs: sections } = await payload.find({
+    collection: 'sections',
+    where: { 'photos.photo': { equals: photo.id } },
+    limit: 1,
+    depth: 0,
+    select: { title: true },
+  })
+  const sectionTitle = sections[0]?.title
+
+  const title = sectionTitle ? `${photo.title} — ${sectionTitle}` : photo.title
+  const imageUrl = `${S3_BASE}/${photo.imageId}.jpg`
+
+  // Strip HTML tags for description
+  const htmlDesc = (photo as unknown as Record<string, unknown>).htmlDescription as string | null
+  const description = htmlDesc
+    ? htmlDesc.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim().slice(0, 200)
+    : `${photo.title} — Holy Land Photos`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} — Holy Land Photos`,
+      description,
+      type: 'article',
+      images: [imageUrl],
+    },
+    twitter: {
+      title: `${title} — Holy Land Photos`,
+      description,
+      images: [imageUrl],
+    },
+  }
 }
 
 export default async function PhotoPage({ params, searchParams }: Props) {
@@ -90,8 +141,32 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     }
   }
 
+  // Schema.org JSON-LD
+  const sectionForSchema = sectionLinks[0]
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageObject',
+    name: photo.title,
+    contentUrl: `${S3_BASE}/${photo.imageId}.jpg`,
+    creator: {
+      '@type': 'Person',
+      name: 'Dr. Carl Rasmussen',
+    },
+    copyrightYear: new Date().getFullYear(),
+    ...(sectionForSchema && {
+      about: {
+        '@type': 'Place',
+        name: sectionForSchema.title,
+      },
+    }),
+  }
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Back to section + prev/next nav */}
       {contextSection && (
         <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', fontSize: '14px' }}>

@@ -3,11 +3,52 @@ import config from '@payload-config'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import React from 'react'
+import type { Metadata } from 'next'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const payload = await getPayload({ config })
+
+  const { docs } = await payload.find({
+    collection: 'sections',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+  })
+
+  const section = docs[0]
+  if (!section) return { title: 'Not Found' }
+
+  const htmlBody = (section as unknown as Record<string, unknown>).htmlBody as string | null
+  const sectionImage = (section as unknown as Record<string, unknown>).sectionImage as string | null
+
+  const description = htmlBody
+    ? htmlBody.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim().slice(0, 200)
+    : `Browse photos of ${section.title} — Holy Land Photos`
+
+  const images = sectionImage ? [`${S3_BASE}/section/${sectionImage}`] : []
+
+  return {
+    title: section.title,
+    description,
+    openGraph: {
+      title: `${section.title} — Holy Land Photos`,
+      description,
+      type: 'website',
+      ...(images.length > 0 && { images }),
+    },
+    twitter: {
+      title: `${section.title} — Holy Land Photos`,
+      description,
+      ...(images.length > 0 && { images }),
+    },
+  }
 }
 
 export default async function SectionPage({ params }: Props) {
@@ -50,8 +91,30 @@ export default async function SectionPage({ params }: Props) {
     } | number
   }>
 
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://holylandphotos.org/' },
+      ...breadcrumbs.map((crumb, i) => {
+        const doc = typeof crumb.doc === 'object' ? crumb.doc : null
+        return {
+          '@type': 'ListItem',
+          position: i + 2,
+          name: crumb.label || doc?.title || '',
+          ...(doc?.slug && { item: `https://holylandphotos.org/browse/${doc.slug}` }),
+        }
+      }),
+    ],
+  }
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* Breadcrumbs */}
       <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
         <a href="/">Home</a>

@@ -1,6 +1,20 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import React from 'react'
+import type { Metadata } from 'next'
+
+const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+
+export const metadata: Metadata = {
+  title: 'Holy Land Photos — Free High-Resolution Photos of the Biblical World',
+  description: '7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.',
+  openGraph: {
+    title: 'Holy Land Photos — Free High-Resolution Photos of the Biblical World',
+    description: '7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.',
+    type: 'website',
+    images: [`${S3_BASE}/TWCSSM20.jpg`],
+  },
+}
 
 export default async function HomePage() {
   const payload = await getPayload({ config })

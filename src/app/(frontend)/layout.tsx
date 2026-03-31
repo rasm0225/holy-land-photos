@@ -2,8 +2,18 @@ import React from 'react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Holy Land Photos',
-  description: 'Biblical photography by Dr. Carl Rasmussen',
+  title: {
+    default: 'Holy Land Photos',
+    template: '%s — Holy Land Photos',
+  },
+  description: '7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.',
+  openGraph: {
+    siteName: 'Holy Land Photos',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
