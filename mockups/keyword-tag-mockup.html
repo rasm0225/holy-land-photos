@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Tag Input — Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      background: #f5f5f5;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #333;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .tag-input-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background: #fff;
+      cursor: text;
+      transition: border-color 0.15s ease;
+      min-height: 42px;
+    }
+
+    .tag-input-wrapper:focus-within {
+      border-color: #0070f3;
+      box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.15);
+    }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f0f0f0;
+      color: #333;
+      font-size: 13px;
+      line-height: 1;
+      padding: 5px 8px 5px 10px;
+      border-radius: 14px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .tag-chip button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .tag-chip button:hover {
+      color: #666;
+      background: rgba(0,0,0,0.06);
+    }
+
+    .tag-input {
+      flex: 1 1 120px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-family: inherit;
+      color: #333;
+      padding: 2px 0;
+      min-width: 120px;
+      background: transparent;
+    }
+
+    .tag-input::placeholder {
+      color: #aaa;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    .mockup-note {
+      margin-top: 32px;
+      padding: 12px 16px;
+      background: #fffbe6;
+      border: 1px solid #f0e68c;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Keyword Tag Input</h1>
+
+    <label class="field-label" for="keyword-input">Keywords</label>
+    <div class="tag-input-wrapper" id="tag-wrapper">
+      <input
+        type="text"
+        class="tag-input"
+        id="keyword-input"
+        placeholder="Type a keyword..."
+        autocomplete="off"
+      >
+    </div>
+    <p class="helper-text">Type a keyword and press comma to add</p>
+
+    <div class="mockup-note">
+      Read-only mockup for UX preview. No data is saved.
+    </div>
+  </div>
+
+  <script>
+    const wrapper = document.getElementById('tag-wrapper');
+    const input = document.getElementById('keyword-input');
+    let tags = [];
+
+    function createChipElement(text) {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.setAttribute('data-tag', text);
+
+      const label = document.createTextNode(text);
+      chip.appendChild(label);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Remove ' + text);
+      btn.textContent = '\u00d7';
+      btn.addEventListener('click', function() {
+        removeTag(text);
+      });
+      chip.appendChild(btn);
+
+      return chip;
+    }
+
+    function addTag(text) {
+      text = text.trim();
+      if (!text) return;
+      if (tags.includes(text)) return;
+
+      tags.push(text);
+      const chip = createChipElement(text);
+      wrapper.insertBefore(chip, input);
+      input.value = '';
+    }
+
+    function removeTag(text) {
+      tags = tags.filter(function(t) { return t !== text; });
+      var chips = wrapper.querySelectorAll('.tag-chip');
+      chips.forEach(function(chip) {
+        if (chip.getAttribute('data-tag') === text) {
+          chip.remove();
+        }
+      });
+      input.focus();
+    }
+
+    input.addEventListener('input', function(e) {
+      var val = input.value;
+      if (val.includes(',')) {
+        var parts = val.split(',');
+        for (var i = 0; i < parts.length - 1; i++) {
+          addTag(parts[i]);
+        }
+        input.value = parts[parts.length - 1].trimStart();
+      }
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addTag(input.value);
+      }
+      if (e.key === 'Backspace' && input.value === '' && tags.length > 0) {
+        removeTag(tags[tags.length - 1]);
+      }
+    });
+
+    wrapper.addEventListener('click', function() {
+      input.focus();
+    });
+
+    // Pre-populate example tags
+    ['Harran', 'Central Valley', 'Roman Road'].forEach(addTag);
+  </script>
+</body>
+</html>

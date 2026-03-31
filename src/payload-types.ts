@@ -182,12 +182,7 @@ export interface Section {
     [k: string]: unknown;
   } | null;
   primaryImage?: (number | null) | Photo;
-  keywords?:
-    | {
-        keyword: string;
-        id?: string | null;
-      }[]
-    | null;
+  keywords?: string | null;
   /**
    * Drag to reorder. Photos display in this order on the public site.
    */
@@ -242,12 +237,7 @@ export interface Photo {
     };
     [k: string]: unknown;
   } | null;
-  keywords?:
-    | {
-        keyword: string;
-        id?: string | null;
-      }[]
-    | null;
+  keywords?: string | null;
   /**
    * Internal notes (not shown on public site)
    */
@@ -528,12 +518,7 @@ export interface SectionsSelect<T extends boolean = true> {
   sectionType?: T;
   body?: T;
   primaryImage?: T;
-  keywords?:
-    | T
-    | {
-        keyword?: T;
-        id?: T;
-      };
+  keywords?: T;
   photos?:
     | T
     | {
@@ -561,12 +546,7 @@ export interface PhotosSelect<T extends boolean = true> {
   imageId?: T;
   title?: T;
   description?: T;
-  keywords?:
-    | T
-    | {
-        keyword?: T;
-        id?: T;
-      };
+  keywords?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
