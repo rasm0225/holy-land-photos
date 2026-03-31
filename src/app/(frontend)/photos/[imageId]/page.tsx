@@ -1,7 +1,10 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import React from 'react'
+
+const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
 type Props = {
   params: Promise<{ imageId: string }>
@@ -41,9 +44,11 @@ export default async function PhotoPage({ params }: Props) {
 
       {/* Main image */}
       <div style={{ margin: '16px 0' }}>
-        <img
-          src={`https://img.holylandphotos.org/${photo.imageId}.jpg?w=800&mode=max`}
+        <Image
+          src={`${S3_BASE}/${photo.imageId}.jpg`}
           alt={photo.title}
+          width={800}
+          height={600}
           style={{ maxWidth: '100%', height: 'auto' }}
         />
       </div>

@@ -74,7 +74,7 @@ export default buildConfig({
       collections: {
         photos: {
           generateFileURL: ({ filename }) =>
-            `https://img.holylandphotos.org/${filename}`,
+            `https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com/${filename}`,
           disablePayloadAccessControl: true,
         },
       },

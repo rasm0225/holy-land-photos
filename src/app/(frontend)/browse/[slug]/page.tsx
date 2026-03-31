@@ -1,7 +1,10 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import React from 'react'
+
+const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -82,9 +85,11 @@ export default async function SectionPage({ params }: Props) {
       {/* Section image */}
       {sectionImage && (
         <div style={{ margin: '16px 0' }}>
-          <img
-            src={`https://img.holylandphotos.org/${sectionImage}?w=600&mode=max`}
+          <Image
+            src={`${S3_BASE}/section/${sectionImage}`}
             alt={`Map or image for ${section.title}`}
+            width={600}
+            height={400}
             style={{ maxWidth: '100%', height: 'auto' }}
           />
         </div>
@@ -127,9 +132,11 @@ export default async function SectionPage({ params }: Props) {
                   href={`/photos/${imageId}`}
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
-                  <img
-                    src={`https://img.holylandphotos.org/${imageId}.jpg?w=200&h=200&mode=max`}
+                  <Image
+                    src={`${S3_BASE}/${imageId}.jpg`}
                     alt={photo.title || imageId}
+                    width={200}
+                    height={150}
                     style={{ width: '100%', height: '150px', objectFit: 'cover', display: 'block' }}
                   />
                   <div style={{ fontSize: '13px', padding: '4px 0' }}>
