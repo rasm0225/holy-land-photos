@@ -8,6 +8,7 @@ export const Photos: CollectionConfig = {
   },
   upload: {
     mimeTypes: ['image/*'],
+    staticURL: 'https://img.holylandphotos.org',
   },
   fields: [
     {
