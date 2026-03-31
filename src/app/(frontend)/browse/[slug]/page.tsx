@@ -129,7 +129,7 @@ export default async function SectionPage({ params }: Props) {
               return (
                 <a
                   key={i}
-                  href={`/photos/${imageId}`}
+                  href={`/photos/${imageId}?s=${slug}`}
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
                   <Image
