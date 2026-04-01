@@ -116,7 +116,7 @@ export default async function HomePage() {
               </h3>
             )}
             {stw.imageId && (
-              <a href={`/photos/${stw.imageId}`}>
+              <a href={section?.slug ? `/browse/${section.slug}` : `/photos/${stw.imageId}`}>
                 <img
                   src={`${S3_BASE}/${stw.imageId}.jpg`}
                   alt={section?.title || stw.imageId}
