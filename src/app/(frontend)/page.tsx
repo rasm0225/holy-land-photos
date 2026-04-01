@@ -40,7 +40,7 @@ export default async function HomePage() {
     payload.find({
       collection: 'pages',
       where: { display: { equals: true } },
-      sort: 'title',
+      sort: 'sortOrder',
       limit: 0,
       depth: 0,
     }),
