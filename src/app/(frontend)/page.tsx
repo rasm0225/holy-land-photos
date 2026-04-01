@@ -5,6 +5,8 @@ import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import NewsCarousel from './components/NewsCarousel'
 
+export const dynamic = 'force-dynamic'
+
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
 export const metadata: Metadata = {
