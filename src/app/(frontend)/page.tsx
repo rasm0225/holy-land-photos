@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
-  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }] = await Promise.all([
+  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }] = await Promise.all([
     payload.find({
       collection: 'sections',
       where: { parent: { exists: false } },
@@ -43,6 +43,12 @@ export default async function HomePage() {
       sort: 'sortOrder',
       limit: 0,
       depth: 0,
+    }),
+    payload.find({
+      collection: 'site-of-the-week',
+      where: { isCurrent: { equals: true } },
+      limit: 1,
+      depth: 1,
     }),
   ])
 
@@ -97,6 +103,34 @@ export default async function HomePage() {
           </div>
         )
       })}
+      {currentSTW.length > 0 && (() => {
+        const stw = currentSTW[0]
+        const section = stw.section as { title?: string; slug?: string } | null
+        const stwHtmlBody = (stw as unknown as Record<string, unknown>).htmlBody as string | null
+        return (
+          <div style={{ marginTop: '24px' }}>
+            <h2>Site of the Week</h2>
+            {section && typeof section === 'object' && section.slug && (
+              <h3>
+                <a href={`/browse/${section.slug}`}>{section.title}</a>
+              </h3>
+            )}
+            {stw.imageId && (
+              <a href={`/photos/${stw.imageId}`}>
+                <img
+                  src={`${S3_BASE}/${stw.imageId}.jpg`}
+                  alt={section?.title || stw.imageId}
+                  style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+                />
+              </a>
+            )}
+            {stw.body && <RichText data={stw.body} />}
+            {!stw.body && stwHtmlBody && (
+              <div dangerouslySetInnerHTML={{ __html: stwHtmlBody }} />
+            )}
+          </div>
+        )
+      })()}
     </div>
   )
 }
