@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -133,8 +134,13 @@ export default async function NewsPage({ params }: Props) {
         </div>
       )}
 
-      {/* Body content */}
-      {htmlBody && (
+      {/* Body content — Lexical rich text or legacy HTML */}
+      {news.body && (
+        <div style={{ marginBottom: '24px' }}>
+          <RichText data={news.body} />
+        </div>
+      )}
+      {!news.body && htmlBody && (
         <div
           style={{ marginBottom: '24px' }}
           dangerouslySetInnerHTML={{ __html: htmlBody }}

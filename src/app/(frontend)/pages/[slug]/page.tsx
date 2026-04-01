@@ -3,6 +3,7 @@ import config from '@payload-config'
 import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import type { Metadata } from 'next'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -70,7 +71,12 @@ export default async function StaticPage({ params }: Props) {
 
       <h1>{page.title}</h1>
 
-      {htmlBody && (
+      {page.body && (
+        <div style={{ marginBottom: '24px' }}>
+          <RichText data={page.body} />
+        </div>
+      )}
+      {!page.body && htmlBody && (
         <div
           style={{ marginBottom: '24px' }}
           dangerouslySetInnerHTML={{ __html: htmlBody }}
