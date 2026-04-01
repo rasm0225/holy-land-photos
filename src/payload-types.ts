@@ -184,6 +184,10 @@ export interface Section {
   primaryImage?: (number | null) | Photo;
   keywords?: string | null;
   /**
+   * Not shown on the public site — for search and organization only
+   */
+  internalKeywords?: string | null;
+  /**
    * Drag to reorder. Photos display in this order on the public site.
    */
   photos?:
@@ -192,6 +196,14 @@ export interface Section {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Imported HTML content (read-only, will be migrated to rich text)
+   */
+  htmlBody?: string | null;
+  /**
+   * Original section image filename from legacy site
+   */
+  sectionImage?: string | null;
   /**
    * Internal notes (not shown on public site)
    */
@@ -238,6 +250,14 @@ export interface Photo {
     [k: string]: unknown;
   } | null;
   keywords?: string | null;
+  /**
+   * Not shown on the public site — for search and organization only
+   */
+  internalKeywords?: string | null;
+  /**
+   * Imported HTML content (read-only, will be migrated to rich text)
+   */
+  htmlDescription?: string | null;
   /**
    * Internal notes (not shown on public site)
    */
@@ -303,6 +323,10 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Imported HTML content (read-only, will be migrated to rich text)
+   */
+  htmlBody?: string | null;
   sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -351,6 +375,10 @@ export interface News {
       }[]
     | null;
   /**
+   * Imported HTML content (read-only, will be migrated to rich text)
+   */
+  htmlBody?: string | null;
+  /**
    * Optional: embed a YouTube video instead of an image gallery
    */
   youtubeVideoId?: string | null;
@@ -383,6 +411,10 @@ export interface SiteOfTheWeek {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Imported HTML content (read-only, will be migrated to rich text)
+   */
+  htmlBody?: string | null;
   /**
    * Set as the currently featured Site of the Week
    */
@@ -519,12 +551,15 @@ export interface SectionsSelect<T extends boolean = true> {
   body?: T;
   primaryImage?: T;
   keywords?: T;
+  internalKeywords?: T;
   photos?:
     | T
     | {
         photo?: T;
         id?: T;
       };
+  htmlBody?: T;
+  sectionImage?: T;
   notes?: T;
   parent?: T;
   breadcrumbs?:
@@ -547,6 +582,8 @@ export interface PhotosSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   keywords?: T;
+  internalKeywords?: T;
+  htmlDescription?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -581,6 +618,7 @@ export interface PagesSelect<T extends boolean = true> {
   display?: T;
   redirectUrl?: T;
   body?: T;
+  htmlBody?: T;
   sortOrder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -601,6 +639,7 @@ export interface NewsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  htmlBody?: T;
   youtubeVideoId?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -613,6 +652,7 @@ export interface SiteOfTheWeekSelect<T extends boolean = true> {
   section?: T;
   imageId?: T;
   body?: T;
+  htmlBody?: T;
   isCurrent?: T;
   updatedAt?: T;
   createdAt?: T;
