@@ -6,9 +6,8 @@ export const Photos: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['imageId', 'title', 'updatedAt'],
   },
-  upload: {
-    mimeTypes: ['image/*'],
-  },
+  // Note: Photos are served from S3 by imageId, not through Payload's upload system.
+  // Upload was removed to allow editing metadata without re-uploading files.
   fields: [
     {
       name: 'imageId',
