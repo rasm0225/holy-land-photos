@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Metadata } from 'next'
+import { EditLink } from './components/EditLink'
 
 export const metadata: Metadata = {
   title: {
@@ -27,6 +28,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           <a href="/admin" style={{ fontSize: '14px', color: '#666', textDecoration: 'none' }}>
             Admin
           </a>
+          <EditLink />
         </nav>
         <main style={{ padding: '24px', maxWidth: '1000px' }}>
           {children}
