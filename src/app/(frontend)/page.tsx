@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import React from 'react'
 import type { Metadata } from 'next'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 import NewsCarousel from './components/NewsCarousel'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
@@ -36,18 +37,11 @@ export default async function HomePage() {
     }),
   ])
 
-  const newsItems = activeNews.map((n) => ({
-    id: n.id,
-    title: n.title,
-    imageGallery: (n.imageGallery || []) as Array<{ imageId?: string; caption?: string; url?: string }>,
-  }))
 
   return (
     <div>
       <h1>Holy Land Photos</h1>
       <p>Biblical photography by Dr. Carl Rasmussen</p>
-
-      {newsItems.length > 0 && <NewsCarousel newsItems={newsItems} />}
 
       <h2>Browse</h2>
       <ul>
@@ -65,6 +59,22 @@ export default async function HomePage() {
         <li><a href="/site-list">Complete Site List</a></li>
         <li><a href="/search">Search</a></li>
       </ul>
+
+      {activeNews.map((n) => {
+        const htmlBody = (n as unknown as Record<string, unknown>).htmlBody as string | null
+        const gallery = (n.imageGallery || []) as Array<{ imageId?: string; caption?: string; url?: string }>
+        return (
+          <div key={n.id}>
+            {gallery.length > 0 && (
+              <NewsCarousel newsItems={[{ id: n.id, title: n.title, imageGallery: gallery }]} />
+            )}
+            {n.body && <RichText data={n.body} />}
+            {!n.body && htmlBody && (
+              <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }
