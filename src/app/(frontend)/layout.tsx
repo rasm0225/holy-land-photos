@@ -25,6 +25,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           <a href="/" style={{ marginRight: '16px', textDecoration: 'none', fontWeight: 600 }}>
             Holy Land Photos
           </a>
+          <a href="/search" style={{ fontSize: '14px', color: '#666', textDecoration: 'none', marginRight: '16px' }}>
+            Search
+          </a>
           <a href="/admin" style={{ fontSize: '14px', color: '#666', textDecoration: 'none' }}>
             Admin
           </a>

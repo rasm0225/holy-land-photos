@@ -42,6 +42,14 @@ export default async function HomePage() {
           </li>
         ))}
       </ul>
+
+      <h2>More</h2>
+      <ul>
+        <li><a href="/news">News</a></li>
+        <li><a href="/site-of-the-week">Site of the Week</a></li>
+        <li><a href="/site-list">Complete Site List</a></li>
+        <li><a href="/search">Search</a></li>
+      </ul>
     </div>
   )
 }
