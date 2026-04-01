@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
-  const [{ docs: topLevel }, { docs: activeNews }] = await Promise.all([
+  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }] = await Promise.all([
     payload.find({
       collection: 'sections',
       where: { parent: { exists: false } },
@@ -32,6 +32,13 @@ export default async function HomePage() {
     payload.find({
       collection: 'news',
       where: { active: { equals: true } },
+      limit: 0,
+      depth: 0,
+    }),
+    payload.find({
+      collection: 'pages',
+      where: { display: { equals: true } },
+      sort: 'title',
       limit: 0,
       depth: 0,
     }),
@@ -59,6 +66,19 @@ export default async function HomePage() {
         <li><a href="/site-list">Complete Site List</a></li>
         <li><a href="/search">Search</a></li>
       </ul>
+
+      {displayPages.length > 0 && (
+        <div style={{ border: '1px solid #ccc', padding: '16px', marginTop: '24px' }}>
+          <h2 style={{ marginTop: 0 }}>Pages</h2>
+          <ul>
+            {displayPages.map((page) => (
+              <li key={page.id}>
+                <a href={`/pages/${page.slug}`}>{page.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {activeNews.map((n) => {
         const htmlBody = (n as unknown as Record<string, unknown>).htmlBody as string | null
