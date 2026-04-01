@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import React from 'react'
 import type { Metadata } from 'next'
+import NewsCarousel from './components/NewsCarousel'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -19,20 +20,34 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
-  const { docs: topLevel } = await payload.find({
-    collection: 'sections',
-    where: {
-      parent: { exists: false },
-    },
-    sort: 'title',
-    limit: 0,
-    depth: 0,
-  })
+  const [{ docs: topLevel }, { docs: activeNews }] = await Promise.all([
+    payload.find({
+      collection: 'sections',
+      where: { parent: { exists: false } },
+      sort: 'title',
+      limit: 0,
+      depth: 0,
+    }),
+    payload.find({
+      collection: 'news',
+      where: { active: { equals: true } },
+      limit: 0,
+      depth: 0,
+    }),
+  ])
+
+  const newsItems = activeNews.map((n) => ({
+    id: n.id,
+    title: n.title,
+    imageGallery: (n.imageGallery || []) as Array<{ imageId?: string; caption?: string; url?: string }>,
+  }))
 
   return (
     <div>
       <h1>Holy Land Photos</h1>
       <p>Biblical photography by Dr. Carl Rasmussen</p>
+
+      {newsItems.length > 0 && <NewsCarousel newsItems={newsItems} />}
 
       <h2>Browse</h2>
       <ul>
