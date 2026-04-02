@@ -165,6 +165,10 @@ export default async function PhotoPage({ params, searchParams }: Props) {
 
   return (
     <div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .photo-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 680px) { .photo-two-col { grid-template-columns: 1fr; } }
+      `}} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -194,33 +198,30 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       <h1>{photo.title}</h1>
       <p style={{ fontSize: '13px', color: '#888' }}>ID: {photo.imageId}</p>
 
-      {/* Main image */}
-      <div style={{ margin: '16px 0' }}>
-        <Image
-          src={`${S3_BASE}/${photo.imageId}.jpg`}
-          alt={photo.title}
-          width={800}
-          height={600}
-          style={{ maxWidth: '100%', height: 'auto' }}
-        />
+      {/* Image left, description right */}
+      <div className="photo-two-col" style={{ marginTop: '16px' }}>
+        <div>
+          <Image
+            src={`${S3_BASE}/${photo.imageId}.jpg`}
+            alt={photo.title}
+            width={800}
+            height={600}
+            style={{ width: '100%', height: 'auto' }}
+          />
+        </div>
+        <div>
+          {photo.description && (
+            <RichText data={photo.description} />
+          )}
+          {!photo.description && htmlDescription && (
+            <div dangerouslySetInnerHTML={{ __html: htmlDescription }} />
+          )}
+        </div>
       </div>
 
-      {/* Description — Lexical rich text or legacy HTML */}
-      {photo.description && (
-        <div style={{ marginBottom: '24px' }}>
-          <RichText data={photo.description} />
-        </div>
-      )}
-      {!photo.description && htmlDescription && (
-        <div
-          style={{ marginBottom: '24px' }}
-          dangerouslySetInnerHTML={{ __html: htmlDescription }}
-        />
-      )}
-
-      {/* Sections this photo belongs to */}
+      {/* Found in + Keywords — full width below */}
       {sectionLinks.length > 0 && (
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginTop: '24px', marginBottom: '16px' }}>
           <h3>Found in</h3>
           <ul>
             {sectionLinks.map((s) => (
@@ -232,7 +233,6 @@ export default async function PhotoPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      {/* Keywords */}
       {photo.keywords && (
         <KeywordLinks keywords={photo.keywords} />
       )}
