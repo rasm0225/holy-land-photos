@@ -138,6 +138,10 @@ export default async function SectionPage({ params }: Props) {
 
   return (
     <div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .section-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 680px) { .section-two-col { grid-template-columns: 1fr; } }
+      `}} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
@@ -169,30 +173,27 @@ export default async function SectionPage({ params }: Props) {
         </span>
       )}
 
-      {/* Section image */}
-      {sectionImageSrc && (
-        <div style={{ margin: '16px 0' }}>
-          <Image
-            src={sectionImageSrc}
-            alt={`Map or image for ${section.title}`}
-            width={800}
-            height={600}
-            style={{ maxWidth: '100%', height: 'auto' }}
-          />
+      {/* Section image + body two-column */}
+      {(sectionImageSrc || section.body || htmlBody) && (
+        <div className="section-two-col" style={{ marginTop: '16px', marginBottom: '24px' }}>
+          {sectionImageSrc && (
+            <div>
+              <Image
+                src={sectionImageSrc}
+                alt={`Map or image for ${section.title}`}
+                width={800}
+                height={600}
+                style={{ width: '100%', height: 'auto' }}
+              />
+            </div>
+          )}
+          <div>
+            {section.body && <RichText data={section.body} />}
+            {!section.body && htmlBody && (
+              <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
+            )}
+          </div>
         </div>
-      )}
-
-      {/* Body content — Lexical rich text or legacy HTML */}
-      {section.body && (
-        <div style={{ marginBottom: '24px' }}>
-          <RichText data={section.body} />
-        </div>
-      )}
-      {!section.body && htmlBody && (
-        <div
-          style={{ marginBottom: '24px' }}
-          dangerouslySetInnerHTML={{ __html: htmlBody }}
-        />
       )}
 
       {/* Child sections */}
