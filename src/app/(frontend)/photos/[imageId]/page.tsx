@@ -6,6 +6,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { KeywordLinks } from '../../components/KeywordLinks'
+import PhotoLightbox from '../../components/PhotoLightbox'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -200,7 +201,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
 
       {/* Image left, description right */}
       <div className="photo-two-col" style={{ marginTop: '16px' }}>
-        <div>
+        <PhotoLightbox src={`${S3_BASE}/${photo.imageId}.jpg`} alt={photo.title}>
           <Image
             src={`${S3_BASE}/${photo.imageId}.jpg`}
             alt={photo.title}
@@ -208,7 +209,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
             height={600}
             style={{ width: '100%', height: 'auto' }}
           />
-        </div>
+        </PhotoLightbox>
         <div>
           {photo.description && (
             <RichText data={photo.description} />
