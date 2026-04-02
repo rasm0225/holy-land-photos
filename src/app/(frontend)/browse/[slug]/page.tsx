@@ -96,6 +96,22 @@ export default async function SectionPage({ params }: Props) {
   const htmlBody = (section as unknown as Record<string, unknown>).htmlBody as string | null
   const sectionImage = (section as unknown as Record<string, unknown>).sectionImage as string | null
 
+  // Check if section image has a higher-res version at root (as a photo)
+  let sectionImageSrc = sectionImage ? `${S3_BASE}/section/${sectionImage}` : null
+  if (sectionImage) {
+    const imageIdFromFilename = sectionImage.replace(/\.jpg$/i, '')
+    const { docs: photoMatch } = await payload.find({
+      collection: 'photos',
+      where: { imageId: { equals: imageIdFromFilename } },
+      limit: 1,
+      depth: 0,
+      select: { imageId: true },
+    })
+    if (photoMatch.length > 0) {
+      sectionImageSrc = `${S3_BASE}/${sectionImage}`
+    }
+  }
+
   // Get photos array
   const photos = (section.photos || []) as Array<{
     photo?: {
@@ -154,13 +170,13 @@ export default async function SectionPage({ params }: Props) {
       )}
 
       {/* Section image */}
-      {sectionImage && (
+      {sectionImageSrc && (
         <div style={{ margin: '16px 0' }}>
           <Image
-            src={`${S3_BASE}/section/${sectionImage}`}
+            src={sectionImageSrc}
             alt={`Map or image for ${section.title}`}
-            width={600}
-            height={400}
+            width={800}
+            height={600}
             style={{ maxWidth: '100%', height: 'auto' }}
           />
         </div>
