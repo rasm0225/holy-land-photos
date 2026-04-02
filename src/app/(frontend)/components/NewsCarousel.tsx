@@ -41,13 +41,7 @@ export default function NewsCarousel({ newsItems }: { newsItems: NewsItem[] }) {
 
   return (
     <div>
-      <h2>
-        <a href={`/news/${slide.newsId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          {slide.newsTitle}
-        </a>
-      </h2>
-
-      <div style={{ position: 'relative', maxWidth: 800 }}>
+      <div style={{ position: 'relative' }}>
         <a href={`/photos/${slide.imageId}`}>
           <Image
             src={`${S3_BASE}/${slide.imageId}.jpg`}
