@@ -73,8 +73,8 @@ export default async function HomePage() {
                 <a href={`/browse/${section.slug}`}>{section.title}</a>
               </li>
             ))}
-            <li><a href="/news">News</a></li>
-            <li><a href="/site-of-the-week">Site of the Week</a></li>
+            <li><a href="/site-list">Complete Site List</a></li>
+            <li><a href="/search">Search</a></li>
           </ul>
         </div>
         {displayPages.length > 0 && (
