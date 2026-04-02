@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
       <h1>Search</h1>
 
-      <form action="/search" method="get" style={{ marginBottom: '24px' }}>
+      <form id="search-form" action="/search" method="get" style={{ marginBottom: '24px' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
             type="text"
@@ -88,6 +88,7 @@ export default async function SearchPage({ searchParams }: Props) {
             }}
           />
           <button
+            id="search-btn"
             type="submit"
             style={{
               padding: '10px 20px',
@@ -101,6 +102,13 @@ export default async function SearchPage({ searchParams }: Props) {
           </button>
         </div>
       </form>
+      <script dangerouslySetInnerHTML={{ __html: `
+        document.getElementById('search-form').addEventListener('submit', function() {
+          var btn = document.getElementById('search-btn');
+          btn.textContent = 'Searching\u2026';
+          btn.disabled = true;
+        });
+      `}} />
 
       {query && (
         <p style={{ color: '#888', marginBottom: '24px' }}>
