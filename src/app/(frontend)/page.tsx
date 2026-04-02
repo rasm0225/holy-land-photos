@@ -75,6 +75,7 @@ export default async function HomePage() {
             ))}
             <li><a href="/news">News</a></li>
             <li><a href="/site-of-the-week">Site of the Week</a></li>
+            <li><a href="/recent-additions">Recent Additions</a></li>
           </ul>
         </div>
         {displayPages.length > 0 && (
