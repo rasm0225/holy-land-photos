@@ -1,4 +1,5 @@
 import React from 'react'
+import Script from 'next/script'
 import type { Metadata } from 'next'
 import { EditLink } from './components/EditLink'
 
@@ -20,6 +21,15 @@ export const metadata: Metadata = {
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-8NL9MZ67TD" strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-8NL9MZ67TD');
+        `}</Script>
+      </head>
       <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif', lineHeight: 1.6 }}>
         <nav style={{ padding: '12px 24px', borderBottom: '1px solid #ddd' }}>
           <a href="/" style={{ marginRight: '16px', textDecoration: 'none', fontWeight: 600 }}>
