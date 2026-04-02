@@ -75,20 +75,18 @@ export default async function HomePage() {
             ))}
             <li><a href="/news">News</a></li>
             <li><a href="/site-of-the-week">Site of the Week</a></li>
+            <li><a href="/recent-additions">Recent Additions</a></li>
           </ul>
         </div>
         {displayPages.length > 0 && (
           <div>
             <h2>Pages</h2>
             <ul>
-              {displayPages.map((page) => {
-                const href = page.slug === 'recent-additions' ? '/recent-additions' : `/pages/${page.slug}`
-                return (
-                  <li key={page.id}>
-                    <a href={href}>{page.title}</a>
-                  </li>
-                )
-              })}
+              {displayPages.map((page) => (
+                <li key={page.id}>
+                  <a href={`/pages/${page.slug}`}>{page.title}</a>
+                </li>
+              ))}
             </ul>
           </div>
         )}
