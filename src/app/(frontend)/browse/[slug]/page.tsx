@@ -78,7 +78,19 @@ export default async function SectionPage({ params }: Props) {
   })
 
   // Build breadcrumbs from the breadcrumbs array
-  const breadcrumbs = (section.breadcrumbs as Array<{ doc?: { slug?: string; title?: string } | number; label?: string; url?: string }>) || []
+  // The nested-docs plugin stores a `url` field with the nested path (e.g. /browse-by-countries/israel/north)
+  // and a `doc` field that may be populated (object) or unpopulated (number) depending on depth.
+  // We extract the slug from the url's last segment as a reliable fallback.
+  const rawBreadcrumbs = (section.breadcrumbs as Array<{ doc?: { slug?: string; title?: string } | number; label?: string; url?: string }>) || []
+  const breadcrumbs = rawBreadcrumbs.map((crumb) => {
+    const doc = typeof crumb.doc === 'object' ? crumb.doc : null
+    const slugFromUrl = crumb.url?.split('/').filter(Boolean).pop() || ''
+    return {
+      slug: doc?.slug || slugFromUrl,
+      label: crumb.label || doc?.title || '',
+      url: crumb.url,
+    }
+  })
 
   // Get HTML body
   const htmlBody = (section as unknown as Record<string, unknown>).htmlBody as string | null
@@ -99,15 +111,12 @@ export default async function SectionPage({ params }: Props) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://holylandphotos.org/' },
-      ...breadcrumbs.map((crumb, i) => {
-        const doc = typeof crumb.doc === 'object' ? crumb.doc : null
-        return {
-          '@type': 'ListItem',
-          position: i + 2,
-          name: crumb.label || doc?.title || '',
-          ...(doc?.slug && { item: `https://holylandphotos.org/browse/${doc.slug}` }),
-        }
-      }),
+      ...breadcrumbs.map((crumb, i) => ({
+        '@type': 'ListItem',
+        position: i + 2,
+        name: crumb.label,
+        ...(crumb.slug && { item: `https://holylandphotos.org/browse/${crumb.slug}` }),
+      })),
     ],
   }
 
@@ -121,17 +130,14 @@ export default async function SectionPage({ params }: Props) {
       <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
         <a href="/">Home</a>
         {breadcrumbs.map((crumb, i) => {
-          const doc = typeof crumb.doc === 'object' ? crumb.doc : null
-          const crumbSlug = doc?.slug
-          const label = crumb.label || doc?.title || ''
           const isLast = i === breadcrumbs.length - 1
           return (
             <span key={i}>
               {' / '}
               {isLast ? (
-                <strong>{label}</strong>
+                <strong>{crumb.label}</strong>
               ) : (
-                <a href={`/browse/${crumbSlug}`}>{label}</a>
+                <a href={`/browse/${crumb.slug}`}>{crumb.label}</a>
               )}
             </span>
           )
