@@ -5,6 +5,7 @@ export const Photos: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['imageId', 'title', 'updatedAt'],
+    listSearchableFields: ['imageId', 'title', 'keywords'],
   },
   // Note: Photos are served from S3 by imageId, not through Payload's upload system.
   // Upload was removed to allow editing metadata without re-uploading files.
