@@ -251,6 +251,7 @@ The only things that still require Peter's explicit sign-off before proceeding:
 - Always use `npm run dev` to start the dev server
 - QA sign-off from Peter required before any section is considered done
 - Match the original site's URLs where possible to preserve SEO and inbound links
+- **Do not rely on image ID naming conventions for code logic.** The existing photos follow a pattern (e.g. `TEETHN02`, `FRPALOST04`) but this is a convention Dr. Rasmussen used, not a rule. Future uploads may not follow it. Always use database lookups (e.g. querying the photos collection) rather than filename pattern matching to determine whether a file is a photo, which section it belongs to, etc.
 
 ## QA Tools (confirmed working)
 - **metatags.io** — validates Open Graph and Twitter Card tags; confirms social share previews
