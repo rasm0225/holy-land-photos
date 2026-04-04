@@ -146,6 +146,8 @@ export default async function PhotoPage({ params, searchParams }: Props) {
 
   // Schema.org JSON-LD
   const sectionForSchema = sectionLinks[0]
+  const photographerName = (photo as unknown as Record<string, unknown>).photographer as string | null
+  const photoYear = (photo as unknown as Record<string, unknown>).year as number | null
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
@@ -153,9 +155,10 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     contentUrl: `${S3_BASE}/${photo.imageId}.jpg`,
     creator: {
       '@type': 'Person',
-      name: 'Dr. Carl Rasmussen',
+      name: photographerName || 'Dr. Carl Rasmussen',
     },
-    copyrightYear: new Date().getFullYear(),
+    ...(photoYear && { dateCreated: String(photoYear) }),
+    copyrightYear: photoYear || new Date().getFullYear(),
     ...(sectionForSchema && {
       about: {
         '@type': 'Place',
