@@ -96,9 +96,19 @@ export default async function SectionPage({ params }: Props) {
   const htmlBody = (section as unknown as Record<string, unknown>).htmlBody as string | null
   const sectionImage = (section as unknown as Record<string, unknown>).sectionImage as string | null
 
-  // Check if section image has a higher-res version at root (as a photo)
-  let sectionImageSrc = sectionImage ? `${S3_BASE}/section/${sectionImage}` : null
-  if (sectionImage) {
+  // Determine section image source:
+  // 1. primaryImage (relationship to Photos collection) — highest priority, always full-res
+  // 2. sectionImage filename with matching photo record — use full-res from root
+  // 3. sectionImage filename only — use low-res from section/ folder
+  const primaryImage = typeof section.primaryImage === 'object' && section.primaryImage
+    ? (section.primaryImage as { imageId?: string })
+    : null
+  let sectionImageSrc: string | null = null
+
+  if (primaryImage?.imageId) {
+    sectionImageSrc = `${S3_BASE}/${primaryImage.imageId}.jpg`
+  } else if (sectionImage) {
+    sectionImageSrc = `${S3_BASE}/section/${sectionImage}`
     const imageIdFromFilename = sectionImage.replace(/\.jpg$/i, '')
     const { docs: photoMatch } = await payload.find({
       collection: 'photos',
@@ -180,7 +190,7 @@ export default async function SectionPage({ params }: Props) {
             <div>
               <Image
                 src={sectionImageSrc}
-                alt={`Map or image for ${section.title}`}
+                alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
                 width={800}
                 height={600}
                 sizes="(max-width: 680px) 100vw, 50vw"
