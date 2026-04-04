@@ -183,6 +183,7 @@ export default async function SectionPage({ params }: Props) {
                 alt={`Map or image for ${section.title}`}
                 width={800}
                 height={600}
+                sizes="(max-width: 680px) 100vw, 50vw"
                 style={{ width: '100%', height: 'auto' }}
               />
             </div>
@@ -230,6 +231,7 @@ export default async function SectionPage({ params }: Props) {
                     alt={photo.title || imageId}
                     width={200}
                     height={150}
+                    sizes="200px"
                     style={{ width: '100%', height: '150px', objectFit: 'cover', display: 'block' }}
                   />
                   <div style={{ fontSize: '13px', padding: '4px 0' }}>

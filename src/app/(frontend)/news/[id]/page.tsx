@@ -101,6 +101,7 @@ export default async function NewsPage({ params }: Props) {
                   alt={item.caption || imageId}
                   width={400}
                   height={300}
+                  sizes="(max-width: 680px) 100vw, 400px"
                   style={{ width: '100%', height: 'auto', display: 'block' }}
                 />
                 {item.caption && (

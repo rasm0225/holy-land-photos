@@ -48,6 +48,7 @@ export default function NewsCarousel({ newsItems }: { newsItems: NewsItem[] }) {
             alt={slide.caption || slide.imageId}
             width={800}
             height={500}
+            sizes="(max-width: 680px) 100vw, 50vw"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
         </a>

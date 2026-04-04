@@ -53,6 +53,7 @@ export default async function NewsIndexPage() {
                   alt={item.title}
                   width={120}
                   height={90}
+                  sizes="120px"
                   style={{ objectFit: 'cover', flexShrink: 0 }}
                 />
               )}

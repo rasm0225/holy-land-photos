@@ -210,6 +210,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
             alt={photo.title}
             width={800}
             height={600}
+            sizes="(max-width: 680px) 100vw, 50vw"
             style={{ width: '100%', height: 'auto' }}
           />
         </PhotoLightbox>

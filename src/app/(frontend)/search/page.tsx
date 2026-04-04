@@ -153,6 +153,7 @@ export default async function SearchPage({ searchParams }: Props) {
                     alt={photo.title || imageId}
                     width={200}
                     height={150}
+                    sizes="200px"
                     style={{ width: '100%', height: '150px', objectFit: 'cover', display: 'block' }}
                   />
                   <div style={{ fontSize: '13px', padding: '4px 0' }}>
