@@ -53,6 +53,22 @@ export const Photos: CollectionConfig = {
       },
     },
     {
+      name: 'photographer',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'Name of the photographer (defaults to Dr. Carl Rasmussen if empty)',
+      },
+    },
+    {
+      name: 'year',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'Year the photo was taken',
+      },
+    },
+    {
       name: 'htmlDescription',
       type: 'textarea',
       admin: {
