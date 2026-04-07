@@ -89,6 +89,9 @@ export const Sections: CollectionConfig = {
       type: 'array',
       admin: {
         description: 'Drag to reorder. Photos display in this order on the public site.',
+        components: {
+          RowLabel: '/src/components/PhotoRowLabel/index.tsx#PhotoRowLabel',
+        },
       },
       fields: [
         {
