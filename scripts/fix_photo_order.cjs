@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 /**
- * Fix photo ordering in sections to match the original site's order.
+ * Fix photo ordering in sections to match the original site's image_SortOrder.
+ *
+ * The original ASP site sorted photos by image_SortOrder from the Images table.
+ * Photos without a sort order (empty) come after those with one.
  *
  * Usage:
- *   node scripts/fix_photo_order.js /Users/peter/Downloads/Archive
- *   node scripts/fix_photo_order.js /Users/peter/Downloads/Archive --dry-run
+ *   node scripts/fix_photo_order.cjs /Users/peter/Downloads/Archive
+ *   node scripts/fix_photo_order.cjs /Users/peter/Downloads/Archive --dry-run
  */
 
 const https = require('https')
@@ -74,7 +77,50 @@ function execBatch(statements) {
   })
 }
 
-function readCSV(filepath) {
+function parseCSVLine(line) {
+  const result = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++ }
+      else { inQuotes = !inQuotes }
+    } else if (line[i] === ',' && !inQuotes) {
+      result.push(current); current = ''
+    } else {
+      current += line[i]
+    }
+  }
+  result.push(current)
+  return result
+}
+
+function readCSVMultiline(filepath) {
+  const content = fs.readFileSync(filepath, 'utf-8').replace(/^\uFEFF/, '')
+  const lines = []
+  let currentLine = ''
+  let inQ = false
+  for (const char of content) {
+    if (char === '"') inQ = !inQ
+    if ((char === '\n' || char === '\r') && !inQ) {
+      if (currentLine.trim()) lines.push(currentLine)
+      currentLine = ''
+    } else {
+      currentLine += char
+    }
+  }
+  if (currentLine.trim()) lines.push(currentLine)
+
+  const headers = parseCSVLine(lines[0])
+  return lines.slice(1).map(line => {
+    const vals = parseCSVLine(line)
+    const obj = {}
+    headers.forEach((h, i) => (obj[h.trim()] = (vals[i] || '').trim()))
+    return obj
+  })
+}
+
+function readCSVSimple(filepath) {
   const content = fs.readFileSync(filepath, 'utf-8').replace(/^\uFEFF/, '')
   const lines = content.split('\n').filter(l => l.trim())
   const headers = lines[0].split(',').map(h => h.trim())
@@ -91,30 +137,46 @@ async function main() {
   const dryRun = process.argv.includes('--dry-run')
 
   if (!archiveDir) {
-    console.log('Usage: node scripts/fix_photo_order.js /path/to/Archive [--dry-run]')
+    console.log('Usage: node scripts/fix_photo_order.cjs /path/to/Archive [--dry-run]')
     process.exit(1)
   }
 
-  // Read CSV
-  const isPath = path.join(archiveDir, 'dbo.holylandphotos_IS.csv')
-  console.log('Loading CSV...')
-  const isRows = readCSV(isPath)
-  console.log(`  ${isRows.length} image-section links`)
+  // Read Images CSV (has image_SortOrder) - needs multiline parsing
+  console.log('Loading Images CSV...')
+  const imagesCSV = readCSVMultiline(path.join(archiveDir, 'dbo.holylandphotos_Images.csv'))
+  console.log(`  ${imagesCSV.length} images`)
 
-  // Build correct order per section (sorted by is_ID)
-  const sectionOrder = {}
-  for (const row of isRows) {
-    const isId = parseInt(row.is_ID)
-    const imageId = row.is_Image_ID
+  // Build imageId -> sortOrder map
+  const sortOrderMap = {}
+  for (const row of imagesCSV) {
+    const imageId = row.image_ID
+    const sortOrder = row.image_SortOrder
+    if (imageId) {
+      sortOrderMap[imageId] = sortOrder !== '' ? parseInt(sortOrder) : 99999
+    }
+  }
+
+  // Read IS CSV (image-section links)
+  console.log('Loading IS CSV...')
+  const isCSV = readCSVSimple(path.join(archiveDir, 'dbo.holylandphotos_IS.csv'))
+  console.log(`  ${isCSV.length} links`)
+
+  // Build section -> images list with sort orders
+  const sectionPhotos = {}
+  for (const row of isCSV) {
     const sectionId = row.is_Section_ID
-    if (!imageId || !sectionId) continue
-    if (!sectionOrder[sectionId]) sectionOrder[sectionId] = []
-    sectionOrder[sectionId].push({ isId, imageId })
+    const imageId = row.is_Image_ID
+    if (!sectionId || !imageId) continue
+    if (!sectionPhotos[sectionId]) sectionPhotos[sectionId] = []
+    const sortOrder = sortOrderMap[imageId] !== undefined ? sortOrderMap[imageId] : 99999
+    sectionPhotos[sectionId].push({ imageId, sortOrder })
   }
-  for (const sid of Object.keys(sectionOrder)) {
-    sectionOrder[sid].sort((a, b) => a.isId - b.isId)
+
+  // Sort each section's photos by sortOrder
+  for (const sid of Object.keys(sectionPhotos)) {
+    sectionPhotos[sid].sort((a, b) => a.sortOrder - b.sortOrder)
   }
-  console.log(`  ${Object.keys(sectionOrder).length} sections with photos`)
+  console.log(`  ${Object.keys(sectionPhotos).length} sections`)
 
   // Get photo ID mapping from DB
   console.log('Loading photos from database...')
@@ -138,7 +200,7 @@ async function main() {
   const updates = []
   let sectionsFixed = 0
 
-  for (const [sectionId, photos] of Object.entries(sectionOrder)) {
+  for (const [sectionId, photos] of Object.entries(sectionPhotos)) {
     let hasUpdates = false
     for (let i = 0; i < photos.length; i++) {
       const newOrder = i + 1
@@ -157,7 +219,12 @@ async function main() {
   console.log(`\n${updates.length} updates for ${sectionsFixed} sections`)
 
   if (dryRun) {
-    console.log('\n--- DRY RUN (first 20) ---')
+    // Verify plutonium
+    console.log('\n--- Hierapolis Plutonium expected order ---')
+    const plPhotos = sectionPhotos['3766'] || []
+    plPhotos.forEach((p, i) => console.log(`  ${i + 1}. ${p.imageId} (sortOrder: ${p.sortOrder})`))
+
+    console.log('\n--- DRY RUN (first 20 updates) ---')
     updates.slice(0, 20).forEach(s => console.log(s))
     if (updates.length > 20) console.log(`  ... and ${updates.length - 20} more`)
     return
