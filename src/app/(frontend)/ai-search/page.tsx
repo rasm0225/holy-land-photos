@@ -17,11 +17,16 @@ export default function AISearchPage() {
       </nav>
 
       <h1>AI Search</h1>
-      <p style={{ color: '#666', marginBottom: '24px' }}>
+      <p style={{ color: '#666', marginBottom: '12px' }}>
         Ask about biblical sites, archaeological places, or specific photos.
         The assistant will search the archive and suggest matches. Try things like
         &ldquo;photos of Caesarea&rdquo;, &ldquo;where is Nain?&rdquo;, or
         &ldquo;show me the Rolling Stone Tomb&rdquo;.
+      </p>
+      <p style={{ color: '#888', fontSize: '13px', fontStyle: 'italic', marginBottom: '24px' }}>
+        This search is provided by Claude AI. Responses are based on content from
+        this website but are not written by or endorsed by Dr. Carl Rasmussen.
+        If you have any feedback, please contact us.
       </p>
 
       <AISearchChat />
