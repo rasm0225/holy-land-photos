@@ -38,6 +38,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           <a href="/search" style={{ fontSize: '14px', color: '#666', textDecoration: 'none', marginRight: '16px' }}>
             Search
           </a>
+          <a href="/ai-search" style={{ fontSize: '14px', color: '#666', textDecoration: 'none', marginRight: '16px' }}>
+            AI Search
+          </a>
           <a href="/admin" style={{ fontSize: '14px', color: '#666', textDecoration: 'none' }}>
             Admin
           </a>
