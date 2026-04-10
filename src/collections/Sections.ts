@@ -14,6 +14,12 @@ export const Sections: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'sectionType', 'updatedAt'],
+    preview: (doc) => {
+      if (doc?.slug) {
+        return `/browse/${doc.slug as string}`
+      }
+      return null
+    },
   },
   hooks: {
     beforeValidate: [
