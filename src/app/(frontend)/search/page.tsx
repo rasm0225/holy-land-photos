@@ -28,6 +28,12 @@ export default async function SearchPage({ searchParams }: Props) {
   if (query) {
     const payload = await getPayload({ config })
 
+    // DB query uses substring match (contains), then we filter client-side
+    // to word-boundary matches so "Assos" doesn't match "Sagalassos".
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const wordBoundary = new RegExp(`\\b${escapeRegex(query)}\\b`, 'i')
+    const matchesWord = (text?: string | null) => !!text && wordBoundary.test(text)
+
     const { docs: sectionDocs } = await payload.find({
       collection: 'sections',
       where: {
@@ -36,12 +42,14 @@ export default async function SearchPage({ searchParams }: Props) {
           { keywords: { contains: query } },
         ],
       },
-      limit: 50,
+      limit: 200,
       depth: 0,
-      select: { title: true, slug: true, sectionType: true },
+      select: { title: true, slug: true, sectionType: true, keywords: true },
       sort: 'title',
     })
-    sections = sectionDocs as typeof sections
+    sections = (sectionDocs as Array<{ id: number; title: string; slug: string; sectionType?: string | null; keywords?: string | null }>)
+      .filter((s) => matchesWord(s.title) || matchesWord(s.keywords))
+      .slice(0, 50)
 
     const { docs: photoDocs } = await payload.find({
       collection: 'photos',
@@ -52,12 +60,14 @@ export default async function SearchPage({ searchParams }: Props) {
           { imageId: { contains: query } },
         ],
       },
-      limit: 100,
+      limit: 400,
       depth: 0,
-      select: { title: true, imageId: true },
+      select: { title: true, imageId: true, keywords: true },
       sort: 'title',
     })
-    photos = photoDocs as typeof photos
+    photos = (photoDocs as Array<{ id: number; title: string; imageId: string; keywords?: string | null }>)
+      .filter((p) => matchesWord(p.title) || matchesWord(p.keywords) || matchesWord(p.imageId))
+      .slice(0, 100)
   }
 
   const totalResults = sections.length + photos.length
