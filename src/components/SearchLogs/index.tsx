@@ -1,5 +1,6 @@
 import type { AdminViewServerProps } from 'payload'
 import { DefaultTemplate } from '@payloadcms/next/templates'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 type LogRow = {
@@ -90,6 +91,12 @@ async function getLogs(): Promise<{
 
 export default async function SearchLogsView(props: AdminViewServerProps) {
   const { initPageResult, params, searchParams } = props
+
+  // Require authenticated admin user
+  if (!initPageResult.req.user) {
+    redirect('/admin/login')
+  }
+
   const data = await getLogs()
 
   const formatTime = (iso: string) => {

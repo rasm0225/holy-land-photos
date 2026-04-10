@@ -2,11 +2,17 @@ import type { AdminViewServerProps } from 'payload'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { DefaultTemplate } from '@payloadcms/next/templates'
+import { redirect } from 'next/navigation'
 import React from 'react'
 import { KeywordIndexClient } from './client'
 
 export default async function KeywordIndexView(props: AdminViewServerProps) {
   const { initPageResult, params, searchParams } = props
+
+  if (!initPageResult.req.user) {
+    redirect('/admin/login')
+  }
+
   const payload = await getPayload({ config })
 
   const [sections, photos] = await Promise.all([

@@ -2,6 +2,7 @@ import type { AdminViewServerProps } from 'payload'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { DefaultTemplate } from '@payloadcms/next/templates'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 type SectionDoc = {
@@ -56,6 +57,11 @@ function TreeBranch({
 
 export default async function SectionHierarchyView(props: AdminViewServerProps) {
   const { initPageResult, params, searchParams } = props
+
+  if (!initPageResult.req.user) {
+    redirect('/admin/login')
+  }
+
   const payload = await getPayload({ config })
 
   const { docs } = await payload.find({
