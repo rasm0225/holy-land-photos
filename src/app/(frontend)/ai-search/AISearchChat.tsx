@@ -17,7 +17,7 @@ function renderMarkdown(text: string): React.ReactNode {
 function renderInline(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = []
   // Combined regex: links, bold, line breaks
-  const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\n/g
+  const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+?)\*\*|\n/g
   let lastIdx = 0
   let m: RegExpExecArray | null
   let key = 0
@@ -31,8 +31,8 @@ function renderInline(text: string): React.ReactNode[] {
         </a>,
       )
     } else if (m[3]) {
-      // Bold
-      parts.push(<strong key={key++}>{m[3]}</strong>)
+      // Bold — recursively render so nested links/formatting work
+      parts.push(<strong key={key++}>{renderInline(m[3])}</strong>)
     } else if (m[0] === '\n') {
       parts.push(<br key={key++} />)
     }
