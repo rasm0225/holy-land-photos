@@ -35,10 +35,15 @@ export default buildConfig({
           Component: '/src/components/KeywordIndex/index.tsx',
           path: '/keyword-index',
         },
+        'search-logs': {
+          Component: '/src/components/SearchLogs/index.tsx',
+          path: '/search-logs',
+        },
       },
       afterNavLinks: [
         '/src/components/SectionHierarchy/NavLink.tsx#SectionHierarchyNavLink',
         '/src/components/KeywordIndex/NavLink.tsx#KeywordIndexNavLink',
+        '/src/components/SearchLogs/NavLink.tsx#SearchLogsNavLink',
       ],
     },
   },

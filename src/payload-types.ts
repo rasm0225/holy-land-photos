@@ -255,6 +255,14 @@ export interface Photo {
    */
   internalKeywords?: string | null;
   /**
+   * Name of the photographer (defaults to Dr. Carl Rasmussen if empty)
+   */
+  photographer?: string | null;
+  /**
+   * Year the photo was taken
+   */
+  year?: number | null;
+  /**
    * Imported HTML content (read-only, will be migrated to rich text)
    */
   htmlDescription?: string | null;
@@ -583,6 +591,8 @@ export interface PhotosSelect<T extends boolean = true> {
   description?: T;
   keywords?: T;
   internalKeywords?: T;
+  photographer?: T;
+  year?: T;
   htmlDescription?: T;
   notes?: T;
   updatedAt?: T;

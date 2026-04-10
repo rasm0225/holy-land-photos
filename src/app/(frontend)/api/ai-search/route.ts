@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import Anthropic from '@anthropic-ai/sdk'
+import { logSearch } from '@/lib/searchLog'
 
 export const maxDuration = 60
 export const runtime = 'nodejs'
@@ -182,11 +183,15 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
 type Msg = { role: 'user' | 'assistant'; content: string }
 
 export async function POST(req: NextRequest) {
+  const reqStart = Date.now()
   try {
     const { messages } = (await req.json()) as { messages: Msg[] }
     if (!Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'messages required' }, { status: 400 })
     }
+
+    // Log the latest user query (ignore conversation history)
+    const latestUserMessage = [...messages].reverse().find((m) => m.role === 'user')?.content || ''
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -238,6 +243,15 @@ export async function POST(req: NextRequest) {
         .filter((b): b is Anthropic.Messages.TextBlock => b.type === 'text')
         .map((b) => b.text)
         .join('\n')
+
+      // Log the search asynchronously
+      if (latestUserMessage) {
+        void logSearch({
+          query: latestUserMessage,
+          searchType: 'ai',
+          durationMs: Date.now() - reqStart,
+        })
+      }
 
       return NextResponse.json({
         reply: text,

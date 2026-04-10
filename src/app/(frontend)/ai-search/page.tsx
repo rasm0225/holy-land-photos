@@ -30,6 +30,11 @@ export default function AISearchPage() {
       </p>
 
       <AISearchChat />
+
+      <footer style={{ marginTop: '48px', paddingTop: '16px', borderTop: '1px solid #eee', color: '#888', fontSize: '12px' }}>
+        Search queries are logged anonymously to help us improve the site.
+        No personal information, IP addresses, or identifiers are collected.
+      </footer>
     </div>
   )
 }

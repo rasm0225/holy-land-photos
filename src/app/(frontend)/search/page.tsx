@@ -3,6 +3,7 @@ import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
+import { logSearch } from '@/lib/searchLog'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -24,6 +25,8 @@ export default async function SearchPage({ searchParams }: Props) {
 
   let sections: Array<{ id: number; title: string; slug: string; sectionType?: string | null }> = []
   let photos: Array<{ id: number; title: string; imageId: string }> = []
+
+  const searchStart = Date.now()
 
   if (query) {
     const payload = await getPayload({ config })
@@ -71,6 +74,16 @@ export default async function SearchPage({ searchParams }: Props) {
   }
 
   const totalResults = sections.length + photos.length
+
+  // Log the search asynchronously (do not await to avoid blocking the response)
+  if (query) {
+    void logSearch({
+      query,
+      searchType: 'regular',
+      resultCount: totalResults,
+      durationMs: Date.now() - searchStart,
+    })
+  }
 
   return (
     <div>
@@ -179,6 +192,11 @@ export default async function SearchPage({ searchParams }: Props) {
       {query && totalResults === 0 && (
         <p>No results found. Try different keywords.</p>
       )}
+
+      <footer style={{ marginTop: '48px', paddingTop: '16px', borderTop: '1px solid #eee', color: '#888', fontSize: '12px' }}>
+        Search queries are logged anonymously to help us improve the site.
+        No personal information, IP addresses, or identifiers are collected.
+      </footer>
     </div>
   )
 }
