@@ -83,54 +83,52 @@ export default function AISearchChat() {
     }
   }
 
+  const hasContent = messages.length > 0 || loading || error
+
   return (
     <div style={{ maxWidth: 800 }}>
-      <div
-        style={{
-          border: '1px solid #ccc',
-          borderRadius: 4,
-          padding: 16,
-          minHeight: 300,
-          maxHeight: 500,
-          overflowY: 'auto',
-          marginBottom: 16,
-          background: '#fafafa',
-        }}
-      >
-        {messages.length === 0 && !loading && (
-          <p style={{ color: '#888', margin: 0 }}>
-            Ask a question to get started…
-          </p>
-        )}
-        {messages.map((m, i) => (
-          <div
-            key={i}
-            style={{
-              marginBottom: '1rem',
-              padding: '0.75rem 1rem',
-              borderRadius: 4,
-              background: m.role === 'user' ? '#e6f0ff' : '#fff',
-              border: '1px solid #e0e0e0',
-            }}
-          >
-            <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', marginBottom: 4 }}>
-              {m.role === 'user' ? 'You' : 'Assistant'}
+      {hasContent && (
+        <div
+          style={{
+            border: '1px solid #ccc',
+            borderRadius: 4,
+            padding: 16,
+            maxHeight: 500,
+            overflowY: 'auto',
+            marginBottom: 16,
+            background: '#fafafa',
+          }}
+        >
+          {messages.map((m, i) => (
+            <div
+              key={i}
+              style={{
+                marginBottom: '1rem',
+                padding: '0.75rem 1rem',
+                borderRadius: 4,
+                background: m.role === 'user' ? '#e6f0ff' : '#fff',
+                border: '1px solid #e0e0e0',
+              }}
+            >
+              <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', marginBottom: 4 }}>
+                {m.role === 'user' ? 'You' : 'Assistant'}
+              </div>
+              {m.role === 'assistant' ? renderMarkdown(m.content) : <p style={{ margin: 0 }}>{m.content}</p>}
             </div>
-            {m.role === 'assistant' ? renderMarkdown(m.content) : <p style={{ margin: 0 }}>{m.content}</p>}
-          </div>
-        ))}
-        {loading && (
-          <div style={{ color: '#888', fontStyle: 'italic', padding: '0.5rem 0' }}>
-            Searching…
-          </div>
-        )}
-        {error && (
-          <div style={{ color: '#c00', padding: '0.5rem 0' }}>
-            Error: {error}
-          </div>
-        )}
-        <div ref={endRef} />
-      </div>
+          ))}
+          {loading && (
+            <div style={{ color: '#888', fontStyle: 'italic', padding: '0.5rem 0' }}>
+              Searching…
+            </div>
+          )}
+          {error && (
+            <div style={{ color: '#c00', padding: '0.5rem 0' }}>
+              Error: {error}
+            </div>
+          )}
+          <div ref={endRef} />
+        </div>
+      )}
 
       <form onSubmit={send} style={{ display: 'flex', gap: 8 }}>
         <input
