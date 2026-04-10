@@ -7,3 +7,10 @@ node_modules/
 *.db
 .vercel
 hlp-remap*
+
+# Local SQLite working files (hlp-*, including -info, -shm, -wal variants)
+hlp-*
+
+# Python cache
+__pycache__/
+*.pyc
