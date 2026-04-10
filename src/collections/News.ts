@@ -5,6 +5,12 @@ export const News: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'active', 'createdAt'],
+    preview: (doc) => {
+      if (doc?.id) {
+        return `/news/${doc.id as number}`
+      }
+      return null
+    },
   },
   fields: [
     {

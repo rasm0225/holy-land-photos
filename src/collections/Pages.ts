@@ -14,6 +14,12 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'display', 'updatedAt'],
+    preview: (doc) => {
+      if (doc?.slug) {
+        return `/pages/${doc.slug as string}`
+      }
+      return null
+    },
   },
   hooks: {
     beforeValidate: [
