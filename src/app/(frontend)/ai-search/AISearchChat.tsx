@@ -7,11 +7,38 @@ type Message = { role: 'user' | 'assistant'; content: string }
 // Minimal markdown renderer — handles [text](url) links, **bold**, and paragraphs
 function renderMarkdown(text: string): React.ReactNode {
   const paragraphs = text.split(/\n\n+/)
-  return paragraphs.map((para, pi) => (
-    <p key={pi} style={{ margin: '0 0 0.75rem 0' }}>
-      {renderInline(para)}
-    </p>
-  ))
+  return paragraphs.map((para, pi) => {
+    // Check for headings at start of paragraph
+    const h3Match = /^###\s+(.+)$/s.exec(para)
+    if (h3Match) {
+      return (
+        <h3 key={pi} style={{ fontSize: '1rem', fontWeight: 600, margin: '0.75rem 0 0.4rem 0' }}>
+          {renderInline(h3Match[1])}
+        </h3>
+      )
+    }
+    const h2Match = /^##\s+(.+)$/s.exec(para)
+    if (h2Match) {
+      return (
+        <h2 key={pi} style={{ fontSize: '1.1rem', fontWeight: 600, margin: '1rem 0 0.5rem 0' }}>
+          {renderInline(h2Match[1])}
+        </h2>
+      )
+    }
+    const h1Match = /^#\s+(.+)$/s.exec(para)
+    if (h1Match) {
+      return (
+        <h2 key={pi} style={{ fontSize: '1.2rem', fontWeight: 700, margin: '1rem 0 0.5rem 0' }}>
+          {renderInline(h1Match[1])}
+        </h2>
+      )
+    }
+    return (
+      <p key={pi} style={{ margin: '0 0 0.75rem 0' }}>
+        {renderInline(para)}
+      </p>
+    )
+  })
 }
 
 function renderInline(text: string): React.ReactNode[] {
