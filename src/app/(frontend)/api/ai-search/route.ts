@@ -9,24 +9,32 @@ export const runtime = 'nodejs'
 
 const MODEL = 'claude-haiku-4-5-20251001'
 
-const SYSTEM_PROMPT = `You are a helpful search assistant for HolyLandPhotos.org, a scholarly photo archive of biblical and archaeological sites.
+const SYSTEM_PROMPT_STATIC = `You are a helpful search assistant for HolyLandPhotos.org, a scholarly photo archive of biblical and archaeological sites.
 
 The site contains:
 - 7,000+ high-resolution photographs by Dr. Carl Rasmussen
 - 700+ sections covering biblical sites, archaeological locations, and artifacts across Israel, Jordan, Turkey, Greece, Egypt, Italy, and other Mediterranean/Near Eastern regions
 - Photos are organized hierarchically by country → region → site → sub-site
 
-Your job is to help users find photos and sites they're looking for. When a user asks about a place:
+Your job is to help users find information on this website. You can answer questions about:
 
-1. Use the search tools to find matching sections and photos
-2. Consider alternate spellings (e.g., Hierapolis/Ierapolis, Caesarea Maritima vs Caesarea Philippi, Haran/Harran, Herodion/Herodium)
-3. If a name is ambiguous (e.g., "Caesarea" could be multiple places), ask a follow-up question
-4. When presenting results, format links as markdown:
+1. **Photos and sites** — use the search tools to find matching sections and photos
+2. **General site information** — use the reference content below (from the site's About page, How to Use, Permissions, tour announcements, news, etc.)
+
+Guidelines:
+
+1. For questions about specific places, use search_sections, search_photos, or get_section_photos.
+2. For questions about Dr. Rasmussen, copyright/permissions, how to use the site, upcoming tours, or news — answer from the REFERENCE CONTENT section below.
+3. Consider alternate spellings (e.g., Hierapolis/Ierapolis, Caesarea Maritima vs Caesarea Philippi, Haran/Harran, Herodion/Herodium).
+4. If a place name is ambiguous (e.g., "Caesarea" could be multiple places), ask a follow-up question.
+5. When presenting results, format links as markdown:
    - Sections: [Section Title](/browse/SLUG)
    - Photos: [Photo Title](/photos/IMAGE_ID)
-5. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey")
-6. Be concise — users want to find things, not read essays
-7. If you find nothing relevant, suggest related searches or ask for clarification
+   - Pages: [Page Title](/pages/SLUG)
+   - News: [News Title](/news/ID)
+6. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey"), but only from the reference content or tool results — do not invent facts.
+7. Be concise — users want to find things, not read essays.
+8. If the information is not in the reference content or search results, say so. Do not make up answers or draw from general web knowledge. It is better to say "I don't have that information on the site" than to guess.
 
 Tone guidelines:
 - Write in a reserved, scholarly tone. This audience is scholars, clergy, educators, and students — not casual web users.
@@ -35,7 +43,7 @@ Tone guidelines:
 - Start responses directly with the information or answer. Lead with facts, not reactions.
 - Avoid filler phrases like "I found some great results" or "Here are some wonderful options". Just present the results.
 
-The public site base URL is https://holy-land-photos.vercel.app — but always use relative links (/browse/..., /photos/...) so they work in the chat UI.`
+The public site base URL is https://holy-land-photos.vercel.app — but always use relative links (/browse/..., /photos/..., /pages/..., /news/...) so they work in the chat UI.`
 
 const tools: Anthropic.Messages.Tool[] = [
   {
@@ -187,6 +195,128 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
   return JSON.stringify({ error: `unknown tool: ${name}` })
 }
 
+/**
+ * Extract plain text from Lexical rich text JSON.
+ * Walks the tree and concatenates all text nodes.
+ */
+function lexicalToText(node: unknown): string {
+  if (!node || typeof node !== 'object') return ''
+  const n = node as Record<string, unknown>
+  if (n.type === 'text' && typeof n.text === 'string') return n.text
+  if (n.type === 'link' || n.type === 'autolink') {
+    const children = Array.isArray(n.children) ? n.children : []
+    return children.map(lexicalToText).join('')
+  }
+  const children = Array.isArray(n.children) ? n.children : []
+  const childText = children.map(lexicalToText).join('')
+  // Add line breaks after block-level nodes
+  if (
+    n.type === 'paragraph' ||
+    n.type === 'heading' ||
+    n.type === 'listitem' ||
+    n.type === 'quote'
+  ) {
+    return childText + '\n'
+  }
+  return childText
+}
+
+function extractTextFromDoc(doc: Record<string, unknown>): string {
+  const body = doc.body as { root?: unknown } | null
+  if (body && body.root) {
+    const text = lexicalToText(body.root).trim()
+    if (text) return text
+  }
+  const htmlBody = doc.htmlBody as string | null
+  if (htmlBody) {
+    return htmlBody
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&[a-z]+;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  }
+  return ''
+}
+
+/**
+ * Build the reference content block that gets prepended to the system prompt.
+ * Includes all displayed pages and active news items so Claude can answer
+ * general questions about the site (permissions, tours, how to use, etc.)
+ * without making things up.
+ */
+async function buildReferenceContent(): Promise<string> {
+  const payload = await getPayload({ config })
+
+  const [pagesResult, newsResult] = await Promise.all([
+    payload.find({
+      collection: 'pages',
+      where: { display: { equals: true } },
+      limit: 0,
+      depth: 0,
+      sort: 'sortOrder',
+    }),
+    payload.find({
+      collection: 'news',
+      where: { active: { equals: true } },
+      limit: 20,
+      depth: 0,
+      sort: '-createdAt',
+    }),
+  ])
+
+  const parts: string[] = []
+
+  parts.push(
+    `# REFERENCE CONTENT FROM THE WEBSITE\n\nThe following content is drawn directly from the site's pages and current news items. Use it to answer general questions about Dr. Rasmussen, how the site works, permissions/copyright, upcoming tours, and announcements. Do not invent information beyond what is written here.\n`,
+  )
+
+  if (pagesResult.docs.length > 0) {
+    parts.push('\n## PAGES\n')
+    for (const page of pagesResult.docs) {
+      const d = page as unknown as Record<string, unknown>
+      const text = extractTextFromDoc(d)
+      if (!text) continue
+      parts.push(`\n### ${page.title} (link: /pages/${page.slug})\n`)
+      parts.push(text.slice(0, 8000)) // cap per page to keep things reasonable
+      parts.push('\n')
+    }
+  }
+
+  if (newsResult.docs.length > 0) {
+    parts.push('\n## CURRENT NEWS ITEMS (active)\n')
+    for (const news of newsResult.docs) {
+      const d = news as unknown as Record<string, unknown>
+      const text = extractTextFromDoc(d)
+      parts.push(`\n### ${news.title} (link: /news/${news.id})\n`)
+      if (text) parts.push(text.slice(0, 4000))
+      parts.push('\n')
+    }
+  }
+
+  return parts.join('')
+}
+
+// Module-level cache so we only build the reference content once per function instance.
+// Anthropic's prompt cache handles server-side caching; this avoids rebuilding the
+// string on every request within a warm function.
+let cachedReferenceContent: string | null = null
+let cachedReferenceContentAt = 0
+const REFERENCE_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+async function getReferenceContent(): Promise<string> {
+  const now = Date.now()
+  if (cachedReferenceContent && now - cachedReferenceContentAt < REFERENCE_CACHE_TTL_MS) {
+    return cachedReferenceContent
+  }
+  cachedReferenceContent = await buildReferenceContent()
+  cachedReferenceContentAt = now
+  return cachedReferenceContent
+}
+
 type Msg = { role: 'user' | 'assistant'; content: string }
 
 export async function POST(req: NextRequest) {
@@ -201,6 +331,22 @@ export async function POST(req: NextRequest) {
     const latestUserMessage = [...messages].reverse().find((m) => m.role === 'user')?.content || ''
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+    // Build the system prompt with static instructions + reference content
+    const referenceContent = await getReferenceContent()
+
+    // Structure the system prompt as two blocks:
+    // - Block 1: static instructions + reference content, marked cacheable
+    //   (this is the large, stable content that benefits most from prompt caching)
+    // - The cache hit lookup includes everything up to and including the
+    //   cache_control block, so one marker at the end covers everything.
+    const systemBlocks: Anthropic.Messages.TextBlockParam[] = [
+      {
+        type: 'text',
+        text: SYSTEM_PROMPT_STATIC + '\n\n' + referenceContent,
+        cache_control: { type: 'ephemeral' },
+      },
+    ]
 
     // Convert chat history to Anthropic message format
     const apiMessages: Anthropic.Messages.MessageParam[] = messages.map((m) => ({
@@ -218,7 +364,7 @@ export async function POST(req: NextRequest) {
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: 2048,
-        system: SYSTEM_PROMPT,
+        system: systemBlocks,
         tools,
         messages: apiMessages,
       })
