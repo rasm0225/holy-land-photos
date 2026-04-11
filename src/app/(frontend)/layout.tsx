@@ -2,6 +2,7 @@ import React from 'react'
 import Script from 'next/script'
 import type { Metadata } from 'next'
 import { EditLink } from './components/EditLink'
+import PageLogger from './components/PageLogger'
 
 export const metadata: Metadata = {
   title: {
@@ -49,6 +50,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <main style={{ padding: '24px', maxWidth: '1000px' }}>
           {children}
         </main>
+        <PageLogger />
       </body>
     </html>
   )

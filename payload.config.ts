@@ -39,11 +39,16 @@ export default buildConfig({
           Component: '/src/components/SearchLogs/index.tsx',
           path: '/search-logs',
         },
+        'page-logs': {
+          Component: '/src/components/PageLogs/index.tsx',
+          path: '/page-logs',
+        },
       },
       afterNavLinks: [
         '/src/components/SectionHierarchy/NavLink.tsx#SectionHierarchyNavLink',
         '/src/components/KeywordIndex/NavLink.tsx#KeywordIndexNavLink',
         '/src/components/SearchLogs/NavLink.tsx#SearchLogsNavLink',
+        '/src/components/PageLogs/NavLink.tsx#PageLogsNavLink',
       ],
     },
   },
