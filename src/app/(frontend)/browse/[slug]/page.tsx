@@ -6,6 +6,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { KeywordLinks } from '../../components/KeywordLinks'
+import PhotoLightbox from '../../components/PhotoLightbox'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -187,7 +188,10 @@ export default async function SectionPage({ params }: Props) {
       {(sectionImageSrc || section.body || htmlBody) && (
         <div className="section-two-col" style={{ marginTop: '16px', marginBottom: '24px' }}>
           {sectionImageSrc && (
-            <div>
+            <PhotoLightbox
+              src={sectionImageSrc}
+              alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
+            >
               <Image
                 src={sectionImageSrc}
                 alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
@@ -196,7 +200,7 @@ export default async function SectionPage({ params }: Props) {
                 sizes="(max-width: 680px) 100vw, 50vw"
                 style={{ width: '100%', height: 'auto' }}
               />
-            </div>
+            </PhotoLightbox>
           )}
           <div>
             {section.body && <RichText data={section.body} />}
