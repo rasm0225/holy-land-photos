@@ -2,14 +2,82 @@
 
 import React, { useState } from 'react'
 
-const MAILCHIMP_URL =
-  'https://us15.list-manage.com/subscribe/post?u=4cedd2d8f94e4e97e74c4a8eb&id=32bd9fafb9'
+// MailChimp's JSONP endpoint for cross-origin subscription
+// Uses post-json instead of post, and adds c=callback for JSONP
+const MAILCHIMP_BASE =
+  'https://us15.list-manage.com/subscribe/post-json?u=4cedd2d8f94e4e97e74c4a8eb&id=32bd9fafb9'
 
 export default function NewsletterPage() {
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email.trim()) return
+
+    setStatus('submitting')
+    setMessage('')
+
+    try {
+      // Build the subscribe URL with JSONP callback
+      const params = new URLSearchParams({
+        EMAIL: email.trim(),
+        FNAME: firstName.trim(),
+        LNAME: lastName.trim(),
+        c: 'mcCallback',
+      })
+      const url = `${MAILCHIMP_BASE}&${params.toString()}`
+
+      // Use JSONP since MailChimp doesn't support CORS on the subscribe endpoint
+      const result = await new Promise<{ result: string; msg: string }>((resolve, reject) => {
+        const callbackName = 'mcCallback'
+        const timeout = setTimeout(() => {
+          cleanup()
+          reject(new Error('Request timed out'))
+        }, 10000)
+
+        function cleanup() {
+          clearTimeout(timeout)
+          delete (window as unknown as Record<string, unknown>)[callbackName]
+          const el = document.getElementById('mc-jsonp')
+          if (el) el.remove()
+        }
+
+        ;(window as unknown as Record<string, (data: { result: string; msg: string }) => void>)[callbackName] = (data) => {
+          cleanup()
+          resolve(data)
+        }
+
+        const script = document.createElement('script')
+        script.id = 'mc-jsonp'
+        script.src = url
+        script.onerror = () => {
+          cleanup()
+          reject(new Error('Network error'))
+        }
+        document.head.appendChild(script)
+      })
+
+      if (result.result === 'success') {
+        setStatus('success')
+        setMessage(result.msg || 'Thank you for subscribing! Please check your email to confirm.')
+      } else {
+        setStatus('error')
+        // Clean up MailChimp's HTML in error messages
+        const cleanMsg = result.msg
+          ?.replace(/<a [^>]*>([^<]*)<\/a>/g, '$1')
+          ?.replace(/<[^>]*>/g, '')
+          || 'Subscription failed. Please try again.'
+        setMessage(cleanMsg)
+      }
+    } catch (err) {
+      setStatus('error')
+      setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    }
+  }
 
   return (
     <div>
@@ -29,36 +97,22 @@ export default function NewsletterPage() {
       {status === 'success' ? (
         <div style={{ padding: '16px', background: '#e8f5e9', borderRadius: 4, maxWidth: 500 }}>
           <p style={{ margin: 0, fontWeight: 600 }}>Thank you for subscribing!</p>
-          <p style={{ margin: '8px 0 0 0', color: '#555' }}>
-            Please check your email to confirm your subscription.
-          </p>
+          <p style={{ margin: '8px 0 0 0', color: '#555' }}>{message}</p>
         </div>
       ) : (
-        <form
-          action={MAILCHIMP_URL}
-          method="post"
-          target="_blank"
-          onSubmit={() => {
-            setStatus('success')
-          }}
-          style={{ maxWidth: 500 }}
-        >
-          {/* MailChimp hidden fields */}
-          <input type="hidden" name="u" value="4cedd2d8f94e4e97e74c4a8eb" />
-          <input type="hidden" name="id" value="32bd9fafb9" />
-
+        <form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
           <div style={{ marginBottom: '16px' }}>
             <label htmlFor="mce-EMAIL" style={{ display: 'block', marginBottom: '4px', fontWeight: 600, fontSize: '14px' }}>
               Email Address <span style={{ color: '#c00' }}>*</span>
             </label>
             <input
               type="email"
-              name="EMAIL"
               id="mce-EMAIL"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              disabled={status === 'submitting'}
               style={{
                 width: '100%',
                 padding: '10px 14px',
@@ -77,10 +131,10 @@ export default function NewsletterPage() {
               </label>
               <input
                 type="text"
-                name="FNAME"
                 id="mce-FNAME"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                disabled={status === 'submitting'}
                 style={{
                   width: '100%',
                   padding: '10px 14px',
@@ -97,10 +151,10 @@ export default function NewsletterPage() {
               </label>
               <input
                 type="text"
-                name="LNAME"
                 id="mce-LNAME"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
+                disabled={status === 'submitting'}
                 style={{
                   width: '100%',
                   padding: '10px 14px',
@@ -113,29 +167,26 @@ export default function NewsletterPage() {
             </div>
           </div>
 
-          {/* Bot honeypot — hidden from real users */}
-          <div style={{ position: 'absolute', left: '-5000px' }} aria-hidden="true">
-            <input type="text" name="b_4cedd2d8f94e4e97e74c4a8eb_32bd9fafb9" tabIndex={-1} defaultValue="" />
-          </div>
-
           {status === 'error' && (
-            <p style={{ color: '#c00', marginBottom: '12px' }}>
-              Something went wrong. Please try again.
+            <p style={{ color: '#c00', marginBottom: '12px', fontSize: '14px' }}>
+              {message}
             </p>
           )}
 
           <button
             type="submit"
+            disabled={status === 'submitting'}
             style={{
               padding: '12px 24px',
               fontSize: '16px',
-              cursor: 'pointer',
+              cursor: status === 'submitting' ? 'not-allowed' : 'pointer',
               borderRadius: '4px',
               border: '1px solid #ccc',
               fontWeight: 600,
+              background: status === 'submitting' ? '#eee' : '#fff',
             }}
           >
-            Subscribe
+            {status === 'submitting' ? 'Subscribing…' : 'Subscribe'}
           </button>
         </form>
       )}
