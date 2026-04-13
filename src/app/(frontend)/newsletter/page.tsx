@@ -2,11 +2,6 @@
 
 import React, { useState } from 'react'
 
-// MailChimp's JSONP endpoint for cross-origin subscription
-// Uses post-json instead of post, and adds c=callback for JSONP
-const MAILCHIMP_BASE =
-  'https://us15.list-manage.com/subscribe/post-json?u=4cedd2d8f94e4e97e74c4a8eb&id=32bd9fafb9'
-
 export default function NewsletterPage() {
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -22,60 +17,37 @@ export default function NewsletterPage() {
     setMessage('')
 
     try {
-      // Build the subscribe URL with JSONP callback
-      const params = new URLSearchParams({
-        EMAIL: email.trim(),
-        FNAME: firstName.trim(),
-        LNAME: lastName.trim(),
-        c: 'mcCallback',
-      })
-      const url = `${MAILCHIMP_BASE}&${params.toString()}`
-
-      // Use JSONP since MailChimp doesn't support CORS on the subscribe endpoint
-      const result = await new Promise<{ result: string; msg: string }>((resolve, reject) => {
-        const callbackName = 'mcCallback'
-        const timeout = setTimeout(() => {
-          cleanup()
-          reject(new Error('Request timed out'))
-        }, 10000)
-
-        function cleanup() {
-          clearTimeout(timeout)
-          delete (window as unknown as Record<string, unknown>)[callbackName]
-          const el = document.getElementById('mc-jsonp')
-          if (el) el.remove()
-        }
-
-        ;(window as unknown as Record<string, (data: { result: string; msg: string }) => void>)[callbackName] = (data) => {
-          cleanup()
-          resolve(data)
-        }
-
-        const script = document.createElement('script')
-        script.id = 'mc-jsonp'
-        script.src = url
-        script.onerror = () => {
-          cleanup()
-          reject(new Error('Network error'))
-        }
-        document.head.appendChild(script)
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+        }),
       })
 
-      if (result.result === 'success') {
+      const data = await res.json()
+
+      if (data.result === 'success') {
         setStatus('success')
-        setMessage(result.msg || 'Thank you for subscribing! Please check your email to confirm.')
+        setMessage(
+          data.msg
+            ?.replace(/<[^>]*>/g, '')
+            || 'Please check your email to confirm your subscription.',
+        )
       } else {
         setStatus('error')
-        // Clean up MailChimp's HTML in error messages
-        const cleanMsg = result.msg
-          ?.replace(/<a [^>]*>([^<]*)<\/a>/g, '$1')
-          ?.replace(/<[^>]*>/g, '')
-          || 'Subscription failed. Please try again.'
-        setMessage(cleanMsg)
+        setMessage(
+          data.msg
+            ?.replace(/<a [^>]*>([^<]*)<\/a>/g, '$1')
+            ?.replace(/<[^>]*>/g, '')
+            || 'Subscription failed. Please try again.',
+        )
       }
-    } catch (err) {
+    } catch {
       setStatus('error')
-      setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setMessage('Something went wrong. Please try again.')
     }
   }
 
