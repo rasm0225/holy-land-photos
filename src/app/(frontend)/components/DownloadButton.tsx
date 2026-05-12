@@ -32,22 +32,8 @@ export default function DownloadButton({
 
   return (
     <>
-      <button
-        onClick={() => setShowModal(true)}
-        style={{
-          marginTop: '8px',
-          padding: '8px 16px',
-          fontSize: '14px',
-          cursor: 'pointer',
-          borderRadius: '4px',
-          border: '1px solid #ccc',
-          background: '#fff',
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-        }}
-      >
-        <span style={{ fontSize: '16px' }}>&#8595;</span> Download Photo
+      <button onClick={() => setShowModal(true)} className="pln-download">
+        &#8595; Download Photo
       </button>
 
       {showModal && (

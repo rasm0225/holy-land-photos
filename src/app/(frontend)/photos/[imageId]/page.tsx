@@ -5,7 +5,6 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import { KeywordLinks } from '../../components/KeywordLinks'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import DownloadButton from '../../components/DownloadButton'
 
@@ -170,81 +169,92 @@ export default async function PhotoPage({ params, searchParams }: Props) {
 
   return (
     <div>
-      <style dangerouslySetInnerHTML={{ __html: `
-        .photo-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        @media (max-width: 680px) { .photo-two-col { grid-template-columns: 1fr; } }
-      `}} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Back to section + prev/next nav */}
+      {/* Back to section */}
       {contextSection && (
-        <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', fontSize: '14px' }}>
-          <a href={`/browse/${contextSection.slug}`}>
-            &larr; {contextSection.title}
-          </a>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            {prevPhoto ? (
-              <a href={`/photos/${prevPhoto.imageId}?s=${sectionSlug}`}>&lsaquo; Prev</a>
-            ) : (
-              <span style={{ color: '#555' }}>&lsaquo; Prev</span>
-            )}
-            {positionText && <span style={{ color: '#888' }}>{positionText}</span>}
-            {nextPhoto ? (
-              <a href={`/photos/${nextPhoto.imageId}?s=${sectionSlug}`}>Next &rsaquo;</a>
-            ) : (
-              <span style={{ color: '#555' }}>Next &rsaquo;</span>
-            )}
-          </div>
-        </nav>
+        <div className="pln-pnav-up">
+          <a href={`/browse/${contextSection.slug}`}>&larr; {contextSection.title}</a>
+        </div>
       )}
 
-      <h1>{photo.title}</h1>
-      <p style={{ fontSize: '13px', color: '#888' }}>ID: {photo.imageId}</p>
+      {/* Prev/Next nav */}
+      {contextSection && (
+        <div className="pln-pnav">
+          {prevPhoto ? (
+            <a href={`/photos/${prevPhoto.imageId}?s=${sectionSlug}`}>&lsaquo; Previous</a>
+          ) : (
+            <span style={{ color: 'var(--ink-faint)' }}>&lsaquo; Previous</span>
+          )}
+          {positionText && <span className="pln-pnav-center">{positionText}</span>}
+          {nextPhoto ? (
+            <a href={`/photos/${nextPhoto.imageId}?s=${sectionSlug}`}>Next &rsaquo;</a>
+          ) : (
+            <span style={{ color: 'var(--ink-faint)' }}>Next &rsaquo;</span>
+          )}
+        </div>
+      )}
 
-      {/* Image left, description right */}
-      <div className="photo-two-col" style={{ marginTop: '16px' }}>
-        <div>
+      {/* Two-column: image + description */}
+      <div className="pln-photopage">
+        <div className="pln-photo-main">
           <PhotoLightbox src={`${S3_BASE}/${photo.imageId}.jpg`} alt={photo.title}>
             <Image
               src={`${S3_BASE}/${photo.imageId}.jpg`}
               alt={photo.title}
               width={800}
               height={600}
-              sizes="(max-width: 680px) 100vw, 50vw"
-              style={{ width: '100%', height: 'auto' }}
+              sizes="(max-width: 767px) 100vw, 52vw"
             />
           </PhotoLightbox>
+          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; Carl Rasmussen</div>
           <DownloadButton imageId={photo.imageId} title={photo.title} />
         </div>
-        <div>
+        <div className="pln-photo-side">
+          <h1 className="pln-h1">{photo.title}</h1>
+          <span className="pln-badge">photo</span>
+
           {photo.description && (
             <RichText data={photo.description} />
           )}
           {!photo.description && htmlDescription && (
             <div dangerouslySetInnerHTML={{ __html: htmlDescription }} />
           )}
+
+          {/* Found in */}
+          {sectionLinks.length > 0 && (
+            <div style={{ marginTop: 24 }}>
+              <h3 className="pln-eyebrow" style={{ marginBottom: 8 }}>Found in</h3>
+              <ul className="pln-list">
+                {sectionLinks.map((s) => (
+                  <li key={s.id}>
+                    <a href={`/browse/${s.slug}`}>{s.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Keywords */}
+          {photo.keywords && (
+            <div className="pln-kw">
+              <span className="pln-kw-label">Keywords:</span>
+              {photo.keywords.split(',').map((kw: string, i: number) => {
+                const trimmed = kw.trim()
+                if (!trimmed) return null
+                return (
+                  <span key={trimmed}>
+                    {i > 0 && <span className="pln-kw-sep"> · </span>}
+                    <a href={`/keywords/${encodeURIComponent(trimmed)}`}>{trimmed}</a>
+                  </span>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Found in + Keywords — full width below */}
-      {sectionLinks.length > 0 && (
-        <div style={{ marginTop: '24px', marginBottom: '16px' }}>
-          <h3>Found in</h3>
-          <ul>
-            {sectionLinks.map((s) => (
-              <li key={s.id}>
-                <a href={`/browse/${s.slug}`}>{s.title}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {photo.keywords && (
-        <KeywordLinks keywords={photo.keywords} />
-      )}
     </div>
   )
 }

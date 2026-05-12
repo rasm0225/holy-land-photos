@@ -5,7 +5,6 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import { KeywordLinks } from '../../components/KeywordLinks'
 import PhotoLightbox from '../../components/PhotoLightbox'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
@@ -149,24 +148,20 @@ export default async function SectionPage({ params }: Props) {
 
   return (
     <div>
-      <style dangerouslySetInnerHTML={{ __html: `
-        .section-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        @media (max-width: 680px) { .section-two-col { grid-template-columns: 1fr; } }
-      `}} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       {/* Breadcrumbs */}
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+      <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
         {breadcrumbs.map((crumb, i) => {
           const isLast = i === breadcrumbs.length - 1
           return (
             <span key={i}>
-              {' / '}
+              <span className="pln-sep">›</span>
               {isLast ? (
-                <strong>{crumb.label}</strong>
+                <span className="pln-current">{crumb.label}</span>
               ) : (
                 <a href={`/browse/${crumb.slug}`}>{crumb.label}</a>
               )}
@@ -175,32 +170,32 @@ export default async function SectionPage({ params }: Props) {
         })}
       </nav>
 
-      <h1>{section.title}</h1>
+      <h1 className="pln-h1">{section.title}</h1>
 
       {/* Section type badge */}
       {section.sectionType && (
-        <span style={{ fontSize: '12px', color: '#888', textTransform: 'uppercase' }}>
-          {section.sectionType}
-        </span>
+        <span className="pln-badge">{section.sectionType}</span>
       )}
 
       {/* Section image + body two-column */}
       {(sectionImageSrc || section.body || htmlBody) && (
-        <div className="section-two-col" style={{ marginTop: '16px', marginBottom: '24px' }}>
+        <div className="pln-two">
           {sectionImageSrc && (
-            <PhotoLightbox
-              src={sectionImageSrc}
-              alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
-            >
-              <Image
+            <figure className="pln-figure">
+              <PhotoLightbox
                 src={sectionImageSrc}
                 alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
-                width={800}
-                height={600}
-                sizes="(max-width: 680px) 100vw, 50vw"
-                style={{ width: '100%', height: 'auto' }}
-              />
-            </PhotoLightbox>
+              >
+                <Image
+                  src={sectionImageSrc}
+                  alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 767px) 100vw, 42vw"
+                />
+              </PhotoLightbox>
+              <figcaption className="pln-figcaption">Click image to enlarge</figcaption>
+            </figure>
           )}
           <div>
             {section.body && <RichText data={section.body} />}
@@ -213,9 +208,9 @@ export default async function SectionPage({ params }: Props) {
 
       {/* Child sections */}
       {children.length > 0 && (
-        <div style={{ marginBottom: '24px' }}>
-          <h2>Subsections</h2>
-          <ul>
+        <div>
+          <h2 className="pln-h2">Subsections</h2>
+          <ul className="pln-list">
             {children.map((child) => (
               <li key={child.id}>
                 <a href={`/browse/${child.slug}`}>{child.title}</a>
@@ -228,29 +223,23 @@ export default async function SectionPage({ params }: Props) {
       {/* Photos */}
       {photos.length > 0 && (
         <div>
-          <h2>Photos ({photos.length})</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+          <h2 className="pln-h2">Photos <span style={{ color: 'var(--ink-faint)', fontWeight: 400, fontSize: 17 }}>({photos.length})</span></h2>
+          <div className="pln-grid">
             {photos.map((item, i) => {
               const photo = typeof item.photo === 'object' ? item.photo : null
               if (!photo) return null
               const imageId = photo.imageId || ''
               return (
-                <a
-                  key={i}
-                  href={`/photos/${imageId}?s=${slug}`}
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
+                <a key={i} className="pln-thumb" href={`/photos/${imageId}?s=${slug}`}>
                   <Image
                     src={`${S3_BASE}/${imageId}.jpg`}
                     alt={photo.title || imageId}
                     width={200}
                     height={150}
                     sizes="200px"
-                    style={{ width: '100%', height: '150px', objectFit: 'cover', display: 'block' }}
+                    className="pln-thumb-img"
                   />
-                  <div style={{ fontSize: '13px', padding: '4px 0' }}>
-                    {photo.title || imageId}
-                  </div>
+                  <span className="pln-thumb-cap">{photo.title || imageId}</span>
                 </a>
               )
             })}
@@ -260,8 +249,18 @@ export default async function SectionPage({ params }: Props) {
 
       {/* Keywords */}
       {section.keywords && (
-        <div style={{ marginTop: '24px' }}>
-          <KeywordLinks keywords={section.keywords} />
+        <div className="pln-kw">
+          <span className="pln-kw-label">Keywords:</span>
+          {section.keywords.split(',').map((kw: string, i: number) => {
+            const trimmed = kw.trim()
+            if (!trimmed) return null
+            return (
+              <span key={trimmed}>
+                {i > 0 && <span className="pln-kw-sep"> · </span>}
+                <a href={`/keywords/${encodeURIComponent(trimmed)}`}>{trimmed}</a>
+              </span>
+            )
+          })}
         </div>
       )}
     </div>
