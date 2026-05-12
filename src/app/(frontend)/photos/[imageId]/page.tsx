@@ -216,7 +216,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               style={{ width: '100%', height: 'auto' }}
             />
           </PhotoLightbox>
-          <DownloadButton imageId={photo.imageId} />
+          <DownloadButton imageId={photo.imageId} title={photo.title} />
         </div>
         <div>
           {photo.description && (

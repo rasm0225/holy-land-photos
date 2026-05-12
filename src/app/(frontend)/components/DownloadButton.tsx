@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 export default function DownloadButton({
   imageId,
+  title,
 }: {
   imageId: string
+  title?: string
 }) {
   const [showModal, setShowModal] = useState(false)
 
@@ -22,7 +24,9 @@ export default function DownloadButton({
 
   function handleDownload() {
     // Use our proxy endpoint which sets Content-Disposition: attachment
-    window.location.href = `/api/download?id=${encodeURIComponent(imageId)}`
+    const params = new URLSearchParams({ id: imageId })
+    if (title) params.set('title', title)
+    window.location.href = `/api/download?${params.toString()}`
     setShowModal(false)
   }
 

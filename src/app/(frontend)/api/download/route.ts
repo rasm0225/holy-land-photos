@@ -8,8 +8,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid image ID' }, { status: 400 })
   }
 
-  const filename = `${imageId}.jpg`
-  const s3Url = `${S3_BASE}/${filename}`
+  const title = req.nextUrl.searchParams.get('title') || ''
+  const s3Url = `${S3_BASE}/${imageId}.jpg`
+
+  // Build a clean filename: TWCSEP02-Library-of-Celsus.jpg
+  let filename = imageId
+  if (title) {
+    const cleanTitle = title
+      .replace(/[^\w\s-]/g, '')   // remove special chars
+      .replace(/\s+/g, '-')       // spaces to hyphens
+      .replace(/-+/g, '-')        // collapse multiple hyphens
+      .replace(/^-|-$/g, '')      // trim hyphens
+      .slice(0, 80)               // cap length
+    if (cleanTitle) {
+      filename = `${imageId}-${cleanTitle}`
+    }
+  }
+  filename += '.jpg'
 
   // Fetch from S3 and stream back with Content-Disposition header
   const s3Response = await fetch(s3Url)
