@@ -2,6 +2,7 @@ import type { AdminViewServerProps } from 'payload'
 import { DefaultTemplate } from '@payloadcms/next/templates'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import { dbQuery } from '@/lib/db'
 
 type LogRow = {
   id: number
@@ -12,27 +13,6 @@ type LogRow = {
   created_at: string
 }
 
-async function queryDB(sql: string): Promise<Array<Array<{ value: string; type: string }>>> {
-  const dbUrl = (process.env.DATABASE_URL || '').replace('libsql://', 'https://') + '/v2/pipeline'
-  const token = process.env.DATABASE_AUTH_TOKEN || ''
-  const res = await fetch(dbUrl, {
-    method: 'POST',
-    cache: 'no-store',
-    headers: {
-      Authorization: 'Bearer ' + token,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      requests: [
-        { type: 'execute', stmt: { sql } },
-        { type: 'close' },
-      ],
-    }),
-  })
-  const data = await res.json()
-  return data.results?.[0]?.response?.result?.rows || []
-}
-
 async function getLogs(): Promise<{
   recent: LogRow[]
   topPages: Array<{ url: string; title: string | null; count: number; avg: number; p95: number }>
@@ -41,57 +21,54 @@ async function getLogs(): Promise<{
   dailyCounts: Array<{ day: string; count: number; avg: number }>
 }> {
   const [recentRows, slowestRows, topRows, dailyRows, allDurationRows] = await Promise.all([
-    queryDB(`SELECT id, url, title, duration_ms, ttfb_ms, created_at FROM page_logs ORDER BY created_at DESC LIMIT 100`),
-    queryDB(`SELECT id, url, title, duration_ms, ttfb_ms, created_at FROM page_logs WHERE duration_ms IS NOT NULL ORDER BY duration_ms DESC LIMIT 20`),
-    queryDB(`SELECT url, title, COUNT(*) as c, AVG(duration_ms) as avg FROM page_logs WHERE duration_ms IS NOT NULL GROUP BY url ORDER BY c DESC LIMIT 20`),
-    queryDB(`SELECT DATE(created_at) as day, COUNT(*) as c, AVG(duration_ms) as avg FROM page_logs WHERE created_at > datetime('now', '-30 days') GROUP BY day ORDER BY day DESC`),
-    queryDB(`SELECT duration_ms FROM page_logs WHERE duration_ms IS NOT NULL ORDER BY duration_ms`),
+    dbQuery(`SELECT id, url, title, duration_ms, ttfb_ms, created_at FROM page_logs ORDER BY created_at DESC LIMIT 100`),
+    dbQuery(`SELECT id, url, title, duration_ms, ttfb_ms, created_at FROM page_logs WHERE duration_ms IS NOT NULL ORDER BY duration_ms DESC LIMIT 20`),
+    dbQuery(`SELECT url, title, COUNT(*) as c, AVG(duration_ms) as avg FROM page_logs WHERE duration_ms IS NOT NULL GROUP BY url ORDER BY c DESC LIMIT 20`),
+    dbQuery(`SELECT DATE(created_at) as day, COUNT(*) as c, AVG(duration_ms) as avg FROM page_logs WHERE created_at > datetime('now', '-30 days') GROUP BY day ORDER BY day DESC`),
+    dbQuery(`SELECT duration_ms FROM page_logs WHERE duration_ms IS NOT NULL ORDER BY duration_ms`),
   ])
 
-  const parseRow = (r: Array<{ value: string; type: string }>): LogRow => ({
-    id: parseInt(r[0].value),
-    url: r[1].value,
-    title: r[2].type === 'null' ? null : r[2].value,
-    duration_ms: r[3].type === 'null' ? null : parseInt(r[3].value),
-    ttfb_ms: r[4].type === 'null' ? null : parseInt(r[4].value),
-    created_at: r[5].value,
+  const parseRow = (r: Record<string, unknown>): LogRow => ({
+    id: Number(r.id),
+    url: String(r.url),
+    title: r.title != null ? String(r.title) : null,
+    duration_ms: r.duration_ms != null ? Number(r.duration_ms) : null,
+    ttfb_ms: r.ttfb_ms != null ? Number(r.ttfb_ms) : null,
+    created_at: String(r.created_at),
   })
 
   const recent = recentRows.map(parseRow)
   const slowest = slowestRows.map(parseRow)
 
-  // For each top URL, compute p95 using the recent rows (approximation)
   const topPages = topRows.map((r) => ({
-    url: r[0].value,
-    title: r[1].type === 'null' ? null : r[1].value,
-    count: parseInt(r[2].value),
-    avg: Math.round(parseFloat(r[3].value)),
-    p95: 0, // computed below
+    url: String(r.url),
+    title: r.title != null ? String(r.title) : null,
+    count: Number(r.c),
+    avg: Math.round(Number(r.avg)),
+    p95: 0,
   }))
 
-  // Compute p95 per URL from all data
+  // Compute p95 per URL
   for (const page of topPages) {
-    const durations = await queryDB(
+    const durations = await dbQuery(
       `SELECT duration_ms FROM page_logs WHERE url = '${page.url.replace(/'/g, "''")}' AND duration_ms IS NOT NULL ORDER BY duration_ms`,
     )
-    const list = durations.map((r) => parseInt(r[0].value)).filter((n) => Number.isFinite(n))
+    const list = durations.map((r) => Number(r.duration_ms)).filter((n) => Number.isFinite(n))
     if (list.length > 0) {
       const idx = Math.min(list.length - 1, Math.floor(list.length * 0.95))
       page.p95 = list[idx]
     }
   }
 
-  // Totals
-  const all = allDurationRows.map((r) => parseInt(r[0].value)).filter((n) => Number.isFinite(n))
+  const all = allDurationRows.map((r) => Number(r.duration_ms)).filter((n) => Number.isFinite(n))
   const total = all.length
-  const avgDuration =
-    total > 0 ? Math.round(all.reduce((a, b) => a + b, 0) / total) : 0
+  const avgDuration = total > 0 ? Math.round(all.reduce((a, b) => a + b, 0) / total) : 0
   const medianDuration = total > 0 ? all[Math.floor(total / 2)] : 0
 
   const dailyCounts = dailyRows.map((r) => ({
-    day: r[0].value,
-    count: parseInt(r[1].value),
-    avg: Math.round(parseFloat(r[2].value)),
+    day: String(r.day),
+    count: Number(r.c),
+    avg: Math.round(Number(r.avg)),
   }))
 
   return {

@@ -2,6 +2,7 @@ import type { AdminViewServerProps } from 'payload'
 import { DefaultTemplate } from '@payloadcms/next/templates'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import { dbQuery } from '@/lib/db'
 
 type LogRow = {
   id: number
@@ -10,27 +11,6 @@ type LogRow = {
   result_count: number | null
   duration_ms: number | null
   created_at: string
-}
-
-async function queryDB(sql: string): Promise<Array<Array<{ value: string; type: string }>>> {
-  const dbUrl = (process.env.DATABASE_URL || '').replace('libsql://', 'https://') + '/v2/pipeline'
-  const token = process.env.DATABASE_AUTH_TOKEN || ''
-  const res = await fetch(dbUrl, {
-    method: 'POST',
-    cache: 'no-store',
-    headers: {
-      Authorization: 'Bearer ' + token,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      requests: [
-        { type: 'execute', stmt: { sql } },
-        { type: 'close' },
-      ],
-    }),
-  })
-  const data = await res.json()
-  return data.results?.[0]?.response?.result?.rows || []
 }
 
 async function getLogs(): Promise<{
@@ -42,43 +22,42 @@ async function getLogs(): Promise<{
 }> {
   const [recentRows, topRegularRows, topAiRows, zeroRows, regularTotal, aiTotal, dailyRows] =
     await Promise.all([
-      queryDB(`SELECT id, query, search_type, result_count, duration_ms, created_at FROM search_logs ORDER BY created_at DESC LIMIT 100`),
-      queryDB(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'regular' GROUP BY query ORDER BY c DESC LIMIT 20`),
-      queryDB(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'ai' GROUP BY query ORDER BY c DESC LIMIT 20`),
-      queryDB(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'regular' AND result_count = 0 GROUP BY query ORDER BY c DESC LIMIT 20`),
-      queryDB(`SELECT COUNT(*) FROM search_logs WHERE search_type = 'regular'`),
-      queryDB(`SELECT COUNT(*) FROM search_logs WHERE search_type = 'ai'`),
-      queryDB(`SELECT DATE(created_at) as day, search_type, COUNT(*) as c FROM search_logs WHERE created_at > datetime('now', '-30 days') GROUP BY day, search_type ORDER BY day DESC`),
+      dbQuery(`SELECT id, query, search_type, result_count, duration_ms, created_at FROM search_logs ORDER BY created_at DESC LIMIT 100`),
+      dbQuery(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'regular' GROUP BY query ORDER BY c DESC LIMIT 20`),
+      dbQuery(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'ai' GROUP BY query ORDER BY c DESC LIMIT 20`),
+      dbQuery(`SELECT query, COUNT(*) as c FROM search_logs WHERE search_type = 'regular' AND result_count = 0 GROUP BY query ORDER BY c DESC LIMIT 20`),
+      dbQuery(`SELECT COUNT(*) as cnt FROM search_logs WHERE search_type = 'regular'`),
+      dbQuery(`SELECT COUNT(*) as cnt FROM search_logs WHERE search_type = 'ai'`),
+      dbQuery(`SELECT DATE(created_at) as day, search_type, COUNT(*) as c FROM search_logs WHERE created_at > datetime('now', '-30 days') GROUP BY day, search_type ORDER BY day DESC`),
     ])
 
   const recent: LogRow[] = recentRows.map((r) => ({
-    id: parseInt(r[0].value),
-    query: r[1].value,
-    search_type: r[2].value as 'regular' | 'ai',
-    result_count: r[3].type === 'null' ? null : parseInt(r[3].value),
-    duration_ms: r[4].type === 'null' ? null : parseInt(r[4].value),
-    created_at: r[5].value,
+    id: Number(r.id),
+    query: String(r.query),
+    search_type: String(r.search_type) as 'regular' | 'ai',
+    result_count: r.result_count != null ? Number(r.result_count) : null,
+    duration_ms: r.duration_ms != null ? Number(r.duration_ms) : null,
+    created_at: String(r.created_at),
   }))
 
-  const topRegular = topRegularRows.map((r) => ({ query: r[0].value, count: parseInt(r[1].value), type: 'regular' as const }))
-  const topAi = topAiRows.map((r) => ({ query: r[0].value, count: parseInt(r[1].value), type: 'ai' as const }))
+  const topRegular = topRegularRows.map((r) => ({ query: String(r.query), count: Number(r.c), type: 'regular' as const }))
+  const topAi = topAiRows.map((r) => ({ query: String(r.query), count: Number(r.c), type: 'ai' as const }))
   const topQueries = [...topRegular, ...topAi].sort((a, b) => b.count - a.count)
 
-  const zeroResults = zeroRows.map((r) => ({ query: r[0].value, count: parseInt(r[1].value) }))
+  const zeroResults = zeroRows.map((r) => ({ query: String(r.query), count: Number(r.c) }))
 
   const totals = {
-    regular: parseInt(regularTotal[0]?.[0]?.value || '0'),
-    ai: parseInt(aiTotal[0]?.[0]?.value || '0'),
+    regular: Number(regularTotal[0]?.cnt || 0),
+    ai: Number(aiTotal[0]?.cnt || 0),
     total: 0,
   }
   totals.total = totals.regular + totals.ai
 
-  // Aggregate daily counts by day
   const dailyMap: Record<string, { regular: number; ai: number }> = {}
   for (const r of dailyRows) {
-    const day = r[0].value
-    const type = r[1].value as 'regular' | 'ai'
-    const c = parseInt(r[2].value)
+    const day = String(r.day)
+    const type = String(r.search_type) as 'regular' | 'ai'
+    const c = Number(r.c)
     if (!dailyMap[day]) dailyMap[day] = { regular: 0, ai: 0 }
     dailyMap[day][type] = c
   }

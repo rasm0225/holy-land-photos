@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { dbExecute } from '@/lib/db'
 
 export const runtime = 'nodejs'
 
@@ -28,38 +29,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: true })
     }
 
-    const dbUrl = (process.env.DATABASE_URL || '').replace('libsql://', 'https://') + '/v2/pipeline'
-    const token = process.env.DATABASE_AUTH_TOKEN || ''
-    if (!dbUrl || !token) {
-      return NextResponse.json({ ok: false }, { status: 500 })
-    }
+    const escapedUrl = url.replace(/'/g, "''")
+    const escapedTitle = title.replace(/'/g, "''")
+    const dur = Math.round(duration)
+    const ttfbVal = Number.isFinite(ttfb) && ttfb >= 0 ? Math.round(ttfb) : 'NULL'
 
-    await fetch(dbUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        requests: [
-          {
-            type: 'execute',
-            stmt: {
-              sql: `INSERT INTO page_logs (url, title, duration_ms, ttfb_ms) VALUES (?, ?, ?, ?)`,
-              args: [
-                { type: 'text', value: url },
-                { type: 'text', value: title },
-                { type: 'integer', value: String(Math.round(duration)) },
-                Number.isFinite(ttfb) && ttfb >= 0
-                  ? { type: 'integer', value: String(Math.round(ttfb)) }
-                  : { type: 'null', value: null },
-              ],
-            },
-          },
-          { type: 'close' },
-        ],
-      }),
-    })
+    await dbExecute(
+      `INSERT INTO page_logs (url, title, duration_ms, ttfb_ms) VALUES ('${escapedUrl}', '${escapedTitle}', ${dur}, ${ttfbVal})`,
+    )
 
     return NextResponse.json({ ok: true })
   } catch (err) {
