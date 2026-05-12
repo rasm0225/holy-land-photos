@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
 export default function DownloadButton({
-  imageUrl,
-  filename,
+  imageId,
 }: {
-  imageUrl: string
-  filename: string
+  imageId: string
 }) {
   const [showModal, setShowModal] = useState(false)
 
@@ -23,15 +21,8 @@ export default function DownloadButton({
   }, [showModal, close])
 
   function handleDownload() {
-    // Create a temporary link to force download with the clean filename
-    const a = document.createElement('a')
-    a.href = imageUrl
-    a.download = filename
-    a.target = '_blank'
-    a.rel = 'noopener'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    // Use our proxy endpoint which sets Content-Disposition: attachment
+    window.location.href = `/api/download?id=${encodeURIComponent(imageId)}`
     setShowModal(false)
   }
 

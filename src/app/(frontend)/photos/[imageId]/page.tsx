@@ -216,10 +216,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               style={{ width: '100%', height: 'auto' }}
             />
           </PhotoLightbox>
-          <DownloadButton
-            imageUrl={`${S3_BASE}/${photo.imageId}.jpg`}
-            filename={`${photo.imageId}.jpg`}
-          />
+          <DownloadButton imageId={photo.imageId} />
         </div>
         <div>
           {photo.description && (
