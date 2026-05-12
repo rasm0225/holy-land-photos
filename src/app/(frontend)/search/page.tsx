@@ -75,13 +75,15 @@ export default async function SearchPage({ searchParams }: Props) {
 
   const totalResults = sections.length + photos.length
 
+  const searchDurationMs = Date.now() - searchStart
+
   // Log the search asynchronously (do not await to avoid blocking the response)
   if (query) {
     void logSearch({
       query,
       searchType: 'regular',
       resultCount: totalResults,
-      durationMs: Date.now() - searchStart,
+      durationMs: searchDurationMs,
     })
   }
 
@@ -136,6 +138,8 @@ export default async function SearchPage({ searchParams }: Props) {
       {query && (
         <p style={{ color: '#888', marginBottom: '24px' }}>
           {totalResults} result{totalResults !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
+          {' '}
+          <span style={{ fontSize: '12px' }}>({(searchDurationMs / 1000).toFixed(1)}s)</span>
         </p>
       )}
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 
-type Message = { role: 'user' | 'assistant'; content: string }
+type Message = { role: 'user' | 'assistant'; content: string; durationMs?: number }
 
 // Minimal markdown renderer — handles [text](url) links, **bold**, and paragraphs
 function renderMarkdown(text: string): React.ReactNode {
@@ -92,16 +92,18 @@ export default function AISearchChat() {
     setError('')
 
     try {
+      const start = Date.now()
       const res = await fetch('/api/ai-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages }),
       })
       const data = await res.json()
+      const durationMs = Date.now() - start
       if (!res.ok) {
         setError(data.error || 'Request failed')
       } else {
-        setMessages([...newMessages, { role: 'assistant', content: data.reply }])
+        setMessages([...newMessages, { role: 'assistant', content: data.reply, durationMs }])
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Network error')
@@ -137,8 +139,11 @@ export default function AISearchChat() {
                 border: '1px solid #e0e0e0',
               }}
             >
-              <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', marginBottom: 4 }}>
-                {m.role === 'user' ? 'You' : 'Assistant'}
+              <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', marginBottom: 4, display: 'flex', justifyContent: 'space-between' }}>
+                <span>{m.role === 'user' ? 'You' : 'Assistant'}</span>
+                {m.durationMs != null && (
+                  <span>{(m.durationMs / 1000).toFixed(1)}s</span>
+                )}
               </div>
               {m.role === 'assistant' ? renderMarkdown(m.content) : <p style={{ margin: 0 }}>{m.content}</p>}
             </div>
