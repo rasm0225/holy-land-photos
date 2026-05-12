@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
-  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }] = await Promise.all([
+  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }] = await Promise.all([
     payload.find({
       collection: 'sections',
       where: { parent: { exists: false } },
@@ -50,6 +50,13 @@ export default async function HomePage() {
       limit: 1,
       depth: 1,
     }),
+    payload.count({
+      collection: 'photos',
+    }),
+    payload.count({
+      collection: 'sections',
+      where: { sectionType: { equals: 'site' } },
+    }),
   ])
 
 
@@ -61,7 +68,7 @@ export default async function HomePage() {
       `}} />
 
       <h1>Holy Land Photos</h1>
-      <p>Biblical photography by Dr. Carl Rasmussen</p>
+      <p>Biblical photography by Dr. Carl Rasmussen &middot; {photoCount.toLocaleString()}+ images &middot; {siteCount.toLocaleString()} sites &middot; 12 countries</p>
 
       {/* Browse + Pages two-column */}
       <div className="hp-two-col">
