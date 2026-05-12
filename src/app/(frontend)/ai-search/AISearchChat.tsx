@@ -69,12 +69,31 @@ function renderInline(text: string): React.ReactNode[] {
   return parts
 }
 
+const AI_SEARCH_LIMIT = 100
+const COOKIE_NAME = 'hlp_ai_searches'
+
+function getSearchCount(): number {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_NAME}=(\\d+)`))
+  return match ? parseInt(match[1]) : 0
+}
+
+function setSearchCount(count: number) {
+  // Cookie expires in 30 days
+  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString()
+  document.cookie = `${COOKIE_NAME}=${count}; expires=${expires}; path=/; SameSite=Lax`
+}
+
 export default function AISearchChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [searchCount, setSearchCountState] = useState(0)
   const endRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setSearchCountState(getSearchCount())
+  }, [])
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -104,6 +123,9 @@ export default function AISearchChat() {
         setError(data.error || 'Request failed')
       } else {
         setMessages([...newMessages, { role: 'assistant', content: data.reply, durationMs }])
+        const newCount = searchCount + 1
+        setSearchCount(newCount)
+        setSearchCountState(newCount)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Network error')
@@ -192,6 +214,21 @@ export default function AISearchChat() {
           {loading ? '…' : 'Send'}
         </button>
       </form>
+
+      {searchCount >= AI_SEARCH_LIMIT && (
+        <div style={{
+          marginTop: 16,
+          padding: '12px 16px',
+          background: '#fef9e7',
+          border: '1px solid #f0e4b8',
+          borderRadius: 4,
+          fontSize: 14,
+          color: '#555',
+        }}>
+          You&apos;ve used {searchCount} AI searches this month. If you find this feature
+          valuable, please consider supporting Holy Land Photos to help keep it running.
+        </div>
+      )}
     </div>
   )
 }
