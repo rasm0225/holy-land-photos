@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
 import ExternalLinkHandler from './components/ExternalLinkHandler'
+import '../styles/design.css'
 
 export const metadata: Metadata = {
   title: {
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
     template: '%s — Holy Land Photos',
   },
   description: '7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     siteName: 'Holy Land Photos',
     type: 'website',
@@ -32,25 +36,44 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           gtag('config', 'G-8NL9MZ67TD');
         `}</Script>
       </head>
-      <body style={{ margin: 0, fontFamily: 'system-ui, -apple-system, sans-serif', lineHeight: 1.6 }}>
-        <nav style={{ padding: '12px 24px', borderBottom: '1px solid #ddd' }}>
-          <a href="/" style={{ marginRight: '16px', textDecoration: 'none', fontWeight: 600 }}>
-            Holy Land Photos
-          </a>
-          <a href="/search" style={{ fontSize: '14px', color: '#666', textDecoration: 'none', marginRight: '16px' }}>
-            Search
-          </a>
-          <a href="/ai-search" style={{ fontSize: '14px', color: '#666', textDecoration: 'none', marginRight: '16px' }}>
-            AI Search
-          </a>
-          <a href="/admin" style={{ fontSize: '14px', color: '#666', textDecoration: 'none' }}>
-            Admin
-          </a>
-          <EditLink />
-        </nav>
-        <main style={{ padding: '24px', maxWidth: '1000px' }}>
+      <body>
+        <a href="#main-content" className="pln-skip">Skip to content</a>
+
+        {/* Desktop nav */}
+        <header className="pln-nav">
+          <div className="pln-nav-inner">
+            <a href="/" className="pln-brand">
+              <span className="pln-brand-name">HolyLandPhotos.org</span>
+              <span className="pln-brand-tag">Biblical &amp; Archaeological Archive</span>
+            </a>
+            <nav className="pln-nav-links">
+              <a href="/search">Search</a>
+              <a href="/ai-search">AI Search</a>
+              <a href="/pages/about-this-site">About</a>
+              <a href="/pages/permission-to-use">Permission</a>
+              <EditLink />
+            </nav>
+          </div>
+        </header>
+
+        {/* Mobile nav */}
+        <div className="pln-mobile-nav">
+          <a href="/" className="pln-mobile-brand">HolyLandPhotos</a>
+          <a href="/search" className="pln-mobile-nav-btn" aria-label="Search" style={{ fontSize: 18 }}>&#x1F50D;</a>
+        </div>
+
+        <main id="main-content" className="pln-main">
           {children}
         </main>
+
+        <footer className="pln-footer">
+          <span className="pln-footer-cr">&copy; 1995&ndash;{new Date().getFullYear()} Dr. Carl Rasmussen</span>
+          <a href="/pages/about-this-site">About</a>
+          <a href="/pages/permission-to-use">Permission to Use</a>
+          <a href="/news">News</a>
+          <a href="mailto:holylandphotos@gmail.com?subject=Feedback">Feedback</a>
+        </footer>
+
         <PageLogger />
         <ExternalLinkHandler />
       </body>
