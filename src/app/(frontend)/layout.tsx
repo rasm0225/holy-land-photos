@@ -3,6 +3,7 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
+import ExternalLinkHandler from './components/ExternalLinkHandler'
 
 export const metadata: Metadata = {
   title: {
@@ -51,6 +52,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
           {children}
         </main>
         <PageLogger />
+        <ExternalLinkHandler />
       </body>
     </html>
   )
