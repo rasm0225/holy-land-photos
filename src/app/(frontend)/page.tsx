@@ -68,7 +68,7 @@ export default async function HomePage() {
       `}} />
 
       <h1>Holy Land Photos</h1>
-      <p>Biblical photography by Dr. Carl Rasmussen &middot; {photoCount.toLocaleString()}+ images &middot; {siteCount.toLocaleString()} sites &middot; 12 countries</p>
+      <p>Biblical photography by Dr. Carl Rasmussen &middot; {photoCount.toLocaleString()} images &middot; {siteCount.toLocaleString()} sites &middot; 12 countries</p>
 
       {/* Browse + Pages two-column */}
       <div className="hp-two-col">
