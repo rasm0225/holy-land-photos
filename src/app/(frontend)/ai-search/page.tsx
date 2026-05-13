@@ -10,31 +10,24 @@ export const metadata: Metadata = {
 export default function AISearchPage() {
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-        <a href="/">Home</a>
-        {' / '}
-        <strong>AI Search</strong>
-      </nav>
-
-      <h1>AI Search</h1>
-      <p style={{ color: '#666', marginBottom: '12px' }}>
+      <h1 className="pln-h1" style={{ fontSize: 28, marginBottom: 16 }}>AI Search</h1>
+      <p className="pln-ai-blurb">
         Ask about biblical sites, archaeological places, or specific photos.
         The assistant will search the archive and suggest matches. Try things like
         &ldquo;photos of Caesarea&rdquo;, &ldquo;where is Nain?&rdquo;, or
         &ldquo;show me the Rolling Stone Tomb&rdquo;.
       </p>
-      <p style={{ color: '#888', fontSize: '13px', fontStyle: 'italic', marginBottom: '24px' }}>
-        This search is provided by Claude AI. Responses are based on content from
+      <p className="pln-ai-disclaimer-inline">
+        Powered by Claude AI. Responses are based on content from
         this website but are not written by or endorsed by Dr. Carl Rasmussen.
-        If you have any feedback, please contact us.
       </p>
 
       <AISearchChat />
 
-      <footer style={{ marginTop: '48px', paddingTop: '16px', borderTop: '1px solid #eee', color: '#888', fontSize: '12px' }}>
+      <p style={{ marginTop: 48, fontSize: '12.5px', color: 'var(--ink-faint)', fontFamily: 'var(--sans)' }}>
         Search queries are logged anonymously to help us improve the site.
         No personal information, IP addresses, or identifiers are collected.
-      </footer>
+      </p>
     </div>
   )
 }

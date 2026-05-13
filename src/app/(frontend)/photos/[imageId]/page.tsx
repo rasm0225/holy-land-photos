@@ -209,7 +209,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               sizes="(max-width: 767px) 100vw, 52vw"
             />
           </PhotoLightbox>
-          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; Carl Rasmussen</div>
+          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; {photographerName || 'Carl Rasmussen'}{photoYear ? ` · ${photoYear}` : ''}</div>
           <DownloadButton imageId={photo.imageId} title={photo.title} />
         </div>
         <div className="pln-photo-side">

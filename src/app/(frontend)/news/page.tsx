@@ -24,29 +24,20 @@ export default async function NewsIndexPage() {
     limit: 0,
     depth: 0,
     sort: '-createdAt',
+    where: { active: { equals: true } },
   })
 
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-        <a href="/">Home</a>
-        {' / '}
-        <strong>News</strong>
-      </nav>
+      <h1 className="pln-h1">News</h1>
+      <p className="pln-search-meta">{docs.length} articles</p>
 
-      <h1>News</h1>
-      <p style={{ color: '#888', marginBottom: '24px' }}>{docs.length} articles</p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div>
         {docs.map((item) => {
           const gallery = (item.imageGallery || []) as Array<{ imageId?: string }>
           const thumbId = gallery[0]?.imageId
           return (
-            <a
-              key={item.id}
-              href={`/news/${item.id}`}
-              style={{ textDecoration: 'none', color: 'inherit', display: 'flex', gap: '16px', alignItems: 'flex-start' }}
-            >
+            <div key={item.id} className="pln-section-result">
               {thumbId && (
                 <Image
                   src={`${S3_BASE}/${thumbId}.jpg`}
@@ -54,12 +45,12 @@ export default async function NewsIndexPage() {
                   width={120}
                   height={90}
                   sizes="120px"
-                  style={{ objectFit: 'cover', flexShrink: 0 }}
+                  style={{ objectFit: 'cover', flexShrink: 0, border: '1px solid var(--line)' }}
                 />
               )}
               <div>
-                <div style={{ fontWeight: 600 }}>{item.title}</div>
-                <div style={{ fontSize: '13px', color: '#888' }}>
+                <h3><a href={`/news/${item.id}`}>{item.title}</a></h3>
+                <div className="pln-path">
                   {new Date(item.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -67,7 +58,7 @@ export default async function NewsIndexPage() {
                   })}
                 </div>
               </div>
-            </a>
+            </div>
           )
         })}
       </div>

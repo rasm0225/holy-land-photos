@@ -28,27 +28,17 @@ export default async function SiteOfTheWeekIndexPage() {
 
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-        <a href="/">Home</a>
-        {' / '}
-        <strong>Site of the Week</strong>
-      </nav>
+      <h1 className="pln-h1">Site of the Week</h1>
+      <div className="pln-search-meta">{docs.length} featured sites</div>
 
-      <h1>Site of the Week</h1>
-      <p style={{ color: '#888', marginBottom: '24px' }}>{docs.length} featured sites</p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div>
         {docs.map((item) => {
           const section = typeof item.section === 'object' ? item.section : null
           const imageId = item.imageId as string
           const isCurrent = (item as unknown as Record<string, unknown>).isCurrent as boolean
 
           return (
-            <a
-              key={item.id}
-              href={section ? `/browse/${section.slug}` : '#'}
-              style={{ textDecoration: 'none', color: 'inherit', display: 'flex', gap: '16px', alignItems: 'flex-start' }}
-            >
+            <div key={item.id} className="pln-section-result">
               {imageId && (
                 <Image
                   src={`${S3_BASE}/${imageId}.jpg`}
@@ -56,17 +46,15 @@ export default async function SiteOfTheWeekIndexPage() {
                   width={120}
                   height={90}
                   sizes="120px"
-                  style={{ objectFit: 'cover', flexShrink: 0 }}
+                  style={{ objectFit: 'cover', flexShrink: 0, border: '1px solid var(--line)' }}
                 />
               )}
               <div>
-                <div style={{ fontWeight: 600 }}>
-                  {section?.title || 'Untitled'}
-                  {isCurrent && (
-                    <span style={{ fontSize: '12px', color: '#B85C2C', marginLeft: '8px' }}>Current</span>
-                  )}
-                </div>
-                <div style={{ fontSize: '13px', color: '#888' }}>
+                <h3>
+                  <a href={section ? `/browse/${section.slug}` : '#'}>{section?.title || 'Untitled'}</a>
+                  {isCurrent && <span className="pln-badge" style={{ marginLeft: 8, marginBottom: 0 }}>Current</span>}
+                </h3>
+                <div className="pln-path">
                   {new Date(item.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -74,7 +62,7 @@ export default async function SiteOfTheWeekIndexPage() {
                   })}
                 </div>
               </div>
-            </a>
+            </div>
           )
         })}
       </div>

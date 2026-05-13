@@ -63,24 +63,17 @@ export default async function StaticPage({ params }: Props) {
 
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+      <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
-        {' / '}
-        <strong>{page.title}</strong>
+        <span className="pln-sep">›</span>
+        <span className="pln-current">{page.title}</span>
       </nav>
 
-      <h1>{page.title}</h1>
+      <h1 className="pln-h1">{page.title}</h1>
 
-      {page.body && (
-        <div style={{ marginBottom: '24px' }}>
-          <RichText data={page.body} />
-        </div>
-      )}
+      {page.body && <RichText data={page.body} />}
       {!page.body && htmlBody && (
-        <div
-          style={{ marginBottom: '24px' }}
-          dangerouslySetInnerHTML={{ __html: htmlBody }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       )}
     </div>
   )
