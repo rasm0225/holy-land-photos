@@ -53,28 +53,28 @@ export default function NewsletterPage() {
 
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+      <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
-        {' / '}
-        <strong>Newsletter</strong>
+        <span className="pln-sep">›</span>
+        <span className="pln-current">Newsletter</span>
       </nav>
 
-      <h1>Newsletter Signup</h1>
-      <p style={{ color: '#666', marginBottom: '24px', maxWidth: 600 }}>
+      <h1 className="pln-h1">Newsletter Signup</h1>
+      <p className="pln-lead" style={{ maxWidth: '62ch' }}>
         Subscribe to receive updates from Holy Land Photos, including new photo
         additions, site features, and announcements about upcoming study tours
         led by Dr. Carl Rasmussen.
       </p>
 
       {status === 'success' ? (
-        <div style={{ padding: '16px', background: '#e8f5e9', borderRadius: 4, maxWidth: 500 }}>
-          <p style={{ margin: 0, fontWeight: 600 }}>Thank you for subscribing!</p>
-          <p style={{ margin: '8px 0 0 0', color: '#555' }}>{message}</p>
+        <div className="pln-hint">
+          <strong>Thank you for subscribing!</strong>
+          {message}
         </div>
       ) : (
         <form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
-          <div style={{ marginBottom: '16px' }}>
-            <label htmlFor="mce-EMAIL" style={{ display: 'block', marginBottom: '4px', fontWeight: 600, fontSize: '14px' }}>
+          <div style={{ marginBottom: 16 }}>
+            <label htmlFor="mce-EMAIL" style={{ display: 'block', marginBottom: 4, fontWeight: 600, fontSize: 14, fontFamily: 'var(--sans)' }}>
               Email Address <span style={{ color: '#c00' }}>*</span>
             </label>
             <input
@@ -87,18 +87,18 @@ export default function NewsletterPage() {
               disabled={status === 'submitting'}
               style={{
                 width: '100%',
-                padding: '10px 14px',
-                fontSize: '16px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
+                padding: '12px 14px',
+                fontSize: 17,
+                fontFamily: 'var(--serif)',
+                border: '1px solid var(--ink)',
                 boxSizing: 'border-box',
               }}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1 }}>
-              <label htmlFor="mce-FNAME" style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>
+              <label htmlFor="mce-FNAME" style={{ display: 'block', marginBottom: 4, fontSize: 14, fontFamily: 'var(--sans)' }}>
                 First Name
               </label>
               <input
@@ -109,16 +109,16 @@ export default function NewsletterPage() {
                 disabled={status === 'submitting'}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  fontSize: '16px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
+                  padding: '12px 14px',
+                  fontSize: 17,
+                  fontFamily: 'var(--serif)',
+                  border: '1px solid var(--line-strong)',
                   boxSizing: 'border-box',
                 }}
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label htmlFor="mce-LNAME" style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>
+              <label htmlFor="mce-LNAME" style={{ display: 'block', marginBottom: 4, fontSize: 14, fontFamily: 'var(--sans)' }}>
                 Last Name
               </label>
               <input
@@ -129,10 +129,10 @@ export default function NewsletterPage() {
                 disabled={status === 'submitting'}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  fontSize: '16px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
+                  padding: '12px 14px',
+                  fontSize: 17,
+                  fontFamily: 'var(--serif)',
+                  border: '1px solid var(--line-strong)',
                   boxSizing: 'border-box',
                 }}
               />
@@ -140,24 +140,12 @@ export default function NewsletterPage() {
           </div>
 
           {status === 'error' && (
-            <p style={{ color: '#c00', marginBottom: '12px', fontSize: '14px' }}>
+            <p style={{ color: '#c00', marginBottom: 12, fontSize: 14, fontFamily: 'var(--sans)' }}>
               {message}
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={status === 'submitting'}
-            style={{
-              padding: '12px 24px',
-              fontSize: '16px',
-              cursor: status === 'submitting' ? 'not-allowed' : 'pointer',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontWeight: 600,
-              background: status === 'submitting' ? '#eee' : '#fff',
-            }}
-          >
+          <button type="submit" disabled={status === 'submitting'} className="pln-download">
             {status === 'submitting' ? 'Subscribing…' : 'Subscribe'}
           </button>
         </form>

@@ -157,8 +157,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       '@type': 'Person',
       name: photographerName || 'Dr. Carl Rasmussen',
     },
-    ...(photoYear && { dateCreated: String(photoYear) }),
-    copyrightYear: photoYear || new Date().getFullYear(),
+    ...(photoYear && { dateCreated: String(photoYear), copyrightYear: photoYear }),
     ...(sectionForSchema && {
       about: {
         '@type': 'Place',

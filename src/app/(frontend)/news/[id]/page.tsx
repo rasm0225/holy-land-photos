@@ -71,51 +71,49 @@ export default async function NewsPage({ params }: Props) {
 
   return (
     <div>
-      <nav style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+      <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
-        {' / '}
+        <span className="pln-sep">›</span>
         <a href="/news">News</a>
-        {' / '}
-        <strong>{news.title}</strong>
+        <span className="pln-sep">›</span>
+        <span className="pln-current">{news.title}</span>
       </nav>
 
-      <h1>{news.title}</h1>
+      <h1 className="pln-h1">{news.title}</h1>
 
-      <p style={{ fontSize: '13px', color: '#888' }}>
+      <div className="pln-search-meta">
         {new Date(news.createdAt).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
         })}
-      </p>
+      </div>
 
       {/* Image gallery */}
       {gallery.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+        <div className="pln-grid" style={{ marginBottom: 24 }}>
           {gallery.map((item, i) => {
             const imageId = item.imageId || ''
             const content = (
-              <div key={i}>
+              <div key={i} className="pln-thumb">
                 <Image
                   src={`${S3_BASE}/${imageId}.jpg`}
                   alt={item.caption || imageId}
                   width={400}
                   height={300}
-                  sizes="(max-width: 680px) 100vw, 400px"
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                  sizes="(max-width: 767px) 50vw, 200px"
+                  className="pln-thumb-img"
                 />
                 {item.caption && (
-                  <div style={{ fontSize: '13px', padding: '4px 0', color: '#888' }}>
-                    {item.caption}
-                  </div>
+                  <span className="pln-thumb-cap">{item.caption}</span>
                 )}
               </div>
             )
             if (item.url) {
-              return <a key={i} href={item.url} style={{ textDecoration: 'none', color: 'inherit' }}>{content}</a>
+              return <a key={i} href={item.url} className="pln-thumb">{content}</a>
             }
             if (imageId) {
-              return <a key={i} href={`/photos/${imageId}`} style={{ textDecoration: 'none', color: 'inherit' }}>{content}</a>
+              return <a key={i} href={`/photos/${imageId}`} className="pln-thumb">{content}</a>
             }
             return content
           })}
@@ -124,7 +122,7 @@ export default async function NewsPage({ params }: Props) {
 
       {/* YouTube embed */}
       {news.youtubeVideoId && (
-        <div style={{ marginBottom: '24px', position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+        <div style={{ marginBottom: 24, position: 'relative', paddingBottom: '56.25%', height: 0 }}>
           <iframe
             src={`https://www.youtube.com/embed/${news.youtubeVideoId}`}
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
@@ -135,17 +133,10 @@ export default async function NewsPage({ params }: Props) {
         </div>
       )}
 
-      {/* Body content — Lexical rich text or legacy HTML */}
-      {news.body && (
-        <div style={{ marginBottom: '24px' }}>
-          <RichText data={news.body} />
-        </div>
-      )}
+      {/* Body content */}
+      {news.body && <RichText data={news.body} />}
       {!news.body && htmlBody && (
-        <div
-          style={{ marginBottom: '24px' }}
-          dangerouslySetInnerHTML={{ __html: htmlBody }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       )}
     </div>
   )
