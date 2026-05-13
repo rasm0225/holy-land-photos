@@ -4,6 +4,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import NewsCarousel from './components/NewsCarousel'
+import AskTheArchive from './components/AskTheArchive'
 
 export const dynamic = 'force-dynamic'
 
@@ -119,6 +120,9 @@ export default async function HomePage() {
           </section>
         )
       })}
+
+      {/* Ask the Archive — AI Search */}
+      <AskTheArchive />
 
       {/* Site of the Week */}
       {currentSTW.length > 0 && (() => {
