@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 
 export default function DownloadButton({
   imageId,
@@ -10,8 +10,17 @@ export default function DownloadButton({
   title?: string
 }) {
   const [showModal, setShowModal] = useState(false)
+  const cancelRef = useRef<HTMLButtonElement>(null)
 
-  const close = useCallback(() => setShowModal(false), [])
+  const close = useCallback(() => {
+    setShowModal(false)
+    document.body.style.overflow = ''
+  }, [])
+
+  const openModal = useCallback(() => {
+    setShowModal(true)
+    document.body.style.overflow = 'hidden'
+  }, [])
 
   useEffect(() => {
     if (!showModal) return
@@ -19,93 +28,59 @@ export default function DownloadButton({
       if (e.key === 'Escape') close()
     }
     document.addEventListener('keydown', onKey)
+    // Focus Cancel (the safe choice) on open
+    cancelRef.current?.focus()
     return () => document.removeEventListener('keydown', onKey)
   }, [showModal, close])
 
   function handleDownload() {
-    // Use our proxy endpoint which sets Content-Disposition: attachment
     const params = new URLSearchParams({ id: imageId })
     if (title) params.set('title', title)
     window.location.href = `/api/download?${params.toString()}`
-    setShowModal(false)
+    close()
   }
 
   return (
     <>
-      <button onClick={() => setShowModal(true)} className="pln-download">
+      <button onClick={openModal} className="pln-download">
         &#8595; Download Photo
       </button>
 
       {showModal && (
         <div
+          className="pln-overlay"
           role="dialog"
           aria-modal="true"
-          aria-label="Download agreement"
+          aria-labelledby="dl-title"
           onClick={close}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            background: 'rgba(0,0,0,0.6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={{ position: 'fixed', zIndex: 9999 }}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: '#fff',
-              borderRadius: '8px',
-              padding: '24px 32px',
-              maxWidth: '480px',
-              width: '90%',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
-            }}
+          <button
+            className="pln-overlay-close"
+            aria-label="Close"
+            onClick={(e) => { e.stopPropagation(); close() }}
           >
-            <h3 style={{ margin: '0 0 12px 0', fontSize: '18px' }}>
-              Before you download
-            </h3>
-            <p style={{ margin: '0 0 8px 0', fontSize: '14px', lineHeight: 1.6, color: '#333' }}>
-              Images from this site are free for personal, non-commercial use
-              with credit to <strong>holylandphotos.org</strong>.
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+          </button>
+          <div className="pln-modal" onClick={(e) => e.stopPropagation()}>
+            <p className="pln-modal-eyebrow">Permission to use</p>
+            <h2 id="dl-title">Before you download</h2>
+            <p>
+              All photographs on HolyLandPhotos.org are the property of Dr. Carl Rasmussen
+              and are provided <strong>free for non-commercial use</strong> — sermons,
+              lessons, slides, personal study, and academic work.
             </p>
-            <p style={{ margin: '0 0 16px 0', fontSize: '14px', lineHeight: 1.6, color: '#333' }}>
-              For commercial or web use, please contact{' '}
-              <a href="mailto:holylandphotos@gmail.com" style={{ color: '#0066cc' }}>
-                holylandphotos@gmail.com
-              </a>{' '}
-              for permission.
+            <p>
+              Please credit <em>HolyLandPhotos.org</em> when you use a photograph.
+              For commercial licensing or print reproduction, please{' '}
+              <a href="/pages/permission-to-use">read our permission policy</a>.
             </p>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button
-                onClick={handleDownload}
-                style={{
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                  border: '1px solid #333',
-                  background: '#333',
-                  color: '#fff',
-                }}
-              >
-                I Agree — Download
-              </button>
-              <button
-                onClick={close}
-                style={{
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                  background: '#fff',
-                  color: '#333',
-                }}
-              >
+            <div className="pln-modal-actions">
+              <button ref={cancelRef} className="pln-btn-secondary" type="button" onClick={close}>
                 Cancel
+              </button>
+              <button className="pln-btn-primary" type="button" onClick={handleDownload}>
+                &#8595; I agree — Download
               </button>
             </div>
           </div>

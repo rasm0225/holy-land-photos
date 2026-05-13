@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
 import ExternalLinkHandler from './components/ExternalLinkHandler'
+import MobileDrawer from './components/MobileDrawer'
 import '../styles/design.css'
 
 export const metadata: Metadata = {
@@ -58,8 +59,11 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
 
         {/* Mobile nav */}
         <div className="pln-mobile-nav">
+          <MobileDrawer />
           <a href="/" className="pln-mobile-brand">HolyLandPhotos</a>
-          <a href="/search" className="pln-mobile-nav-btn" aria-label="Search" style={{ fontSize: 18 }}>&#x1F50D;</a>
+          <a href="/search" className="pln-mobile-nav-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          </a>
         </div>
 
         <main id="main-content" className="pln-main">
