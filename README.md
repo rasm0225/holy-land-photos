@@ -172,7 +172,15 @@ holy-land-photos/
 
 ## Deployment (EC2)
 
-The site runs on AWS EC2 (t3.small) in us-east-2 (Ohio).
+The site runs on AWS EC2 (t3.medium) in us-east-2 (Ohio).
+
+### Deploy
+
+```bash
+./deploy.sh
+```
+
+One command — checks for uncommitted/unpushed changes, SSHs into EC2, pulls, builds, restarts, and verifies.
 
 ### SSH Access
 
@@ -180,25 +188,10 @@ The site runs on AWS EC2 (t3.small) in us-east-2 (Ohio).
 ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13
 ```
 
-### Deploy Updates
-
-```bash
-ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13 'bash -s' << 'EOF'
-cd /home/ec2-user/app
-pm2 stop hlp
-git pull origin main
-npm ci --production=false
-npm run build
-pm2 start hlp
-EOF
-```
-
-**Important:** Stop the app before building to avoid OOM on the t3.small (2GB RAM + 2GB swap).
-
 ### Server Details
 
 - **Elastic IP:** 18.220.101.13
-- **Instance:** i-0f8a6e9a492f149d8
+- **Instance:** i-0f8a6e9a492f149d8 (t3.medium, 4GB RAM)
 - **App directory:** /home/ec2-user/app
 - **Database:** /home/ec2-user/data/payload.db
 - **Process manager:** pm2 (process name: hlp)
@@ -215,11 +208,4 @@ npx payload generate:importmap  # Regenerate admin import map (after adding comp
 
 ## Pending Work
 
-- [ ] Style the public frontend (mockups exist in `mockups/`)
-- [ ] Fix newsletter MailChimp integration (server error on submit)
-- [ ] Create deploy script for one-command deploys
-- [ ] Add logic for a "Recent Additions" page
-- [ ] 242 records with inline images — still rendering from htmlBody
-- [ ] 592 section images need uploading as proper photo records
-- [ ] 10 pages with missing userfile images (also missing on old site)
-- [ ] Decommission Vercel and Railway (still running in parallel)
+See [`docs/TODO.md`](docs/TODO.md) for the consolidated task list.
