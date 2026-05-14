@@ -7,14 +7,14 @@ Last updated: 2026-05-13
 ## Functional / Must-do before launch
 
 - [ ] **Fix newsletter MailChimp integration** — server error on submit (broken since April)
-- [ ] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com` (in progress, waiting on EPP codes from AIT)
+- [ ] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com` (transfers initiated, waiting for completion — check email for approval requests)
 - [ ] **Launch: point holylandphotos.org at EC2** — change A record to `18.220.101.13`, get SSL cert, update nginx
-- [ ] **Old ASP URL redirects** — `go.asp?s=N`, `go.asp?img=ID`, `browse.asp`, `page.asp` — 4,885 remapped URLs need redirect rules so old inbound links still work
+- [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects
 - [ ] **Decide on `holylandarchive.com`** — keep and redirect to holylandphotos.org, or let it lapse?
 
 ## Design / UI
 
-- [ ] **Restyle AI search full page** (`/ai-search`) — design exists in Round 2 handoff but not yet implemented
+- [x] **Restyle AI search full page** (`/ai-search`) — done, Round 2 side rail available if needed later
 - [ ] **Mobile hamburger menu QA** — just built, needs testing on real devices
 - [ ] **Lightbox + download modal QA** — just restyled, needs testing
 - [ ] **7 miscategorized section types** — Climate/Water, Dead Sea, Flowers, Houses, People, Plants, Sheep & Shepherding tagged as "country" but aren't (ask Dr. Rasmussen)
