@@ -196,6 +196,7 @@ The script SSHs into EC2 and runs an atomic-ish deploy:
 5. **Builds** with the previous binary still serving traffic.
 6. **Stops + restarts pm2** only after a successful build.
 7. **Healthchecks** the homepage. If the build fails, or the homepage doesn't return 200, the script `git reset --hard`s back to the rollback commit, rebuilds, and restarts. So a bad commit can take the site down for the rebuild window (~1-2 minutes), but not longer.
+8. **Runs `scripts/qa-smoke.sh`** against the live URL — 21 automated checks (routes, redirects, orphan handler, content presence, OG tags, JSON-LD). Smoke failures don't trigger an auto-rollback (the EC2 healthcheck already covers the catastrophic case) but they exit non-zero and tell you how to revert.
 
 ### No separate staging environment
 

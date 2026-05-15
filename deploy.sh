@@ -88,3 +88,19 @@ else
   cleanup_failed_deploy "Homepage returned HTTP $STATUS after restart."
 fi
 REMOTE
+
+# Run the local QA smoke against the live site. The EC2 healthcheck above
+# already caught the catastrophic case (homepage 5xx) and auto-rolled back
+# if needed; this catches finer regressions like a broken redirect or a
+# missing meta tag. Smoke failures here do NOT auto-rollback — they're
+# loud but not action-taking, so you can decide whether to revert.
+echo ""
+if ./scripts/qa-smoke.sh; then
+  echo ""
+  echo "✅ Smoke passed."
+else
+  echo ""
+  echo "⚠️  Smoke check found regressions (above). Site is up but something is off."
+  echo "   To revert: git revert HEAD && git push origin main && ./deploy.sh"
+  exit 1
+fi
