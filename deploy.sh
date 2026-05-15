@@ -42,6 +42,9 @@ git pull origin main 2>&1 | tail -3
 echo "📦 Installing dependencies..."
 npm ci --production=false 2>&1 | tail -3
 
+echo "🗺  Regenerating middleware redirect maps from live DB..."
+python3 scripts/generate_redirect_maps.py
+
 echo "🔨 Building..."
 npm run build 2>&1 | tail -5
 
