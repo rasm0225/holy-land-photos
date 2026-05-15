@@ -2,7 +2,7 @@
 # Deploy Holy Land Photos to EC2
 # Usage: ./deploy.sh
 
-set -e
+set -euo pipefail
 
 EC2_HOST="18.220.101.13"
 EC2_KEY="$HOME/.ssh/hlp-ec2-key.pem"
@@ -29,12 +29,33 @@ echo "📦 Deploying commit: $(git log --oneline -1)"
 echo ""
 
 ssh -i "$EC2_KEY" "$EC2_USER@$EC2_HOST" 'bash -s' << 'REMOTE'
-set -e
+set -euo pipefail
 
 cd /home/ec2-user/app
 
-echo "⏸  Stopping app..."
-pm2 stop hlp 2>/dev/null || true
+# Capture the currently-deployed commit so we can roll back if anything below
+# fails. Saves us from a known failure mode where a bad next.config.mjs (e.g.
+# an unsupported `experimental` flag) is loaded at server startup and prevents
+# the app from booting at all.
+PREV_COMMIT=$(git rev-parse HEAD)
+echo "↩  Previous commit (rollback target): $PREV_COMMIT"
+
+cleanup_failed_deploy() {
+  local reason="$1"
+  echo ""
+  echo "❌ $reason"
+  echo "↩  Rolling back to $PREV_COMMIT..."
+  git reset --hard "$PREV_COMMIT" 2>&1 | tail -3
+  python3 scripts/generate_redirect_maps.py 2>&1 | tail -3 || true
+  npm run build 2>&1 | tail -3 || {
+    echo "⚠️  Rollback build also failed — site may stay down. Investigate manually."
+    pm2 start hlp 2>/dev/null || true
+    exit 2
+  }
+  pm2 restart hlp
+  echo "↩  Rolled back. Site should be on the previous commit."
+  exit 1
+}
 
 echo "📥 Pulling latest code..."
 git pull origin main 2>&1 | tail -3
@@ -46,7 +67,12 @@ echo "🗺  Regenerating middleware redirect maps from live DB..."
 python3 scripts/generate_redirect_maps.py
 
 echo "🔨 Building..."
-npm run build 2>&1 | tail -5
+if ! npm run build 2>&1 | tail -5; then
+  cleanup_failed_deploy "Build failed."
+fi
+
+echo "⏸  Stopping app..."
+pm2 stop hlp 2>/dev/null || true
 
 echo "▶️  Starting app..."
 pm2 start hlp
@@ -54,13 +80,11 @@ sleep 3
 
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/)
 if [ "$STATUS" = "200" ]; then
+  LOAD=$(curl -s -o /dev/null -w "%{time_total}" http://localhost:3000/)
   echo ""
   echo "✅ Deploy successful! Site is live."
-  LOAD=$(curl -s -o /dev/null -w "%{time_total}" http://localhost:3000/)
   echo "   Homepage: ${LOAD}s"
 else
-  echo ""
-  echo "❌ Deploy may have failed — homepage returned HTTP $STATUS"
-  echo "   Check logs: pm2 logs hlp"
+  cleanup_failed_deploy "Homepage returned HTTP $STATUS after restart."
 fi
 REMOTE
