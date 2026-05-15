@@ -76,10 +76,7 @@ export default buildConfig({
     // existing DB and asks to "push" — answering yes destroys data. With
     // push disabled, dev startup is silent; intentional schema changes go
     // through `npx payload migrate:create` + `npx payload migrate`.
-    //
-    // CI sets PAYLOAD_ALLOW_PUSH=1 against a fresh empty SQLite file so
-    // the build can populate the schema (no diff = no prompt = silent).
-    push: process.env.PAYLOAD_ALLOW_PUSH === '1',
+    push: false,
   }),
   sharp,
   plugins: [

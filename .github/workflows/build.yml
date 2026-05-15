@@ -29,19 +29,14 @@ jobs:
           export const PAGE_SLUGS: Readonly<Record<number, string>> = {}
           EOF
 
-      - name: Prepare empty SQLite DB
-        run: mkdir -p data
-
       - name: Build
-        # PAYLOAD_ALLOW_PUSH=1 lets Payload create tables in the empty CI
-        # DB so the build's prerender step can run queries successfully.
-        # The "push" prompt only fires when there's data at risk; an empty
-        # DB has no diff to flag, so push runs silently.
-        run: npm run build
+        # All frontend routes are force-dynamic, so the build doesn't query
+        # the DB. The DATABASE_URL is still required for Payload to
+        # initialise its config; pointing it at a writable path is enough.
+        run: mkdir -p data && npm run build
         env:
           DATABASE_URL: file:./data/ci.db
           PAYLOAD_SECRET: ci-build-only-not-a-real-secret
-          PAYLOAD_ALLOW_PUSH: '1'
           S3_BUCKET: ci-stub
           S3_ACCESS_KEY_ID: ci-stub
           S3_SECRET_ACCESS_KEY: ci-stub

@@ -10,6 +10,11 @@ import ExternalLinkHandler from './components/ExternalLinkHandler'
 import MobileDrawer from './components/MobileDrawer'
 import '../styles/design.css'
 
+// All frontend routes are content-driven and need a fresh DB read on every
+// request — there is no benefit to prerendering them at build time, and it
+// also means CI can build the bundle without provisioning a database.
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: {
     default: 'Holy Land Photos',
