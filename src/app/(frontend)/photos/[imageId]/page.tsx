@@ -148,6 +148,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   const sectionForSchema = sectionLinks[0]
   const photographerName = (photo as unknown as Record<string, unknown>).photographer as string | null
   const photoYear = (photo as unknown as Record<string, unknown>).year as number | null
+  const yearAdded = photo.createdAt ? new Date(photo.createdAt).getUTCFullYear() : null
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
@@ -208,7 +209,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               sizes="(max-width: 767px) 100vw, 52vw"
             />
           </PhotoLightbox>
-          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; {photographerName || 'Carl Rasmussen'}{photoYear ? ` · ${photoYear}` : ''}</div>
+          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; {photographerName || 'Carl Rasmussen'}{yearAdded ? ` · Added: ${yearAdded}` : ''}</div>
           <DownloadButton imageId={photo.imageId} title={photo.title} />
         </div>
         <div className="pln-photo-side">
