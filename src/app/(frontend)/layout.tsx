@@ -28,10 +28,21 @@ export const metadata: Metadata = {
   },
 }
 
+async function getIsLoggedIn(): Promise<boolean> {
+  // Treat any failure as "not logged in". This matters in CI where there
+  // is no real database — without the try/catch the build fails when it
+  // tries to prerender a static page like /gone.
+  try {
+    const payload = await getPayload({ config })
+    const { user } = await payload.auth({ headers: await getHeaders() })
+    return !!user
+  } catch {
+    return false
+  }
+}
+
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const payload = await getPayload({ config })
-  const { user } = await payload.auth({ headers: await getHeaders() })
-  const isLoggedIn = !!user
+  const isLoggedIn = await getIsLoggedIn()
 
   return (
     <html lang="en">
