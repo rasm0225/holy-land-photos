@@ -184,11 +184,11 @@ export default async function SectionPage({ params }: Props) {
             <figure className="pln-figure">
               <PhotoLightbox
                 src={sectionImageSrc}
-                alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
+                alt={(primaryImage as { title?: string })?.title || section.title}
               >
                 <Image
                   src={sectionImageSrc}
-                  alt={primaryImage?.imageId ? ((primaryImage as { title?: string }).title || section.title) : `Map or image for ${section.title}`}
+                  alt={(primaryImage as { title?: string })?.title || section.title}
                   width={800}
                   height={600}
                   sizes="(max-width: 767px) 100vw, 42vw"
