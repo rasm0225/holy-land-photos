@@ -10,24 +10,38 @@ Usage:
 import re
 import sys
 import os
+import sqlite3
+import html as html_mod
 from urllib.parse import parse_qs
-import libsql_experimental as libsql
 
 # Load env
 from pathlib import Path
 env_path = Path(__file__).resolve().parent.parent / ".env"
-for line in env_path.read_text().splitlines():
-    line = line.strip()
-    if line and not line.startswith("#") and "=" in line:
-        key, val = line.split("=", 1)
-        os.environ.setdefault(key.strip(), val.strip())
+if env_path.exists():
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, val = line.split("=", 1)
+            os.environ.setdefault(key.strip(), val.strip())
 
 DB_URL = os.environ["DATABASE_URL"]
-DB_TOKEN = os.environ["DATABASE_AUTH_TOKEN"]
 
 
 def get_db():
-    return libsql.connect("hlp-remap", sync_url=DB_URL, auth_token=DB_TOKEN)
+    """Open the configured database. Supports `file:...` (local SQLite) and
+    `libsql://...` (Turso). For Turso, requires DATABASE_AUTH_TOKEN and the
+    libsql_experimental package."""
+    if DB_URL.startswith("file:"):
+        path = DB_URL[len("file:"):]
+        # Resolve relative paths from the project root, like Payload does
+        if path.startswith("./") or not path.startswith("/"):
+            path = str(env_path.parent / path.lstrip("./"))
+        return sqlite3.connect(path)
+
+    import libsql_experimental as libsql
+    return libsql.connect(
+        "hlp-remap", sync_url=DB_URL, auth_token=os.environ["DATABASE_AUTH_TOKEN"]
+    )
 
 
 def build_lookups(db):
@@ -46,49 +60,43 @@ def build_lookups(db):
     return section_map, page_map
 
 
+_ASP_RE = re.compile(r"(?i)(go|browse|page)\.asp(?:\?([^#\s'\"]*))?")
+
+
 def remap_url(href, section_map, page_map, unmapped):
-    """Convert a single old URL to the new format. Returns new URL or None."""
-    normalized = href
-    for prefix in [
-        "http://holylandphotos.org/",
-        "https://holylandphotos.org/",
-        "http://www.holylandphotos.org/",
-        "https://www.holylandphotos.org/",
-    ]:
-        if normalized.lower().startswith(prefix):
-            normalized = "/" + normalized[len(prefix):]
-            break
+    """Convert a single old URL to the new format. Returns new URL or None.
 
-    path = normalized.lstrip("/")
+    Tolerant of any URL prefix (../, http://..., /control/, etc.) — locates
+    the (go|browse|page).asp segment anywhere in the string and dispatches on
+    its query params. HTML-entity-encoded ampersands are decoded first so
+    parse_qs sees the real param names.
+    """
+    decoded = html_mod.unescape(href)
+    m = _ASP_RE.search(decoded)
+    if not m:
+        return None
 
-    # --- go.asp ---
-    if path.lower().startswith("go.asp"):
-        qs = path.split("?", 1)[1] if "?" in path else ""
-        params = parse_qs(qs)
+    asp = m.group(1).lower()
+    qs = m.group(2) or ""
+    params = parse_qs(qs)
 
+    if asp == "go":
         if "img" in params:
             return f"/photos/{params['img'][0]}"
-
         if "s" in params:
             try:
                 site_id = int(params["s"][0])
                 slug = section_map.get(site_id)
                 if slug:
                     return f"/browse/{slug}"
-                else:
-                    unmapped.append(f"go.asp?s={site_id} — section not found")
+                unmapped.append(f"go.asp?s={site_id} — section not found")
             except ValueError:
                 unmapped.append(f"go.asp?s={params['s'][0]} — not a number")
         return None
 
-    # --- browse.asp ---
-    if path.lower().startswith("browse.asp"):
-        qs = path.split("?", 1)[1] if "?" in path else ""
-        params = parse_qs(qs)
-
+    if asp == "browse":
         if "img" in params:
             return f"/photos/{params['img'][0]}"
-
         if "ImageID" in params:
             return f"/photos/{params['ImageID'][0]}"
 
@@ -100,8 +108,7 @@ def remap_url(href, section_map, page_map, unmapped):
                 slug = section_map.get(last_id)
                 if slug:
                     return f"/browse/{slug}"
-                else:
-                    unmapped.append(f"browse.asp?s=...{last_id} — section not found")
+                unmapped.append(f"browse.asp?s=...{last_id} — section not found")
             except ValueError:
                 unmapped.append(f"browse.asp?s={s_val} — last value not a number")
             return None
@@ -112,8 +119,7 @@ def remap_url(href, section_map, page_map, unmapped):
                 slug = section_map.get(site_id)
                 if slug:
                     return f"/browse/{slug}"
-                else:
-                    unmapped.append(f"browse.asp?SiteID={site_id} — not found")
+                unmapped.append(f"browse.asp?SiteID={site_id} — not found")
             except ValueError:
                 pass
             return None
@@ -124,8 +130,7 @@ def remap_url(href, section_map, page_map, unmapped):
                 slug = section_map.get(region_id)
                 if slug:
                     return f"/browse/{slug}"
-                else:
-                    unmapped.append(f"browse.asp?SubRegionID={region_id} — not found")
+                unmapped.append(f"browse.asp?SubRegionID={region_id} — not found")
             except ValueError:
                 pass
             return None
@@ -133,19 +138,14 @@ def remap_url(href, section_map, page_map, unmapped):
         unmapped.append(f"browse.asp — unrecognized params: {qs}")
         return None
 
-    # --- page.asp ---
-    if path.lower().startswith("page.asp"):
-        qs = path.split("?", 1)[1] if "?" in path else ""
-        params = parse_qs(qs)
-
+    if asp == "page":
         if "page_ID" in params:
             try:
                 page_id = int(params["page_ID"][0])
                 slug = page_map.get(page_id)
                 if slug:
                     return f"/{slug}"
-                else:
-                    unmapped.append(f"page.asp?page_ID={page_id} — not found")
+                unmapped.append(f"page.asp?page_ID={page_id} — not found")
             except ValueError:
                 pass
         return None
@@ -227,7 +227,8 @@ def main():
         print("=== APPLYING CHANGES ===\n")
 
     db = get_db()
-    db.sync()
+    if hasattr(db, "sync"):
+        db.sync()
     section_map, page_map = build_lookups(db)
 
     tables = [
