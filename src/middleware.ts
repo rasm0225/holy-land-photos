@@ -171,10 +171,12 @@ async function dbLookup(sql: string): Promise<string | null> {
 }
 
 export const config = {
-  // Run for every request except `_next/*`. The middleware bails out
-  // immediately if the path does not end in `.asp` (case-insensitive),
-  // so the cost of this broad matcher is one string check per request.
-  // We can't easily express "ends in .asp, case-insensitive, at any depth"
-  // in path-to-regexp matcher syntax, so we filter in code instead.
+  // Run for every request except `_next/*`, Payload's API, and admin. The
+  // middleware bails out immediately if the path does not end in `.asp`
+  // (case-insensitive), so the cost of this broad matcher is one string
+  // check per request. We use the Node.js runtime so we can read from the
+  // local SQLite file via @libsql/client (the default Edge bundle of that
+  // package only supports HTTP-based libsql/Turso URLs).
   matcher: ['/((?!_next/|api/|admin/).*)'],
+  runtime: 'nodejs',
 }
