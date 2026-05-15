@@ -2,8 +2,18 @@
 
 import { usePathname } from 'next/navigation'
 
-export function EditLink({ collection, id }: { collection?: string; id?: number | string }) {
+export function EditLink({
+  collection,
+  id,
+  isLoggedIn,
+}: {
+  collection?: string
+  id?: number | string
+  isLoggedIn?: boolean
+}) {
   const pathname = usePathname()
+
+  if (!isLoggedIn) return null
 
   // If explicit collection/id passed, use directly
   if (collection && id) {

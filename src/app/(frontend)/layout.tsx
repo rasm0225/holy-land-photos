@@ -1,6 +1,9 @@
 import React from 'react'
 import Script from 'next/script'
 import type { Metadata } from 'next'
+import { headers as getHeaders } from 'next/headers'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
 import ExternalLinkHandler from './components/ExternalLinkHandler'
@@ -25,7 +28,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers: await getHeaders() })
+  const isLoggedIn = !!user
+
   return (
     <html lang="en">
       <head>
@@ -52,7 +59,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
               <a href="/ai-search">AI Search</a>
               <a href="/pages/about-this-site">About</a>
               <a href="/pages/permission-to-use">Permission</a>
-              <EditLink />
+              <EditLink isLoggedIn={isLoggedIn} />
             </nav>
           </div>
         </header>
