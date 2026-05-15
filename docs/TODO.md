@@ -32,6 +32,12 @@ Last updated: 2026-05-13
 - [x] **Create deploy script** — one-command EC2 deploys instead of manual SSH
 - [x] **Consider upgrading to t3.medium** — tight on RAM with two apps (HLP + GGF), must stop app before builds
 - [x] **Update project status memory** — several items are stale (still mentions Vercel/Railway as active)
+- [ ] **Stand up a real staging environment** — currently `hlp.everyphere.com` *is* the only deployed environment. Once we point `holylandphotos.org` at EC2, every deploy is a prod deploy with no chance to catch breakage first. We had one full-site outage during the May 2026 ASP-redirect work (a `next.config.mjs` flag that crashed at server startup); `deploy.sh` now auto-rolls back, but that only catches failures we can detect from a homepage 200 check. Notes on how to set this up:
+  - **Cheapest option:** add a second nginx vhost + pm2 process on the *same* EC2 box (`staging.holylandphotos.org`) running from a `staging` git branch with its own `.next/` build dir and its own copy of the SQLite file (refreshed nightly from prod, or shared read-only). ~free, but staging shares CPU/RAM with prod so a bad staging build can still affect prod indirectly.
+  - **Cleaner option:** a second small EC2 instance (t3.small ≈ $15/mo) running the same stack from the `staging` branch. Fully isolated. DNS: `staging.holylandphotos.org` → second instance. Promote to prod by merging `staging` → `main`.
+  - **Workflow change either way:** deploy to `staging` first, smoke-test the changed pages (and any pages that touch shared infra like middleware, layout, next.config), then deploy to prod. The deploy script can be parameterized: `./deploy.sh staging` vs `./deploy.sh prod`.
+  - **DB strategy:** staging should have its own SQLite file so destructive content migrations (like the `remap_urls.py` run) can be rehearsed there first. Sync from prod periodically (e.g. `scp` nightly) so staging content stays representative.
+  - **Don't overbuild:** for this site (low traffic, one maintainer, infrequent changes) the same-EC2-second-vhost option is probably right. The cost of a Friday-afternoon prod outage is much lower than for a SaaS app.
 
 ## CMS Cleanup (low priority)
 
