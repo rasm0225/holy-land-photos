@@ -15,8 +15,8 @@ Last updated: 2026-05-13
 ## Design / UI
 
 - [x] **Restyle AI search full page** (`/ai-search`) — done, Round 2 side rail available if needed later
-- [ ] **Mobile hamburger menu QA** — just built, needs testing on real devices
-- [ ] **Lightbox + download modal QA** — just restyled, needs testing
+- [x] **Mobile hamburger menu QA** — tested on real devices, mobile nav now also sticks to top on scroll
+- [x] **Lightbox + download modal QA** — tested on real devices
 - [ ] **7 miscategorized section types** — Climate/Water, Dead Sea, Flowers, Houses, People, Plants, Sheep & Shepherding tagged as "country" but aren't (ask Dr. Rasmussen)
 
 ## Content / Data
