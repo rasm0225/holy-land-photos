@@ -187,7 +187,25 @@ The site runs on AWS EC2 (t3.medium) in us-east-2 (Ohio).
 ./deploy.sh
 ```
 
-One command — checks for uncommitted/unpushed changes, SSHs into EC2, pulls, builds, restarts, and verifies.
+The script SSHs into EC2 and runs an atomic-ish deploy:
+
+1. **Records the currently-deployed commit** as a rollback target.
+2. **Pulls** the latest `main`.
+3. **Installs** dependencies (`npm ci`).
+4. **Regenerates** `src/redirect-maps.generated.ts` from the live DB so the middleware has fresh section/page slug lookups.
+5. **Builds** with the previous binary still serving traffic.
+6. **Stops + restarts pm2** only after a successful build.
+7. **Healthchecks** the homepage. If the build fails, or the homepage doesn't return 200, the script `git reset --hard`s back to the rollback commit, rebuilds, and restarts. So a bad commit can take the site down for the rebuild window (~1-2 minutes), but not longer.
+
+### No separate staging environment
+
+`hlp.everyphere.com` is the only deployed environment — there is no `staging.holylandphotos.org`. With release cadence expected to be ≤ once a day initially and then weekly-to-monthly, and a 30–300s outage tolerance, a separate $15/mo EC2 instance wasn't justified. Three things take its place:
+
+- **Reliable local dev.** `payload.config.ts` sets `push: false` on the SQLite adapter so `npm run dev` no longer prompts to rewrite the schema and risk data loss. Local dev is the primary way to catch breakage.
+- **CI build check.** [`.github/workflows/build.yml`](.github/workflows/build.yml) runs `npm run build` on every push to `main` and every PR. Catches build/config errors (e.g. an unsupported `next.config.mjs` flag) before they hit EC2.
+- **Auto-rollback in `deploy.sh`** (above).
+
+See [`docs/TODO.md`](docs/TODO.md) for the conditions under which standing up a separate staging environment becomes worth the cost.
 
 ### SSH Access
 
@@ -211,7 +229,15 @@ ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13
 ```bash
 npx payload generate:types      # Regenerate TypeScript types
 npx payload generate:importmap  # Regenerate admin import map (after adding components)
+npx payload migrate:create      # Create a migration file from current code/schema diff
+npx payload migrate             # Apply pending migrations to the configured database
 ```
+
+Schema changes go through `migrate:create` + `migrate` because Drizzle's auto-push is disabled (see `db.push: false` in `payload.config.ts`).
+
+## QA
+
+See [`docs/QA.md`](docs/QA.md) for the manual checklists — a 90-second per-deploy smoke test, a full pre-launch sweep, and per-feature focus runs.
 
 ## Pending Work
 
