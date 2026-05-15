@@ -23,10 +23,12 @@ A photography and biblical scholarship website by Dr. Carl Rasmussen, rebuilt wi
 ## Content
 
 - **730 sections** organized in a 5-level hierarchy (Top Level > Country > Region > Site > Artifact)
-- **7,025 photos** with scholarly descriptions, keywords, and metadata
+- **7,025 photos** with scholarly descriptions, keywords, and metadata, dated from 2001 through 2026 (`created_at` reflects when each photo was added to the original site, repaired from the ASP `image_DateAdded` column)
 - **36 static pages** (About, Permissions, How to Use, Tours, etc.)
 - **171 news articles** with image galleries
 - **120 Site of the Week** entries
+
+The original SQL Server CSV exports that the site was migrated from are preserved in [`archive/`](archive/) — re-running migrations or repair scripts only requires this repo.
 
 ## Architecture
 
@@ -136,7 +138,12 @@ holy-land-photos/
     html_to_lexical.py           # HTML to Lexical rich text converter
     fix_photo_order.cjs          # Restore original photo ordering
     generate_breadcrumbs.py      # Generate section breadcrumbs
+    generate_redirect_maps.py    # Build-time section/page slug map for middleware (run by deploy.sh)
     migrate_news_gallery.py      # Migrate news image galleries
+    remap_urls.py                # Rewrite legacy .asp links in HTML content to new routes
+    repair_photo_dates.py        # Restore photos.created_at from archive/ ASP CSV
+  archive/
+    dbo.holylandphotos_*.csv     # Original ASP DB exports (March 2026), source-of-truth for migrations
   docs/
     section-images-without-photo-record.csv  # 592 section images needing upload
     missing-userfile-images.csv              # 10 pages with missing images

@@ -25,7 +25,7 @@ Last updated: 2026-05-13
 - [ ] **592 section images without photo records** — low-res thumbnails in S3 `section/` folder need uploading as proper photos (`docs/section-images-without-photo-record.csv`)
 - [ ] **10 pages with missing userfile images** — also missing on old site, need originals from Dr. Rasmussen (`docs/missing-userfile-images.csv`)
 - [ ] **27 unmapped old URLs** referencing deleted sections — flag to Dr. Rasmussen
-- [ ] **Discuss photo metadata with Dr. Rasmussen** — year field, photographer attribution, alt text strategy
+- [ ] **Discuss photo metadata with Dr. Rasmussen** — `year` column (separate from added-date) and `photographer` column are both empty for all 7,025 rows; alt text strategy still TBD. (Note: `created_at` is now accurate from 2001-2026, repaired from the archived ASP `image_DateAdded`.)
 
 ## DevOps / Maintenance
 
