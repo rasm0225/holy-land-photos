@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Stub the deploy-time-generated redirect maps with empty tables so
+      # the middleware import resolves. Real maps are regenerated from the
+      # live DB by deploy.sh on every EC2 deploy; the stub is only here to
+      # let `next build` typecheck the import in CI.
+      - name: Stub middleware redirect maps
+        run: |
+          cat > src/redirect-maps.generated.ts <<'EOF'
+          export const SECTION_SLUGS: Readonly<Record<number, string>> = {}
+          export const PAGE_SLUGS: Readonly<Record<number, string>> = {}
+          EOF
+
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: file:./data/ci.db
+          PAYLOAD_SECRET: ci-build-only-not-a-real-secret
+          S3_BUCKET: ci-stub
+          S3_ACCESS_KEY_ID: ci-stub
+          S3_SECRET_ACCESS_KEY: ci-stub
+          S3_REGION: us-east-2
+          ANTHROPIC_API_KEY: ci-stub

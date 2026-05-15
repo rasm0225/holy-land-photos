@@ -71,6 +71,12 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
       authToken: process.env.DATABASE_AUTH_TOKEN || '',
     },
+    // Disable Drizzle's interactive "push schema" prompt in dev. Drizzle
+    // sometimes flags spurious differences between the code schema and the
+    // existing DB and asks to "push" — answering yes destroys data. With
+    // push disabled, dev startup is silent; intentional schema changes go
+    // through `npx payload migrate:create` + `npx payload migrate`.
+    push: false,
   }),
   sharp,
   plugins: [
