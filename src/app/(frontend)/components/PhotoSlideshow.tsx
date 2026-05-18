@@ -1,51 +1,71 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
-type GalleryItem = {
-  imageId?: string
+export type Slide = {
+  imageId: string
   caption?: string
-  url?: string
+  href?: string
+  alt?: string
 }
 
-type NewsItem = {
-  id: number
-  title: string
-  imageGallery?: GalleryItem[]
+type Props = {
+  slides: Slide[]
+  /** Milliseconds between slides. 0 disables auto-advance. Default 3000. */
+  autoAdvanceMs?: number
 }
 
-export default function NewsCarousel({ newsItems }: { newsItems: NewsItem[] }) {
-  // Flatten all gallery images across all active news items
-  const slides = newsItems.flatMap((item) =>
-    (item.imageGallery || [])
-      .filter((g) => g.imageId)
-      .map((g) => ({
-        imageId: g.imageId!,
-        caption: g.caption || '',
-        url: g.url,
-        newsId: item.id,
-        newsTitle: item.title,
-      })),
+export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const next = useCallback(
+    () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1)),
+    [slides.length],
+  )
+  const prev = useCallback(
+    () => setIndex((i) => (i === 0 ? slides.length - 1 : i - 1)),
+    [slides.length],
   )
 
-  const [index, setIndex] = useState(0)
+  useEffect(() => {
+    if (autoAdvanceMs <= 0 || slides.length <= 1 || paused) return
+
+    // Respect prefers-reduced-motion — users who've opted out of motion
+    // should not have a slideshow advancing under them.
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
+    const id = setInterval(next, autoAdvanceMs)
+    return () => clearInterval(id)
+  }, [autoAdvanceMs, slides.length, paused, next])
 
   if (slides.length === 0) return null
 
   const slide = slides[index]
-  const prev = () => setIndex((i) => (i === 0 ? slides.length - 1 : i - 1))
-  const next = () => setIndex((i) => (i === slides.length - 1 ? 0 : i + 1))
+  const imgSrc = `${S3_BASE}/${slide.imageId}.jpg`
+  const alt = slide.alt || slide.caption || slide.imageId
+  const href = slide.href ?? `/photos/${slide.imageId}`
 
   return (
-    <div>
+    <div
+      ref={containerRef}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
       <div style={{ position: 'relative' }}>
-        <a href={`/photos/${slide.imageId}`}>
+        <a href={href}>
           <Image
-            src={`${S3_BASE}/${slide.imageId}.jpg`}
-            alt={slide.caption || slide.imageId}
+            src={imgSrc}
+            alt={alt}
             width={800}
             height={500}
             sizes="(max-width: 680px) 100vw, 50vw"

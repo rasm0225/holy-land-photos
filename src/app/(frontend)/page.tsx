@@ -3,7 +3,7 @@ import config from '@payload-config'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-import NewsCarousel from './components/NewsCarousel'
+import PhotoSlideshow, { type Slide } from './components/PhotoSlideshow'
 import AskTheArchive from './components/AskTheArchive'
 
 export const dynamic = 'force-dynamic'
@@ -49,7 +49,9 @@ export default async function HomePage() {
       collection: 'site-of-the-week',
       where: { isCurrent: { equals: true } },
       limit: 1,
-      depth: 1,
+      // depth: 2 so stw.section.photos[i].photo resolves to full photo
+      // records (needed for the slideshow on the homepage).
+      depth: 2,
     }),
     payload.count({
       collection: 'photos',
@@ -108,7 +110,15 @@ export default async function HomePage() {
                 <a href={`/news/${n.id}`} className="muted">{n.title}</a>
               </h2>
               {gallery.length > 0 && (
-                <NewsCarousel newsItems={[{ id: n.id, title: n.title, imageGallery: gallery }]} />
+                <PhotoSlideshow
+                  slides={gallery
+                    .filter((g) => g.imageId)
+                    .map((g): Slide => ({
+                      imageId: g.imageId!,
+                      caption: g.caption,
+                      href: g.url,
+                    }))}
+                />
               )}
             </div>
             <div>
@@ -127,19 +137,35 @@ export default async function HomePage() {
       {/* Site of the Week */}
       {currentSTW.length > 0 && (() => {
         const stw = currentSTW[0]
-        const section = stw.section as { title?: string; slug?: string } | null
+        const section = stw.section as {
+          title?: string
+          slug?: string
+          photos?: Array<{ photo?: { imageId?: string; title?: string } | number }>
+        } | null
         const stwHtmlBody = (stw as unknown as Record<string, unknown>).htmlBody as string | null
+
+        // Build slide list. Lead with the SOTW's featured imageId so it's
+        // the first thing visitors see; then cycle through the section's
+        // other photos.
+        const sectionSlides: Slide[] = (section?.photos || [])
+          .map((p) => (typeof p.photo === 'object' && p.photo ? p.photo : null))
+          .filter((p): p is { imageId?: string; title?: string } => !!p && !!p.imageId)
+          .map((p) => ({ imageId: p.imageId!, caption: p.title }))
+
+        const featured: Slide[] = stw.imageId
+          ? [{ imageId: stw.imageId, caption: section?.title }]
+          : []
+        const slides: Slide[] = [
+          ...featured,
+          ...sectionSlides.filter((s) => s.imageId !== stw.imageId),
+        ]
+
         return (
           <section>
             <h2 className="pln-h2">Site of the Week</h2>
             <div className="pln-sotw">
-              {stw.imageId && (
-                <a href={section?.slug ? `/browse/${section.slug}` : `/photos/${stw.imageId}`}>
-                  <img
-                    src={`${S3_BASE}/${stw.imageId}.jpg`}
-                    alt={section?.title || stw.imageId}
-                  />
-                </a>
+              {slides.length > 0 && (
+                <PhotoSlideshow slides={slides} />
               )}
               <div>
                 {section && typeof section === 'object' && section.slug && (

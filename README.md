@@ -110,7 +110,7 @@ holy-land-photos/
           newsletter/            # MailChimp proxy endpoint
           page-log/              # Anonymous page load timing collector
         components/
-          NewsCarousel.tsx        # Homepage news photo carousel
+          PhotoSlideshow.tsx      # Auto-advancing carousel (News + SOTW on homepage)
           PhotoLightbox.tsx       # Fullscreen image overlay
           PageLogger.tsx          # Client-side performance measurement
           EditLink.tsx            # Admin edit link in nav
