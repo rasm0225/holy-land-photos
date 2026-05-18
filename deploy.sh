@@ -28,6 +28,35 @@ fi
 echo "📦 Deploying commit: $(git log --oneline -1)"
 echo ""
 
+# Local pre-flight build. Catches type/config errors here, BEFORE we
+# SSH out and start mutating EC2 state. The auto-rollback on EC2 covers
+# us if this is bypassed (or if the local build passes but EC2 build
+# differs), but catching it locally is faster and avoids a deploy churn.
+# Skip with: SKIP_LOCAL_BUILD=1 ./deploy.sh
+if [ "${SKIP_LOCAL_BUILD:-0}" != "1" ]; then
+  echo "🔍 Local pre-flight build..."
+  # The middleware imports redirect-maps.generated.ts (gitignored).
+  # Generate from local DB if available, otherwise stub it so the build
+  # can at least typecheck the import.
+  if [ -f data/payload.db ] || [ -L data/payload.db ]; then
+    python3 scripts/generate_redirect_maps.py > /dev/null
+  elif [ ! -f src/redirect-maps.generated.ts ]; then
+    cat > src/redirect-maps.generated.ts <<'STUB'
+export const SECTION_SLUGS: Readonly<Record<number, string>> = {}
+export const PAGE_SLUGS: Readonly<Record<number, string>> = {}
+STUB
+  fi
+
+  if ! npm run build 2>&1 | tail -8; then
+    echo ""
+    echo "❌ Local build failed. Fix the error above, then re-run ./deploy.sh"
+    echo "   (Nothing was deployed; production is untouched.)"
+    exit 1
+  fi
+  echo "✅ Local build passed."
+  echo ""
+fi
+
 ssh -i "$EC2_KEY" "$EC2_USER@$EC2_HOST" 'bash -s' << 'REMOTE'
 set -euo pipefail
 
