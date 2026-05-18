@@ -86,11 +86,14 @@ Goal: site keeps working unchanged. Only the DNS authority changes.
 
 In Namecheap → Advanced DNS, click **Change DNS Type** → BasicDNS, then add the records below with TTL 1800s (or "Automatic"). All values are exactly what's currently being served from AIT.
 
+Confirmed against AIT cPanel on 2026-05-18 — these are exactly the records currently being served. There are also zero MX records (confirmed in the cPanel MX tab).
+
 | Type | Host | Value |
 |---|---|---|
 | A | `@` | `20.40.202.31` |
 | A | `www` | `20.40.202.31` |
 | CNAME | `img` | `d2upgx86s50j0k.cloudfront.net.` |
+| CNAME | `images` | `holylandphotos.imgix.net.` |
 | CNAME | `_5844cfa84ae6b823469967641c6bf44d.img` | `_21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.` |
 | CNAME | `awverify` | `awverify.holylandphotos.azurewebsites.net.` |
 | CNAME | `*` (wildcard) | `hlp-web.azurewebsites.net.` |
@@ -99,11 +102,7 @@ In Namecheap → Advanced DNS, click **Change DNS Type** → BasicDNS, then add 
 | TXT | `@` | `hlp.azurewebsites.net.` |
 | TXT | `test` | `hlptest.azurewebsites.net.` |
 
-Optional, decide before adding:
-
-| Type | Host | Value | When to include |
-|---|---|---|---|
-| CNAME | `images` | `holylandphotos.imgix.net.` | If `images.holylandphotos.org` was ever publicly used. If unsure, include — imgix is free at this traffic level. |
+When re-entering in Namecheap, AIT's UI truncates long values visually. Click into each field in AIT first and copy the full value to confirm. High-risk-for-typos: the two long CNAME hash names, the `asuid=…` hex string, and the google-site-verification value.
 
 After saving, verify in two ways:
 
