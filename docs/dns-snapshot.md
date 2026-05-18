@@ -97,8 +97,8 @@ Confirmed against AIT cPanel on 2026-05-18 — these are exactly the records cur
 | CNAME | `_5844cfa84ae6b823469967641c6bf44d.img` | `_21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.` |
 | CNAME | `awverify` | `awverify.holylandphotos.azurewebsites.net.` |
 | CNAME | `*` (wildcard) | `hlp-web.azurewebsites.net.` |
-| TXT | `@` | `google-site-verification=aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU` |
-| TXT | `@` | `asuid=D20C9D9CA7813620EB66656A7A4163EFF2D06F54ACE9DF4394E3DB1EF215BF16` |
+| TXT | `asuid` | `D20C9D9CA7813620EB66656A7A4163EFF2D06F54ACE9DF4394E3DB1EF215BF16` |
+| TXT | `google-site-verification` | `aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU` |
 | TXT | `@` | `hlp.azurewebsites.net.` |
 | TXT | `test` | `hlptest.azurewebsites.net.` |
 
