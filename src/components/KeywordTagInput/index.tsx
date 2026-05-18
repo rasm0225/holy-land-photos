@@ -51,15 +51,34 @@ export const KeywordTagInput: TextFieldClientComponent = ({ field, path }) => {
       const val = e.target.value
       if (val.includes(',')) {
         const parts = val.split(',')
-        for (let i = 0; i < parts.length - 1; i++) {
-          addTag(parts[i])
+        const toAdd = parts.slice(0, -1).map((t) => t.trim()).filter(Boolean)
+        const remaining = parts[parts.length - 1]
+
+        // Batch all new tags into a single setValue call. Calling addTag in
+        // a loop here was a bug: each addTag closes over the same stale
+        // `tags` value, so successive calls overwrote each other and only
+        // the last one survived (so a paste of N keywords kept only one).
+        if (toAdd.length > 0) {
+          const seen = new Set(tags.map((t) => t.toLowerCase()))
+          const accepted: string[] = []
+          for (const t of toAdd) {
+            const lower = t.toLowerCase()
+            if (!seen.has(lower)) {
+              seen.add(lower)
+              accepted.push(t)
+            }
+          }
+          if (accepted.length > 0) {
+            setValue([...tags, ...accepted].join(', '))
+          }
         }
-        setInputValue(parts[parts.length - 1])
+
+        setInputValue(remaining)
       } else {
         setInputValue(val)
       }
     },
-    [addTag],
+    [tags, setValue],
   )
 
   const handleWrapperClick = useCallback(() => {
