@@ -71,37 +71,69 @@ truth when reconstructing records in the Namecheap panel.
 - **Registrar:** Namecheap ✓ (transferred from AIT/DMT)
 - **DNS authority:** still AIT — nameservers `ns0.nameservices.net` / `ns1.nameservices.net`. Namecheap's Advanced DNS panel is empty and prompts "Change DNS Type" to take over.
 - **A record:** still `20.40.202.31` (old Azure). Live site at `holylandphotos.org` continues to work because the AIT nameservers are still authoritative and the old hosting is still up.
-- **EC2:** running at `18.220.101.13`, currently reachable only as `hlp.everyphere.com`.
+- **EC2:** running at `18.220.101.13`, currently reachable only as `hlp.everyphere.com`. **Not yet the production site.**
 
-## Cut-over to EC2
+The migration is happening in two distinct phases:
 
-Two viable paths. Pick based on whether you still have AIT cPanel access.
+1. **Phase 1 (now):** Move DNS authority from AIT to Namecheap. Site keeps serving from Azure.
+2. **Phase 2 (later, on launch day):** Cut the A record over to EC2. Site moves from Azure to the Next.js rebuild.
 
-### Path A — Cut over web hosting first, switch DNS later (lowest risk)
+This separation lets the DNS move happen calmly without coupling it to the launch.
 
-If you still have AIT cPanel access:
+## Phase 1 — DNS-only move to Namecheap (no launch yet)
 
-1. In AIT cPanel, lower the TTL on the A record to 300s. Wait at least 1 hour.
-2. In AIT cPanel, change the A record from `20.40.202.31` → `18.220.101.13`.
-3. Wait for propagation (`dig A holylandphotos.org +short`), then `./scripts/qa-smoke.sh https://holylandphotos.org`.
-4. Once stable, do the DNS-authority move (Path B below) at your leisure — by then EC2 is already serving the site, so you just need to keep the records identical when switching.
+Goal: site keeps working unchanged. Only the DNS authority changes.
 
-### Path B — Switch DNS to Namecheap and cut over EC2 in one step
+In Namecheap → Advanced DNS, click **Change DNS Type** → BasicDNS, then add the records below with TTL 1800s (or "Automatic"). All values are exactly what's currently being served from AIT.
 
-If you've lost AIT cPanel access, or just want to consolidate:
+| Type | Host | Value |
+|---|---|---|
+| A | `@` | `20.40.202.31` |
+| A | `www` | `20.40.202.31` |
+| CNAME | `img` | `d2upgx86s50j0k.cloudfront.net.` |
+| CNAME | `_5844cfa84ae6b823469967641c6bf44d.img` | `_21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.` |
+| CNAME | `awverify` | `awverify.holylandphotos.azurewebsites.net.` |
+| CNAME | `*` (wildcard) | `hlp-web.azurewebsites.net.` |
+| TXT | `@` | `google-site-verification=aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU` |
+| TXT | `@` | `asuid=D20C9D9CA7813620EB66656A7A4163EFF2D06F54ACE9DF4394E3DB1EF215BF16` |
+| TXT | `@` | `hlp.azurewebsites.net.` |
+| TXT | `test` | `hlptest.azurewebsites.net.` |
 
-1. In Namecheap → Advanced DNS, click **Change DNS Type** → BasicDNS.
-2. Add all KEEP and REPLACE records below in one batch, with TTL 300s:
-   - `A holylandphotos.org → 18.220.101.13`
-   - `A www holylandphotos.org → 18.220.101.13` (or CNAME → `holylandphotos.org.`)
-   - `TXT holylandphotos.org → google-site-verification=aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU`
-   - `CNAME img → d2upgx86s50j0k.cloudfront.net.`
-   - `CNAME _5844cfa84ae6b823469967641c6bf44d.img → _21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.`
-3. Confirm nginx on EC2 has a valid SSL cert for `holylandphotos.org` (Let's Encrypt; can be obtained once DNS resolves to EC2).
-4. Wait for propagation, then `./scripts/qa-smoke.sh https://holylandphotos.org`.
-5. Once stable for 24h, raise TTLs to 3600s.
+Optional, decide before adding:
 
-During the propagation window in Path B, some resolvers still see AIT's nameservers (and the old Azure A record), others see Namecheap (and EC2). Both should serve a working version of the site, so no user-visible outage.
+| Type | Host | Value | When to include |
+|---|---|---|---|
+| CNAME | `images` | `holylandphotos.imgix.net.` | If `images.holylandphotos.org` was ever publicly used. If unsure, include — imgix is free at this traffic level. |
+
+After saving, verify in two ways:
+
+```bash
+dig NS holylandphotos.org +short          # should now show Namecheap nameservers
+dig A holylandphotos.org +short           # should still return 20.40.202.31
+curl -s -o /dev/null -w "%{http_code}\n" https://holylandphotos.org/   # should still be 200
+```
+
+Propagation typically completes within a few hours; can take up to 48h.
+
+## Phase 2 — Launch the new site (cut A record to EC2)
+
+When ready to cut over to the Next.js rebuild on EC2:
+
+1. In Namecheap, lower the TTL on the `@` A record to 300s. Wait an hour for propagation.
+2. Confirm nginx on EC2 has a valid SSL cert for `holylandphotos.org` (Let's Encrypt; can be obtained once DNS resolves to EC2, or pre-issued via DNS-01 challenge).
+3. Change the `@` and `www` A records to `18.220.101.13`.
+4. **Drop these records** at the same time (no longer needed once Azure is decommissioned):
+   - `CNAME awverify` (Azure App Service ownership verification)
+   - `CNAME *` (Azure wildcard — leaving it pointing to a dead Azure host would make every unknown subdomain fail in a confusing way)
+   - `TXT @ asuid=…` (Azure stamp ID)
+   - `TXT @ hlp.azurewebsites.net.` (Azure verification)
+   - `TXT test hlptest.azurewebsites.net.` (Azure verification for test subdomain)
+5. **Keep:**
+   - Google site verification TXT (preserves Search Console ownership)
+   - `img` CNAME → CloudFront (legacy inbound image URLs still work)
+   - `_5844cfa84ae6b823469967641c6bf44d.img` CNAME (ACM cert validation for `img`)
+6. Wait for propagation, then `./scripts/qa-smoke.sh https://holylandphotos.org`.
+7. Once stable for 24h, raise TTLs back to 1800s.
 
 ## Related files
 - [`README.md`](../README.md) — current EC2 deployment details, IP `18.220.101.13`
