@@ -10,8 +10,8 @@ Last updated: 2026-05-13
 - [ ] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com`
   - [x] Registrar transfer complete (`holylandphotos.org` showing in Namecheap, 2026-05-18)
   - [x] DNS records re-entered in Namecheap BasicDNS, mirroring AIT exactly so the site keeps serving from Azure unchanged (see [`docs/dns-snapshot.md`](dns-snapshot.md) Phase 1)
-  - [ ] **In progress:** nameserver propagation from AIT → Namecheap. Verify with `dig NS holylandphotos.org +short` — done when it returns `dns1.registrar-servers.com` / `dns2.registrar-servers.com`.
-  - [ ] After propagation: leave AIT cPanel records in place for ~1-2 weeks as a fallback, then close out the AIT account.
+  - [x] Nameserver propagation complete (2026-05-18) — confirmed on local resolver + Google 8.8.8.8 + Cloudflare 1.1.1.1 + Quad9 9.9.9.9, all returning `dns1.registrar-servers.com` / `dns2.registrar-servers.com`. Site stayed HTTP 200 throughout.
+  - [ ] Leave AIT cPanel records in place for ~1-2 weeks as a fallback, then close out the AIT account.
   - [ ] `holylandarchive.com` still pending transfer.
 - [ ] **Launch: point holylandphotos.org at EC2** — follow the cut-over checklist at the bottom of [`docs/dns-snapshot.md`](dns-snapshot.md). Change A to `18.220.101.13`, get Let's Encrypt cert, update nginx.
 - [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects
