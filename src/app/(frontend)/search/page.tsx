@@ -31,45 +31,58 @@ export default async function SearchPage({ searchParams }: Props) {
   if (query) {
     const payload = await getPayload({ config })
 
-    // DB query uses substring match (contains), then we filter client-side
-    // to word-boundary matches so "Assos" doesn't match "Sagalassos".
+    // Split the query into whitespace-separated terms. Each term must match
+    // (as a whole word, case-insensitive) somewhere in title/keywords/imageId.
+    // This lets "Patara Lighthouse" find rows where "Patara" is in keywords
+    // and "Lighthouse" is in the title — the common case for multi-word
+    // queries against this dataset.
+    const terms = query.split(/\s+/).filter(Boolean)
     const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const wordBoundary = new RegExp(`\\b${escapeRegex(query)}\\b`, 'i')
-    const matchesWord = (text?: string | null) => !!text && wordBoundary.test(text)
+    const termRegexes = terms.map((t) => new RegExp(`\\b${escapeRegex(t)}\\b`, 'i'))
+    const allTermsMatch = (texts: Array<string | null | undefined>) =>
+      termRegexes.every((re) => texts.some((t) => !!t && re.test(t)))
+
+    const sectionWhere = {
+      and: terms.map((term) => ({
+        or: [
+          { title: { contains: term } },
+          { keywords: { contains: term } },
+        ],
+      })),
+    }
 
     const { docs: sectionDocs } = await payload.find({
       collection: 'sections',
-      where: {
-        or: [
-          { title: { contains: query } },
-          { keywords: { contains: query } },
-        ],
-      },
+      where: sectionWhere,
       limit: 200,
       depth: 0,
       select: { title: true, slug: true, sectionType: true, keywords: true },
       sort: 'title',
     })
     sections = (sectionDocs as Array<{ id: number; title: string; slug: string; sectionType?: string | null; keywords?: string | null }>)
-      .filter((s) => matchesWord(s.title) || matchesWord(s.keywords))
+      .filter((s) => allTermsMatch([s.title, s.keywords]))
       .slice(0, 50)
+
+    const photoWhere = {
+      and: terms.map((term) => ({
+        or: [
+          { title: { contains: term } },
+          { keywords: { contains: term } },
+          { imageId: { contains: term } },
+        ],
+      })),
+    }
 
     const { docs: photoDocs } = await payload.find({
       collection: 'photos',
-      where: {
-        or: [
-          { title: { contains: query } },
-          { keywords: { contains: query } },
-          { imageId: { contains: query } },
-        ],
-      },
+      where: photoWhere,
       limit: 400,
       depth: 0,
       select: { title: true, imageId: true, keywords: true },
       sort: 'title',
     })
     photos = (photoDocs as Array<{ id: number; title: string; imageId: string; keywords?: string | null }>)
-      .filter((p) => matchesWord(p.title) || matchesWord(p.keywords) || matchesWord(p.imageId))
+      .filter((p) => allTermsMatch([p.title, p.keywords, p.imageId]))
       .slice(0, 100)
   }
 
