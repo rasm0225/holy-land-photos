@@ -1,4 +1,4 @@
-import { getPayload } from 'payload'
+import { getPayload, type Where } from 'payload'
 import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
@@ -42,13 +42,15 @@ export default async function SearchPage({ searchParams }: Props) {
     const allTermsMatch = (texts: Array<string | null | undefined>) =>
       termRegexes.every((re) => texts.some((t) => !!t && re.test(t)))
 
-    const sectionWhere = {
-      and: terms.map((term) => ({
-        or: [
-          { title: { contains: term } },
-          { keywords: { contains: term } },
-        ],
-      })),
+    const sectionWhere: Where = {
+      and: terms.map(
+        (term): Where => ({
+          or: [
+            { title: { contains: term } } as Where,
+            { keywords: { contains: term } } as Where,
+          ],
+        }),
+      ),
     }
 
     const { docs: sectionDocs } = await payload.find({
@@ -63,14 +65,16 @@ export default async function SearchPage({ searchParams }: Props) {
       .filter((s) => allTermsMatch([s.title, s.keywords]))
       .slice(0, 50)
 
-    const photoWhere = {
-      and: terms.map((term) => ({
-        or: [
-          { title: { contains: term } },
-          { keywords: { contains: term } },
-          { imageId: { contains: term } },
-        ],
-      })),
+    const photoWhere: Where = {
+      and: terms.map(
+        (term): Where => ({
+          or: [
+            { title: { contains: term } } as Where,
+            { keywords: { contains: term } } as Where,
+            { imageId: { contains: term } } as Where,
+          ],
+        }),
+      ),
     }
 
     const { docs: photoDocs } = await payload.find({
