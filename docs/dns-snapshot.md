@@ -23,10 +23,10 @@ truth when reconstructing records in the Namecheap panel.
 - `test. TXT hlptest.azurewebsites.net.`
 
 ### MX
-*Not captured. Verify in the AIT panel before transfer — see "Open questions" below.*
+*None.* Confirmed via `dig MX holylandphotos.org` after the registrar transfer. Email is not on this domain, so nothing email-related needs to come over.
 
 ### MailChimp deliverability records (DKIM / SPF / DMARC)
-*Not captured. Verify in the AIT panel before transfer — see "Open questions" below.*
+*None.* Confirmed by querying `_dmarc.`, `k1._domainkey.`, `k2._domainkey.`, `mandrill._domainkey.`, `selector1._domainkey.` — only the Azure wildcard CNAME responds. So MailChimp sends from a `@mailchimp.com`-style address rather than `@holylandphotos.org`. Nothing to preserve here.
 
 ---
 
@@ -58,24 +58,50 @@ truth when reconstructing records in the Namecheap panel.
 | `holylandphotos.org. TXT hlp.azurewebsites.net.` | Azure verification |
 | `test.holylandphotos.org. TXT hlptest.azurewebsites.net.` | Azure verification for the test subdomain |
 
-### VERIFY / OPEN QUESTIONS (must resolve before AIT panel access is lost)
+### VERIFY / OPEN QUESTIONS
 
-| Record | Question | Action |
-|---|---|---|
-| `images.holylandphotos.org. CNAME holylandphotos.imgix.net.` | Was `images.holylandphotos.org` ever publicly used? If you don't know of any inbound links to it, drop it. If unsure, keep it — imgix is free at this traffic level. | Decide. |
-| **MX records** | Is `@holylandphotos.org` email used? If so, MX records must come over. Losing them silently breaks email. | Pull from AIT and add to "KEEP" list. |
-| **MailChimp DKIM / SPF / DMARC** | If MailChimp sends from `@holylandphotos.org`, there are usually 2-4 records named like `k1._domainkey.`, `k2._domainkey.`, an SPF TXT, and `_dmarc.` These are not always publicly visible via `dig` because they're often on the apex SPF record or on selector subdomains MailChimp gave you. | Pull from AIT and add to "KEEP" list. Without them, newsletter deliverability tanks. |
+| Record | Question |
+|---|---|
+| `images.holylandphotos.org. CNAME holylandphotos.imgix.net.` | Was `images.holylandphotos.org` ever publicly used? If you don't know of any inbound links to it, drop it. If unsure, keep it — imgix is free at this traffic level. |
 
 ---
 
-## Cut-over order (when ready to launch)
+## Current state (2026-05-18)
 
-1. Confirm Namecheap shows the domain (transfer complete).
-2. Confirm all KEEP / REPLACE records above are entered in Namecheap **with their TTLs set short** (300s) for the cut-over.
-3. Confirm nginx on EC2 has the SSL cert for `holylandphotos.org` ready (Let's Encrypt; can pre-issue once DNS resolves to EC2).
-4. Flip the A record to `18.220.101.13`.
-5. Smoke-test: `./scripts/qa-smoke.sh https://holylandphotos.org`
-6. Once stable for 24h, raise TTLs back to a reasonable default (3600s).
+- **Registrar:** Namecheap ✓ (transferred from AIT/DMT)
+- **DNS authority:** still AIT — nameservers `ns0.nameservices.net` / `ns1.nameservices.net`. Namecheap's Advanced DNS panel is empty and prompts "Change DNS Type" to take over.
+- **A record:** still `20.40.202.31` (old Azure). Live site at `holylandphotos.org` continues to work because the AIT nameservers are still authoritative and the old hosting is still up.
+- **EC2:** running at `18.220.101.13`, currently reachable only as `hlp.everyphere.com`.
+
+## Cut-over to EC2
+
+Two viable paths. Pick based on whether you still have AIT cPanel access.
+
+### Path A — Cut over web hosting first, switch DNS later (lowest risk)
+
+If you still have AIT cPanel access:
+
+1. In AIT cPanel, lower the TTL on the A record to 300s. Wait at least 1 hour.
+2. In AIT cPanel, change the A record from `20.40.202.31` → `18.220.101.13`.
+3. Wait for propagation (`dig A holylandphotos.org +short`), then `./scripts/qa-smoke.sh https://holylandphotos.org`.
+4. Once stable, do the DNS-authority move (Path B below) at your leisure — by then EC2 is already serving the site, so you just need to keep the records identical when switching.
+
+### Path B — Switch DNS to Namecheap and cut over EC2 in one step
+
+If you've lost AIT cPanel access, or just want to consolidate:
+
+1. In Namecheap → Advanced DNS, click **Change DNS Type** → BasicDNS.
+2. Add all KEEP and REPLACE records below in one batch, with TTL 300s:
+   - `A holylandphotos.org → 18.220.101.13`
+   - `A www holylandphotos.org → 18.220.101.13` (or CNAME → `holylandphotos.org.`)
+   - `TXT holylandphotos.org → google-site-verification=aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU`
+   - `CNAME img → d2upgx86s50j0k.cloudfront.net.`
+   - `CNAME _5844cfa84ae6b823469967641c6bf44d.img → _21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.`
+3. Confirm nginx on EC2 has a valid SSL cert for `holylandphotos.org` (Let's Encrypt; can be obtained once DNS resolves to EC2).
+4. Wait for propagation, then `./scripts/qa-smoke.sh https://holylandphotos.org`.
+5. Once stable for 24h, raise TTLs to 3600s.
+
+During the propagation window in Path B, some resolvers still see AIT's nameservers (and the old Azure A record), others see Namecheap (and EC2). Both should serve a working version of the site, so no user-visible outage.
 
 ## Related files
 - [`README.md`](../README.md) — current EC2 deployment details, IP `18.220.101.13`
