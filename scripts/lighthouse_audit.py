@@ -3,7 +3,12 @@ Batch Lighthouse audit via Google's PageSpeed Insights API.
 
 Hits each representative URL twice (mobile + desktop), pulls the four
 category scores plus the key Core Web Vitals, and writes a CSV summary.
-No API key required for this volume (PSI gives ~25k anonymous calls/day).
+
+API key handling:
+  PSI's anonymous tier rate-limits aggressively (one 429 and you're
+  done for a while). Get a free key at
+    https://developers.google.com/speed/docs/insights/v5/get-started
+  Then either pass --api-key or export PAGESPEED_API_KEY.
 
 Output columns:
   route, strategy, performance, accessibility, best_practices, seo,
@@ -11,8 +16,8 @@ Output columns:
 
 Run:
   python3 scripts/lighthouse_audit.py
+  python3 scripts/lighthouse_audit.py --api-key <KEY>
   python3 scripts/lighthouse_audit.py --base https://hlp.everyphere.com
-  python3 scripts/lighthouse_audit.py --out docs/lighthouse-2026-05-19.csv
 """
 from __future__ import annotations
 
@@ -47,16 +52,19 @@ STRATEGIES = ("mobile", "desktop")
 CATEGORIES = ("performance", "accessibility", "best-practices", "seo")
 
 
-def fetch(url: str, strategy: str, retries: int = 2) -> dict | None:
+def fetch(url: str, strategy: str, api_key: str | None, retries: int = 2) -> dict | None:
     params = [("url", url), ("strategy", strategy)] + [("category", c) for c in CATEGORIES]
+    if api_key:
+        params.append(("key", api_key))
     for attempt in range(retries + 1):
         try:
             r = requests.get(PSI_URL, params=params, timeout=120)
             if r.status_code == 200:
                 return r.json()
-            # PSI sometimes returns 500 for routes it can't audit cleanly;
-            # back off briefly and retry.
             print(f"  PSI {r.status_code} for {url} ({strategy}), attempt {attempt + 1}", file=sys.stderr)
+            # 429 (rate limit) needs a longer backoff than transient 5xx.
+            time.sleep(30 if r.status_code == 429 else 5)
+            continue
         except requests.RequestException as e:
             print(f"  request error for {url} ({strategy}): {e}", file=sys.stderr)
         time.sleep(5)
@@ -80,11 +88,18 @@ def main():
     parser.add_argument("--base", default=DEFAULT_BASE)
     parser.add_argument("--out", default=f"docs/lighthouse-{datetime.now(timezone.utc):%Y%m%d}.csv")
     parser.add_argument("--routes", help="comma-separated route paths; overrides defaults")
+    parser.add_argument("--api-key", default=os.environ.get("PAGESPEED_API_KEY"),
+                        help="PSI API key (or set PAGESPEED_API_KEY env var). Anonymous calls rate-limit at <1/sec.")
+    parser.add_argument("--delay", type=float, default=2.0,
+                        help="Seconds between calls (default 2; raise on rate-limit errors)")
     args = parser.parse_args()
 
     routes = args.routes.split(",") if args.routes else ROUTES
     total = len(routes) * len(STRATEGIES)
     print(f"Auditing {len(routes)} routes × {len(STRATEGIES)} strategies = {total} runs against {args.base}", file=sys.stderr)
+    if not args.api_key:
+        print("⚠  No API key — PSI's anonymous tier may rate-limit. Get one at", file=sys.stderr)
+        print("   https://developers.google.com/speed/docs/insights/v5/get-started\n", file=sys.stderr)
     print("Each call can take 30-60s while PSI runs Lighthouse server-side.\n", file=sys.stderr)
 
     rows = []
@@ -94,7 +109,8 @@ def main():
             i += 1
             full_url = args.base.rstrip("/") + route
             print(f"[{i}/{total}] {strategy:>7}  {route}", file=sys.stderr)
-            data = fetch(full_url, strategy)
+            data = fetch(full_url, strategy, args.api_key)
+            time.sleep(args.delay)
             if not data:
                 rows.append({
                     "route": route, "strategy": strategy,
