@@ -35,10 +35,8 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 
 ## Tier 3 — Medium impact
 
-- [ ] **Add `Article` JSON-LD to `/news/[id]`** — `headline`, `datePublished`, `dateModified`, `author`, `image`. Candidacy for Top Stories carousels.
-  - ⚠️ **Needs input from Carl** — see below.
-- [ ] **Set Twitter handle** in root metadata (`twitter.creator`, `twitter.site`).
-  - ⚠️ **Needs input from Carl** — see below.
+- [x] **Add `Article` JSON-LD to `/news/[id]`** — `headline`, `datePublished`, `dateModified`, `author`, `publisher`, `url`, `mainEntityOfPage`, optional `description` + `image`. Candidacy for Top Stories carousels. *(Done 2026-05-19 — author hardcoded as Dr. Carl Rasmussen per Carl.)*
+- [x] **Set Twitter handle** in root metadata. *(Resolved 2026-05-19 — no X/Twitter account, so we leave `twitter.creator` and `twitter.site` unset. Current `twitter.card: 'summary_large_image'` stays as-is.)*
 - [ ] **Add `CollectionPage` + `ItemList` JSON-LD** on the thumbnail-grid pages and `/keywords/[keyword]`. Improves grid-style indexing of related photos.
 - [ ] **Bake IPTC metadata into the JPEGs themselves in S3** — `Creator`, `Copyright Notice`, `Description`, `Keywords`. Google reads these directly from the image bytes; they survive hotlinking and scraping. Highest-leverage single change for downstream attribution (AI training datasets, image reuse).
   - ⚠️ **Needs input from Carl + Peter** — see below.
@@ -89,8 +87,8 @@ These aren't structured-data issues but materially affect SEO performance:
 2. ~~`creditText` — preferred attribution string.~~ **Answered 2026-05-19:** `Image courtesy of www.HolyLandPhotos.org`.
 3. ~~`copyrightNotice` — full copyright text.~~ **Answered 2026-05-19:** `© 1995–{current year} Dr. Carl Rasmussen. All rights reserved.`
 4. ~~`copyrightHolder` — Person or Organization?~~ **Answered 2026-05-19:** Dr. Carl Rasmussen as `copyrightHolder` (Person), HolyLandPhotos.org as `publisher` (Organization).
-5. **Twitter / X handle** — do you have an X account you want associated with shared links? If not, we'll skip `twitter.creator` and just set `twitter.site` to the site name.
-6. **For `Article` schema on news items** — is the author always you, or are guest posts / multi-author pieces ever a thing? (If always you, we hard-code; if not, we add a field.)
+5. ~~Twitter / X handle.~~ **Resolved 2026-05-19** — no account, skipped.
+6. ~~For `Article` schema on news items — is the author always you?~~ **Answered 2026-05-19:** Always Carl. Hardcoded.
 7. **IPTC metadata in the JPEGs themselves** — are you OK with a one-shot batch job that rewrites every JPEG in S3 to embed `Creator`, `Copyright Notice`, `Description` (from the photo's first-sentence comment), and `Keywords`? Best practice but it does touch all 7,022 image files. There's a small risk of re-encoding subtly changing image bytes; we'd want to test on a sample first. *(Wording for the embedded strings now confirmed — see items 1–4 above. Still need a yes/no on doing the batch.)*
 
 ### From Peter

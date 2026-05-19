@@ -70,8 +70,38 @@ export default async function NewsPage({ params }: Props) {
     url?: string
   }>
 
+  // Article JSON-LD — eligible for Top Stories carousels in Google.
+  // Author is always Dr. Carl Rasmussen per the site's editorial model.
+  const articleDescription = htmlBody
+    ? htmlBody.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 280)
+    : undefined
+  const articleImage = gallery[0]?.imageId
+    ? `${S3_BASE}/${gallery[0].imageId}.jpg`
+    : undefined
+  const articleJsonLd: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: news.title,
+    datePublished: news.createdAt,
+    dateModified: news.updatedAt || news.createdAt,
+    author: { '@type': 'Person', name: 'Dr. Carl Rasmussen' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HolyLandPhotos.org',
+      url: 'https://holylandphotos.org',
+    },
+    url: `https://holylandphotos.org/news/${news.id}`,
+    mainEntityOfPage: `https://holylandphotos.org/news/${news.id}`,
+  }
+  if (articleDescription) articleJsonLd.description = articleDescription
+  if (articleImage) articleJsonLd.image = articleImage
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
         <span className="pln-sep">›</span>
