@@ -4,12 +4,13 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
- * Opens links in new tabs based on Carl Rasmussen's preference.
- *
- * - External links: always new tab
- * - Body content links (descriptions, comments, page text): new tab
- * - Navigation (nav bars, breadcrumbs): same tab
- * - Photo/section thumbnail grids: same tab
+ * Per Dr. Rasmussen's preference:
+ *   - External links (off-origin): new tab
+ *   - All internal links: same tab
+ *   - On a photo page, a body/sidebar link to a section that is NOT the
+ *     photo's parent section opens in a new tab. The parent slug is read
+ *     from [data-parent-section] on a wrapper element rendered by the
+ *     photo page.
  */
 export default function ExternalLinkHandler() {
   const pathname = usePathname()
@@ -18,34 +19,32 @@ export default function ExternalLinkHandler() {
     const main = document.querySelector('main')
     if (!main) return
 
-    const links = main.querySelectorAll('a[href]')
+    const parentEl = main.querySelector<HTMLElement>('[data-parent-section]')
+    const parentSlug = parentEl?.dataset.parentSection ?? null
+
     const origin = window.location.origin
+    const links = main.querySelectorAll<HTMLAnchorElement>('a[href]')
 
-    links.forEach((link) => {
-      const el = link as HTMLAnchorElement
+    links.forEach((el) => {
       const href = el.href
-
-      // Skip non-http links (mailto:, tel:, #, javascript:)
       if (!href.startsWith('http')) return
-      // Skip if already set
       if (el.target === '_blank') return
 
-      // External links: always new tab
+      // External: new tab
       if (!href.startsWith(origin)) {
         el.target = '_blank'
         el.rel = 'noopener'
         return
       }
 
-      // Navigation elements: keep same tab for smooth browsing
-      if (el.closest('nav')) return
-
-      // Image/thumbnail links (wrapping an <img>): same tab
-      if (el.querySelector('img')) return
-
-      // Everything else in the content area: new tab
-      el.target = '_blank'
-      el.rel = 'noopener'
+      // Internal: cross-section body link on a photo page opens in new tab
+      if (parentSlug) {
+        const match = el.pathname.match(/^\/browse\/([^/?#]+)/)
+        if (match && match[1] !== parentSlug) {
+          el.target = '_blank'
+          el.rel = 'noopener'
+        }
+      }
     })
   }, [pathname])
 

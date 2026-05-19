@@ -208,7 +208,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div>
+    <div {...(contextSection ? { 'data-parent-section': contextSection.slug } : {})}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
