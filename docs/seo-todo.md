@@ -25,10 +25,9 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
   - *(Done 2026-05-19 — wording confirmed by Carl via Peter.)*
   - *Note: upgrading `about: { Place, name }` to a full `contentLocation: { Place, name, geo }` is tracked as a separate item below now that coordinates exist.*
 
-- [ ] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long — now available!), `containedInPlace` (e.g. "Israel"), `photo` (array of ImageObjects on the page). Effect: knowledge-panel candidacy for 612 sites — biblical scholars searching "Caesarea Maritima photos" could see a panel, not just blue links.
-  - **Coords now available** — see the "Geocoding for `geo` properties" section below. Render `geo` only when `geoReviewStatus = 'approved'`, omit the whole Place block when `excluded`, and fall back to no `geo` for `pending`/`needs_research`.
+- [x] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long), `containedInPlace` (e.g. "Israel"). *(Done 2026-05-19 — gated on `geoReviewStatus === 'approved'`. As pending sites clear, more browse pages get the block automatically; no further wiring needed. Helpers in `src/lib/sectionGeo.ts`.)*
 
-- [ ] **Wire `contentLocation.geo` into `ImageObject` on `/photos/[imageId]`** — the existing ImageObject (already deployed with license/credit/copyright) currently only has `about: { @type: Place, name: <section title> }`. Upgrade it to `contentLocation: { @type: Place, name, geo: { latitude, longitude }, containedInPlace }` when the parent section has approved coords. Same gating as the Place schema above.
+- [x] **Wire `contentLocation.geo` into `ImageObject` on `/photos/[imageId]`** — upgraded `about: { Place, name }` to `contentLocation: { Place, name, geo, containedInPlace }` when the parent section has approved coords. Falls back to the topical `about` anchor for unapproved sections. *(Done 2026-05-19.)*
 
 - [x] **Add `WebSite` + `SearchAction` JSON-LD to the homepage.** Enables the Google Sitelinks Search Box (a search input directly inside the search result for the domain). One JSON-LD block pointing at `/search?q={search_term_string}`. *(Done 2026-05-19.)*
 
@@ -62,8 +61,7 @@ Both the `Place` schema and `ImageObject.contentLocation.geo` items above need l
 | pending | 81 |
 
 **What's left:**
-- Peter to clear the 81 pending sites via `/admin/geo-review` (mostly thematic sections needing `E`, plus ~25 LLM-medium real sites needing a quick look).
-- Wire `geo` into `Place` and `contentLocation` (the two items above) once the queue is small enough that most browse pages will have a usable coord.
+- Peter to clear the 81 pending sites via `/admin/geo-review` (mostly thematic sections needing `E`, plus ~25 LLM-medium real sites needing a quick look). The Place + contentLocation emitters are already deployed and gated; each approval automatically turns on rich data for that site's browse page and every photo on it.
 
 ## Tier 4 — Low priority / skip unless bored
 
