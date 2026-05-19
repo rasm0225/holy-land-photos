@@ -175,6 +175,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   const photographerName = (photo as unknown as Record<string, unknown>).photographer as string | null
   const photoYear = (photo as unknown as Record<string, unknown>).year as number | null
   const yearAdded = photo.createdAt ? new Date(photo.createdAt).getUTCFullYear() : null
+  const licenseUrl = 'https://holylandphotos.org/pages/permission-to-use'
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
@@ -184,6 +185,19 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       '@type': 'Person',
       name: photographerName || 'Dr. Carl Rasmussen',
     },
+    copyrightHolder: {
+      '@type': 'Person',
+      name: 'Dr. Carl Rasmussen',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HolyLandPhotos.org',
+      url: 'https://holylandphotos.org',
+    },
+    copyrightNotice: `© 1995–${new Date().getUTCFullYear()} Dr. Carl Rasmussen. All rights reserved.`,
+    creditText: 'Image courtesy of www.HolyLandPhotos.org',
+    license: licenseUrl,
+    acquireLicensePage: licenseUrl,
     ...(photoYear && { dateCreated: String(photoYear), copyrightYear: photoYear }),
     ...(sectionForSchema && {
       about: {

@@ -15,15 +15,14 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 
 ## Tier 2 — High-value structured data (one PR across photo, browse, homepage templates)
 
-- [ ] **Enrich `ImageObject` JSON-LD on `/photos/[imageId]`** with the properties Google's image-SEO docs reward:
-  - `license` (URL)
-  - `acquireLicensePage` (URL — usually same)
-  - `creditText`
-  - `copyrightNotice`
-  - `copyrightHolder` (Person or Organization)
-  - `contentLocation` — `Place` with `geo` lat/long
-  - Effect: enables the "Licensable" badge in Google Images.
-  - ⚠️ **Needs input from Carl** — see "Input needed" section below.
+- [x] **Enrich `ImageObject` JSON-LD on `/photos/[imageId]`** with the properties Google's image-SEO docs reward:
+  - `license` — `https://holylandphotos.org/pages/permission-to-use`
+  - `acquireLicensePage` — same URL
+  - `creditText` — `Image courtesy of www.HolyLandPhotos.org`
+  - `copyrightNotice` — `© 1995–{current year} Dr. Carl Rasmussen. All rights reserved.`
+  - `copyrightHolder` — Person: Dr. Carl Rasmussen
+  - `publisher` — Organization: HolyLandPhotos.org
+  - *(Done 2026-05-19 — wording confirmed by Carl via Peter. `contentLocation.geo` still pending — depends on the lat/long question below.)*
 
 - [ ] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long), `containedInPlace` (e.g. "Israel"), `photo` (array of ImageObjects on the page). Effect: knowledge-panel candidacy for 612 sites — biblical scholars searching "Caesarea Maritima photos" could see a panel, not just blue links.
   - ⚠️ **Needs input from Peter** — see below.
@@ -64,13 +63,13 @@ These aren't structured-data issues but materially affect SEO performance:
 
 ### From Carl Rasmussen
 
-1. **License URL and exact wording.** For `ImageObject.license` and `acquireLicensePage`. Is the existing `/pages/permission-to-use` (or wherever the permissions page now lives) the canonical URL we should point to?
-2. **`creditText` — preferred attribution string.** Default suggestion: `"Dr. Carl Rasmussen / HolyLandPhotos.org"`. Is that what you want shown when Google displays attribution next to your images?
-3. **`copyrightNotice` — full copyright text.** What is the exact string you want embedded as the legal notice? (Example: `"© 2001–2026 Carl Rasmussen. All rights reserved."`)
-4. **`copyrightHolder` — Person or Organization?** Should rights be attributed to you as a Person, or to "HolyLandPhotos.org" as an Organization, or both?
+1. ~~License URL and exact wording.~~ **Answered 2026-05-19:** `/pages/permission-to-use`.
+2. ~~`creditText` — preferred attribution string.~~ **Answered 2026-05-19:** `Image courtesy of www.HolyLandPhotos.org`.
+3. ~~`copyrightNotice` — full copyright text.~~ **Answered 2026-05-19:** `© 1995–{current year} Dr. Carl Rasmussen. All rights reserved.`
+4. ~~`copyrightHolder` — Person or Organization?~~ **Answered 2026-05-19:** Dr. Carl Rasmussen as `copyrightHolder` (Person), HolyLandPhotos.org as `publisher` (Organization).
 5. **Twitter / X handle** — do you have an X account you want associated with shared links? If not, we'll skip `twitter.creator` and just set `twitter.site` to the site name.
 6. **For `Article` schema on news items** — is the author always you, or are guest posts / multi-author pieces ever a thing? (If always you, we hard-code; if not, we add a field.)
-7. **IPTC metadata in the JPEGs themselves** — are you OK with a one-shot batch job that rewrites every JPEG in S3 to embed `Creator`, `Copyright Notice`, `Description` (from the photo's first-sentence comment), and `Keywords`? Best practice but it does touch all 7,022 image files. There's a small risk of re-encoding subtly changing image bytes; we'd want to test on a sample first.
+7. **IPTC metadata in the JPEGs themselves** — are you OK with a one-shot batch job that rewrites every JPEG in S3 to embed `Creator`, `Copyright Notice`, `Description` (from the photo's first-sentence comment), and `Keywords`? Best practice but it does touch all 7,022 image files. There's a small risk of re-encoding subtly changing image bytes; we'd want to test on a sample first. *(Wording for the embedded strings now confirmed — see items 1–4 above. Still need a yes/no on doing the batch.)*
 
 ### From Peter
 
