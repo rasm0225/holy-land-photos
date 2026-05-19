@@ -27,11 +27,13 @@ import { SectionHierarchyNavLink as SectionHierarchyNavLink_c61f0e87e99e841e3a1e
 import { KeywordIndexNavLink as KeywordIndexNavLink_379aefe914cd0ab073649454b06ff0cd } from '../../../../src/components/KeywordIndex/NavLink.tsx'
 import { SearchLogsNavLink as SearchLogsNavLink_7dde02d0b0be86426a8e46ed2d1b43d2 } from '../../../../src/components/SearchLogs/NavLink.tsx'
 import { PageLogsNavLink as PageLogsNavLink_30417ee31d5d3759ad4579639321719d } from '../../../../src/components/PageLogs/NavLink.tsx'
+import { GeoReviewNavLink as GeoReviewNavLink_198ed40b4ddd2a42e4ca605df43828a3 } from '../../../../src/components/GeoReview/NavLink.tsx'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { default as default_47524f7afe24c091f32beef49d5cb70b } from '../../../../src/components/SectionHierarchy/index.tsx'
 import { default as default_7f87962c494310cc5da89b5e143ea4c9 } from '../../../../src/components/KeywordIndex/index.tsx'
 import { default as default_b0307425d156203b84b1b8a2ccd1a922 } from '../../../../src/components/SearchLogs/index.tsx'
 import { default as default_e6cf47634be6fe87d75d4d9d2b1b53f4 } from '../../../../src/components/PageLogs/index.tsx'
+import { default as default_e906cbf334119540ce4e63940a43b5e4 } from '../../../../src/components/GeoReview/index.tsx'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
@@ -64,10 +66,12 @@ export const importMap = {
   "/src/components/KeywordIndex/NavLink.tsx#KeywordIndexNavLink": KeywordIndexNavLink_379aefe914cd0ab073649454b06ff0cd,
   "/src/components/SearchLogs/NavLink.tsx#SearchLogsNavLink": SearchLogsNavLink_7dde02d0b0be86426a8e46ed2d1b43d2,
   "/src/components/PageLogs/NavLink.tsx#PageLogsNavLink": PageLogsNavLink_30417ee31d5d3759ad4579639321719d,
+  "/src/components/GeoReview/NavLink.tsx#GeoReviewNavLink": GeoReviewNavLink_198ed40b4ddd2a42e4ca605df43828a3,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/src/components/SectionHierarchy/index.tsx#default": default_47524f7afe24c091f32beef49d5cb70b,
   "/src/components/KeywordIndex/index.tsx#default": default_7f87962c494310cc5da89b5e143ea4c9,
   "/src/components/SearchLogs/index.tsx#default": default_b0307425d156203b84b1b8a2ccd1a922,
   "/src/components/PageLogs/index.tsx#default": default_e6cf47634be6fe87d75d4d9d2b1b53f4,
+  "/src/components/GeoReview/index.tsx#default": default_e906cbf334119540ce4e63940a43b5e4,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
