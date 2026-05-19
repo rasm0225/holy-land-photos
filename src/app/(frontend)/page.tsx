@@ -3,8 +3,12 @@ import config from '@payload-config'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import Image from 'next/image'
 import PhotoSlideshow, { type Slide } from './components/PhotoSlideshow'
 import { publishedFilter } from '@/lib/viewer'
+
+const RECENT_DAYS = 7
+const RECENT_LIMIT = 12
 import AskTheArchive from './components/AskTheArchive'
 
 export const dynamic = 'force-dynamic'
@@ -26,7 +30,10 @@ export default async function HomePage() {
   const payload = await getPayload({ config })
   const published = publishedFilter()
 
-  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }] = await Promise.all([
+  const recentSince = new Date()
+  recentSince.setDate(recentSince.getDate() - RECENT_DAYS)
+
+  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }, { docs: recentPhotos }] = await Promise.all([
     payload.find({
       collection: 'sections',
       where: { and: [{ parent: { exists: false } }, published] },
@@ -62,6 +69,14 @@ export default async function HomePage() {
     payload.count({
       collection: 'sections',
       where: { and: [{ sectionType: { equals: 'site' } }, published] },
+    }),
+    payload.find({
+      collection: 'photos',
+      where: { and: [{ createdAt: { greater_than: recentSince.toISOString() } }, published] },
+      sort: '-createdAt',
+      limit: RECENT_LIMIT,
+      depth: 0,
+      select: { title: true, imageId: true },
     }),
   ])
 
@@ -185,6 +200,58 @@ export default async function HomePage() {
           </section>
         )
       })()}
+
+      {/* Recent Additions */}
+      {recentPhotos.length > 0 && (
+        <section style={{ marginTop: 48 }}>
+          <h2 className="pln-h2">Recent Additions</h2>
+          <div
+            role="group"
+            aria-label="Filter by time range"
+            style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}
+          >
+            <a
+              href={`/pages/recent-additions?range=${RECENT_DAYS}`}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 4,
+                fontFamily: 'var(--sans)',
+                fontSize: 14,
+                textDecoration: 'none',
+                border: '1px solid var(--line)',
+                background: 'var(--accent, #B85C2C)',
+                color: '#fff',
+              }}
+            >
+              Last {RECENT_DAYS} days
+            </a>
+            {/* Future: Last 30 days / Last 60 days buttons go here. The /pages/recent-additions destination already supports ?range=30 and ?range=60. */}
+          </div>
+
+          <div className="pln-grid">
+            {recentPhotos.map((photo) => {
+              const imageId = photo.imageId || ''
+              return (
+                <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
+                  <Image
+                    src={`${S3_BASE}/${imageId}.jpg`}
+                    alt={photo.title || imageId}
+                    width={200}
+                    height={150}
+                    sizes="200px"
+                    className="pln-thumb-img"
+                  />
+                  <span className="pln-thumb-cap">{photo.title || imageId}</span>
+                </a>
+              )
+            })}
+          </div>
+
+          <p style={{ marginTop: 16 }}>
+            <a href="/pages/recent-additions">See all recent additions →</a>
+          </p>
+        </section>
+      )}
     </div>
   )
 }
