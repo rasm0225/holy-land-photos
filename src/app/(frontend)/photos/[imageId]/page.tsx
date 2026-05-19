@@ -207,8 +207,12 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     }),
   }
 
+  // Parent section for link-targeting: context section if the user
+  // arrived via ?s=, otherwise the photo's first listed section.
+  const parentSectionSlug = contextSection?.slug ?? sectionLinks[0]?.slug ?? null
+
   return (
-    <div {...(contextSection ? { 'data-parent-section': contextSection.slug } : {})}>
+    <div {...(parentSectionSlug ? { 'data-parent-section': parentSectionSlug } : {})}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
