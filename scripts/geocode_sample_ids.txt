@@ -1,0 +1,35 @@
+# 25 stratified sample of archaeological sites for geocoder validation.
+# 5 famous, 10 medium, 5 obscure, 5 tricky.
+
+# --- famous ---
+239
+3684
+305
+263
+3611
+
+# --- medium (mix of countries) ---
+3614
+421
+3754
+79
+47
+3635
+200
+3655
+56
+504
+
+# --- obscure (0-2 photos) ---
+173
+1606
+497
+385
+2609
+
+# --- tricky (multi-name, regional, modern-vs-ancient) ---
+347
+3732
+423
+184
+73
