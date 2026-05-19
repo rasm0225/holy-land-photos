@@ -52,7 +52,8 @@ Last updated: 2026-05-13
 
 ## Future Features (backlog)
 
-- [ ] **Recent Additions page** — logic for showing recently added photos/content
+- [x] **Recent Additions page** — `/pages/recent-additions` shows recently added photos with 7 / 30 / 60 day filters
+- [ ] **RSS feed at `/rss/`** — replicate the legacy ASP RSS 2.0 feed. Spec captured in [`docs/rss-feed-spec.md`](rss-feed-spec.md). Existing subscribers (RSS readers, aggregators) consume this URL today; we need it to keep working after the EC2 launch.
 - [ ] **AI-suggested alternate spellings/tags** — on-save hook for transliterations
 - [ ] **Feedback form** — replace mailto link with a web form
 - [ ] **Payment/accounts for AI search** — Stripe integration if usage warrants it
