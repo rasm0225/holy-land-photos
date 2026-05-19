@@ -22,3 +22,4 @@ scripts/geocode-pass3.log
 
 # Claude Code worktrees
 .claude/worktrees/
+scripts/lighthouse.log
