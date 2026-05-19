@@ -4,9 +4,11 @@ import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import RecentAdditions from '../../components/RecentAdditions'
 
 type Props = {
   params: Promise<{ slug: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -39,8 +41,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function StaticPage({ params }: Props) {
+export default async function StaticPage({ params, searchParams }: Props) {
   const { slug } = await params
+
+  // Dynamic page handlers — slugs whose body is generated from live data
+  // rather than the CMS-stored Lexical/HTML body.
+  if (slug === 'recent-additions') {
+    const sp = await searchParams
+    const range = Array.isArray(sp.range) ? sp.range[0] : sp.range
+    return <RecentAdditions range={range} />
+  }
+
   const payload = await getPayload({ config })
 
   const { docs } = await payload.find({
