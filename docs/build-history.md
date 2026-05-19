@@ -17,6 +17,11 @@ This file captures the decisions, audits, and inventories that shaped the rebuil
 | Payments | PayPal | Re-integrate existing account |
 | Analytics | GA4 + Google Tag Manager | Re-integrate existing accounts |
 
+### Decisions made during the build
+
+- **Hosting → AWS EC2** (not Vercel or Azure). Vercel had unacceptably slow response times on cold cache for this image-heavy site, so we moved to a single EC2 instance running the Next.js app behind nginx. Deploys go through `./deploy.sh`.
+- **Assets → migrated to our own S3 bucket** (not the original). We copied the full image library out of the legacy S3 bucket into a new bucket we control, so that hosting, lifecycle, and access policies are all under this project's ownership. CloudFront still fronts it.
+
 ---
 
 ## Design Direction
