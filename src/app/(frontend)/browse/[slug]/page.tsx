@@ -193,6 +193,31 @@ export default async function SectionPage({ params }: Props) {
     ? { '@context': 'https://schema.org', ...placeJsonLd(geo, placeDescription) }
     : null
 
+  // ItemList JSON-LD for the photo grid. Tells Google "this page is a
+  // curated list of N items", which can surface as a list-style result
+  // in image search.
+  const itemListJsonLd =
+    photos.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: `Photos of ${section.title}`,
+          numberOfItems: photos.length,
+          itemListElement: photos
+            .map((item, i) => {
+              const p = typeof item.photo === 'object' ? item.photo : null
+              if (!p?.imageId) return null
+              return {
+                '@type': 'ListItem',
+                position: i + 1,
+                url: `https://holylandphotos.org/photos/${p.imageId}`,
+                name: p.title || p.imageId,
+              }
+            })
+            .filter(Boolean),
+        }
+      : null
+
   return (
     <div>
       <script
@@ -203,6 +228,12 @@ export default async function SectionPage({ params }: Props) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(placeJsonLdBlock) }}
+        />
+      )}
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       )}
       {/* Breadcrumbs */}

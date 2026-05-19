@@ -37,7 +37,7 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 
 - [x] **Add `Article` JSON-LD to `/news/[id]`** — `headline`, `datePublished`, `dateModified`, `author`, `publisher`, `url`, `mainEntityOfPage`, optional `description` + `image`. Candidacy for Top Stories carousels. *(Done 2026-05-19 — author hardcoded as Dr. Carl Rasmussen per Carl.)*
 - [x] **Set Twitter handle** in root metadata. *(Resolved 2026-05-19 — no X/Twitter account, so we leave `twitter.creator` and `twitter.site` unset. Current `twitter.card: 'summary_large_image'` stays as-is.)*
-- [ ] **Add `CollectionPage` + `ItemList` JSON-LD** on the thumbnail-grid pages and `/keywords/[keyword]`. Improves grid-style indexing of related photos.
+- [x] **Add `CollectionPage` + `ItemList` JSON-LD** on the thumbnail-grid pages and `/keywords/[keyword]`. *(Done 2026-05-19. `/browse/[slug]` now emits an `ItemList` alongside the existing BreadcrumbList + Place blocks whenever the leaf site has photos. `/keywords/[keyword]` emits a `CollectionPage` with `mainEntity: ItemList` covering matched sections then photos.)*
 - [ ] **Bake IPTC metadata into the JPEGs themselves in S3** — `Creator`, `Copyright Notice`, `Description`, `Keywords`. Google reads these directly from the image bytes; they survive hotlinking and scraping. Highest-leverage single change for downstream attribution (AI training datasets, image reuse).
   - ⚠️ **Needs input from Carl + Peter** — see below.
 

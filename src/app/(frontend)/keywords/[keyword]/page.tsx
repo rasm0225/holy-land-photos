@@ -53,8 +53,51 @@ export default async function KeywordPage({ params }: Props) {
     sort: 'title',
   })
 
+  // CollectionPage + ItemList JSON-LD. Tells Google this page is a
+  // curated list of items matching the keyword; sections come first,
+  // then photos. Skip the script entirely if neither matched.
+  const items: Array<{ '@type': 'ListItem'; position: number; url: string; name: string }> = []
+  for (const s of sections) {
+    if (!s.slug) continue
+    items.push({
+      '@type': 'ListItem',
+      position: items.length + 1,
+      url: `https://holylandphotos.org/browse/${s.slug}`,
+      name: s.title,
+    })
+  }
+  for (const p of photos) {
+    if (!p.imageId) continue
+    items.push({
+      '@type': 'ListItem',
+      position: items.length + 1,
+      url: `https://holylandphotos.org/photos/${p.imageId}`,
+      name: p.title || p.imageId,
+    })
+  }
+  const collectionJsonLd =
+    items.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: `Photos and sites tagged "${decoded}"`,
+          url: `https://holylandphotos.org/keywords/${encodeURIComponent(decoded)}`,
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: items.length,
+            itemListElement: items,
+          },
+        }
+      : null
+
   return (
     <div>
+      {collectionJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+        />
+      )}
       <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
         <span className="pln-sep">›</span>
