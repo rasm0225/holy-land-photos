@@ -30,7 +30,7 @@ export default async function KeywordPage({ params }: Props) {
   const { keyword } = await params
   const decoded = decodeURIComponent(keyword)
   const payload = await getPayload({ config })
-  const published = await publishedFilter()
+  const published = publishedFilter()
 
   // Search sections with this keyword
   const { docs: sections } = await payload.find({

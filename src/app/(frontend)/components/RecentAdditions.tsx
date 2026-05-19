@@ -34,7 +34,7 @@ export default async function RecentAdditions({ range: requested }: { range?: st
   since.setDate(since.getDate() - range)
 
   const payload = await getPayload({ config })
-  const published = await publishedFilter()
+  const published = publishedFilter()
   const { docs: photos, totalDocs } = await payload.find({
     collection: 'photos',
     where: {

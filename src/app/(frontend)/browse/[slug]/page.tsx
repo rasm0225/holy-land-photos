@@ -6,7 +6,6 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
-import { viewerIsAdmin } from '@/lib/viewer'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -28,10 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const section = docs[0]
   if (!section) return { title: 'Not Found' }
 
-  // Unpublished sections: pretend they don't exist to anonymous crawlers.
+  // Unpublished sections look like 404s on the public site (admins
+  // manage them via /admin).
   if ((section as unknown as { published?: boolean }).published === false) {
-    const isAdmin = await viewerIsAdmin()
-    if (!isAdmin) return { title: 'Not Found', robots: { index: false, follow: false } }
+    return { title: 'Not Found', robots: { index: false, follow: false } }
   }
 
   const htmlBody = (section as unknown as Record<string, unknown>).htmlBody as string | null
@@ -63,7 +62,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SectionPage({ params }: Props) {
   const { slug } = await params
   const payload = await getPayload({ config })
-  const isAdmin = await viewerIsAdmin()
 
   // Fetch this section
   const { docs } = await payload.find({
@@ -76,22 +74,20 @@ export default async function SectionPage({ params }: Props) {
   const section = docs[0]
   if (!section) return notFound()
 
-  // Unpublished sections 404 for non-admin viewers.
-  if (!isAdmin && (section as unknown as { published?: boolean }).published === false) {
+  // Unpublished sections 404 on the public site.
+  if ((section as unknown as { published?: boolean }).published === false) {
     return notFound()
   }
 
-  // Fetch child sections (filter unpublished out for public)
+  // Fetch child sections (filter unpublished out)
   const { docs: children } = await payload.find({
     collection: 'sections',
-    where: isAdmin
-      ? { parent: { equals: section.id } }
-      : {
-          and: [
-            { parent: { equals: section.id } },
-            { published: { not_equals: false } },
-          ],
-        },
+    where: {
+      and: [
+        { parent: { equals: section.id } },
+        { published: { not_equals: false } },
+      ],
+    },
     sort: 'title',
     limit: 0,
     depth: 0,
@@ -142,7 +138,7 @@ export default async function SectionPage({ params }: Props) {
     }
   }
 
-  // Get photos array (filter unpublished out for the public)
+  // Get photos array (filter unpublished out)
   const allPhotos = (section.photos || []) as Array<{
     photo?: {
       id: number
@@ -151,11 +147,9 @@ export default async function SectionPage({ params }: Props) {
       published?: boolean
     } | number
   }>
-  const photos = isAdmin
-    ? allPhotos
-    : allPhotos.filter((p) =>
-        typeof p.photo === 'object' ? p.photo?.published !== false : true,
-      )
+  const photos = allPhotos.filter((p) =>
+    typeof p.photo === 'object' ? p.photo?.published !== false : true,
+  )
 
   // BreadcrumbList JSON-LD
   const breadcrumbJsonLd = {

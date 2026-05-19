@@ -31,7 +31,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   if (query) {
     const payload = await getPayload({ config })
-    const published = await publishedFilter()
+    const published = publishedFilter()
 
     // Split the query into whitespace-separated terms. Each term must match
     // (as a whole word, case-insensitive) somewhere in title/keywords/imageId.

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const payload = await getPayload({ config })
-  const published = await publishedFilter()
+  const published = publishedFilter()
 
   const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }] = await Promise.all([
     payload.find({

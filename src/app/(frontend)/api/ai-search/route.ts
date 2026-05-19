@@ -120,7 +120,7 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const limit = Math.min(Number(input.limit) || 10, 25)
     if (!query) return JSON.stringify({ error: 'query required' })
 
-    const published = await publishedFilter()
+    const published = publishedFilter()
     const { docs } = await payload.find({
       collection: 'sections',
       where: {
@@ -155,7 +155,7 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const limit = Math.min(Number(input.limit) || 10, 25)
     if (!query) return JSON.stringify({ error: 'query required' })
 
-    const published = await publishedFilter()
+    const published = publishedFilter()
     const { docs } = await payload.find({
       collection: 'photos',
       where: {
@@ -188,7 +188,7 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const slug = String(input.slug || '').trim()
     if (!slug) return JSON.stringify({ error: 'slug required' })
 
-    const published = await publishedFilter()
+    const published = publishedFilter()
     const { docs } = await payload.find({
       collection: 'sections',
       where: { and: [{ slug: { equals: slug } }, published] },

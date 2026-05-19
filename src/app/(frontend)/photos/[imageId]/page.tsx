@@ -7,7 +7,6 @@ import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import DownloadButton from '../../components/DownloadButton'
-import { viewerIsAdmin } from '@/lib/viewer'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -30,11 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const photo = docs[0]
   if (!photo) return { title: 'Photo Not Found' }
 
-  // Unpublished photos should not be indexed; pretend they don't exist for
-  // anonymous Open Graph crawlers (admins still see real metadata).
+  // Unpublished photos look like 404s on the public site for everyone,
+  // including logged-in admins (who manage them via /admin instead).
   if ((photo as unknown as { published?: boolean }).published === false) {
-    const isAdmin = await viewerIsAdmin()
-    if (!isAdmin) return { title: 'Photo Not Found', robots: { index: false, follow: false } }
+    return { title: 'Photo Not Found', robots: { index: false, follow: false } }
   }
 
   // Find the section for context in the title
@@ -78,8 +76,6 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   const { s: sectionSlug } = await searchParams
   const payload = await getPayload({ config })
 
-  const isAdmin = await viewerIsAdmin()
-
   const { docs } = await payload.find({
     collection: 'photos',
     where: { imageId: { equals: imageId } },
@@ -90,25 +86,24 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   const photo = docs[0]
   if (!photo) return notFound()
 
-  // Treat unpublished photos as not-found for the public.
-  if (!isAdmin && (photo as unknown as { published?: boolean }).published === false) {
+  // Unpublished photos 404 for everyone on the public site (admins
+  // manage them via /admin).
+  if ((photo as unknown as { published?: boolean }).published === false) {
     return notFound()
   }
 
   const htmlDescription = (photo as unknown as Record<string, unknown>).htmlDescription as string | null
 
-  // Find which sections this photo belongs to (filter unpublished sections
-  // out for the public-facing "Found in" list).
+  // Find which sections this photo belongs to (filter unpublished
+  // sections out of the "Found in" list).
   const { docs: sectionLinks } = await payload.find({
     collection: 'sections',
-    where: isAdmin
-      ? { 'photos.photo': { equals: photo.id } }
-      : {
-          and: [
-            { 'photos.photo': { equals: photo.id } },
-            { published: { not_equals: false } },
-          ],
-        },
+    where: {
+      and: [
+        { 'photos.photo': { equals: photo.id } },
+        { published: { not_equals: false } },
+      ],
+    },
     limit: 0,
     depth: 2,
     select: { title: true, slug: true, photos: true },
@@ -126,13 +121,10 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       const allPhotos = (contextDoc.photos || []) as Array<{
         photo?: { id: number; imageId?: string; title?: string; published?: boolean } | number
       }>
-      // Skip unpublished photos when computing prev/next + position
-      // (admins still see them in the array — only the public is filtered).
-      const photos = isAdmin
-        ? allPhotos
-        : allPhotos.filter((item) =>
-            typeof item.photo === 'object' ? item.photo?.published !== false : true,
-          )
+      // Skip unpublished photos when computing prev/next + position.
+      const photos = allPhotos.filter((item) =>
+        typeof item.photo === 'object' ? item.photo?.published !== false : true,
+      )
 
       // Find current photo index
       const currentIndex = photos.findIndex((item) => {
@@ -164,11 +156,9 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       const allPhotos = (contextDoc.photos || []) as Array<{
         photo?: { id: number; published?: boolean } | number
       }>
-      const photos = isAdmin
-        ? allPhotos
-        : allPhotos.filter((item) =>
-            typeof item.photo === 'object' ? item.photo?.published !== false : true,
-          )
+      const photos = allPhotos.filter((item) =>
+        typeof item.photo === 'object' ? item.photo?.published !== false : true,
+      )
       const idx = photos.findIndex((item) => {
         const p = typeof item.photo === 'object' ? item.photo : null
         return p && p.id === photo.id
