@@ -191,6 +191,16 @@ export const Sections: CollectionConfig = {
         description: 'Reviewer notes about the coordinate decision.',
       },
     },
+    {
+      name: 'geoMapLinks',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '/src/components/SectionGeoMapLink/index.tsx#SectionGeoMapLink',
+        },
+      },
+    },
     // 'parent' and 'breadcrumbs' are auto-added by the nested-docs plugin
   ],
 }

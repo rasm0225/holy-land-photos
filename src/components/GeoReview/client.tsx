@@ -305,6 +305,27 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
               )}
             </div>
 
+            {current.current.lat != null && current.current.lon != null && (
+              <div style={{ marginTop: 8, display: 'flex', gap: 8, fontSize: 12 }}>
+                <a
+                  href={`https://www.google.com/maps?q=${draftLat ?? current.current.lat},${draftLon ?? current.current.lon}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--theme-elevation-700)' }}
+                >
+                  Google Maps ↗
+                </a>
+                <a
+                  href={`https://www.openstreetmap.org/?mlat=${draftLat ?? current.current.lat}&mlon=${draftLon ?? current.current.lon}#map=15/${draftLat ?? current.current.lat}/${draftLon ?? current.current.lon}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--theme-elevation-700)' }}
+                >
+                  OSM ↗
+                </a>
+              </div>
+            )}
+
             {current.current.notes && (
               <p style={{ fontSize: 12, color: 'var(--theme-elevation-600)', marginTop: 6 }}>
                 {current.current.notes}
