@@ -1,5 +1,6 @@
 import * as migration_20260329_add_sections_photos from './20260329_add_sections_photos';
 import * as migration_20260519_012240_add_published_to_photos_and_sections from './20260519_012240_add_published_to_photos_and_sections';
+import * as migration_20260519_150309_add_section_geo from './20260519_150309_add_section_geo';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20260519_012240_add_published_to_photos_and_sections.up,
     down: migration_20260519_012240_add_published_to_photos_and_sections.down,
-    name: '20260519_012240_add_published_to_photos_and_sections'
+    name: '20260519_012240_add_published_to_photos_and_sections',
+  },
+  {
+    up: migration_20260519_150309_add_section_geo.up,
+    down: migration_20260519_150309_add_section_geo.down,
+    name: '20260519_150309_add_section_geo'
   },
 ];

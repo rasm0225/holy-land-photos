@@ -142,6 +142,55 @@ export const Sections: CollectionConfig = {
         description: 'Internal notes (not shown on public site)',
       },
     },
+    {
+      name: 'latitude',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'WGS84 decimal degrees. Set via /admin/geo-review.',
+        step: 0.000001,
+      },
+    },
+    {
+      name: 'longitude',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        description: 'WGS84 decimal degrees. Set via /admin/geo-review.',
+        step: 0.000001,
+      },
+    },
+    {
+      name: 'geoReviewStatus',
+      type: 'select',
+      defaultValue: 'pending',
+      options: [
+        { label: 'Pending review', value: 'pending' },
+        { label: 'Approved', value: 'approved' },
+        { label: 'Excluded (not a single place)', value: 'excluded' },
+        { label: 'Needs research', value: 'needs_research' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Geographic coordinate review state.',
+      },
+    },
+    {
+      name: 'geoSource',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'wikidata | nominatim | llm | adjusted | manual',
+      },
+    },
+    {
+      name: 'geoNotes',
+      type: 'textarea',
+      admin: {
+        position: 'sidebar',
+        description: 'Reviewer notes about the coordinate decision.',
+      },
+    },
     // 'parent' and 'breadcrumbs' are auto-added by the nested-docs plugin
   ],
 }

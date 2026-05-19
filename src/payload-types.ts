@@ -212,6 +212,26 @@ export interface Section {
    * Internal notes (not shown on public site)
    */
   notes?: string | null;
+  /**
+   * WGS84 decimal degrees. Set via /admin/geo-review.
+   */
+  latitude?: number | null;
+  /**
+   * WGS84 decimal degrees. Set via /admin/geo-review.
+   */
+  longitude?: number | null;
+  /**
+   * Geographic coordinate review state.
+   */
+  geoReviewStatus?: ('pending' | 'approved' | 'excluded' | 'needs_research') | null;
+  /**
+   * wikidata | nominatim | llm | adjusted | manual
+   */
+  geoSource?: string | null;
+  /**
+   * Reviewer notes about the coordinate decision.
+   */
+  geoNotes?: string | null;
   parent?: (number | null) | Section;
   breadcrumbs?:
     | {
@@ -578,6 +598,11 @@ export interface SectionsSelect<T extends boolean = true> {
   htmlBody?: T;
   sectionImage?: T;
   notes?: T;
+  latitude?: T;
+  longitude?: T;
+  geoReviewStatus?: T;
+  geoSource?: T;
+  geoNotes?: T;
   parent?: T;
   breadcrumbs?:
     | T
