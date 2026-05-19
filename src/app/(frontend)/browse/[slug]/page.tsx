@@ -6,6 +6,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
+import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -167,12 +168,43 @@ export default async function SectionPage({ params }: Props) {
     ],
   }
 
+  // Place JSON-LD — emitted only for site-type sections with
+  // human-approved coordinates. Knowledge-panel-eligible for
+  // archaeological/biblical sites Google indexes by name.
+  const sd = section as unknown as {
+    latitude?: number | null
+    longitude?: number | null
+    geoReviewStatus?: string | null
+  }
+  const geo =
+    section.sectionType === 'site'
+      ? approvedGeo({
+          title: section.title,
+          latitude: sd.latitude,
+          longitude: sd.longitude,
+          geoReviewStatus: sd.geoReviewStatus,
+          breadcrumbs: section.breadcrumbs as Array<{ label?: string }> | null,
+        })
+      : null
+  const placeDescription = htmlBody
+    ? htmlBody.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 500)
+    : undefined
+  const placeJsonLdBlock = geo
+    ? { '@context': 'https://schema.org', ...placeJsonLd(geo, placeDescription) }
+    : null
+
   return (
     <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
+      {placeJsonLdBlock && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(placeJsonLdBlock) }}
+        />
+      )}
       {/* Breadcrumbs */}
       <nav className="pln-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>

@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import DownloadButton from '../../components/DownloadButton'
+import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -107,7 +108,15 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     },
     limit: 0,
     depth: 2,
-    select: { title: true, slug: true, photos: true },
+    select: {
+      title: true,
+      slug: true,
+      photos: true,
+      latitude: true,
+      longitude: true,
+      geoReviewStatus: true,
+      breadcrumbs: true,
+    },
   })
 
   // Determine prev/next from section context
@@ -176,6 +185,29 @@ export default async function PhotoPage({ params, searchParams }: Props) {
   const photoYear = (photo as unknown as Record<string, unknown>).year as number | null
   const yearAdded = photo.createdAt ? new Date(photo.createdAt).getUTCFullYear() : null
   const licenseUrl = 'https://holylandphotos.org/pages/permission-to-use'
+
+  // If the parent section has human-approved coordinates, upgrade the
+  // existing `about: { Place, name }` to a full `contentLocation` with
+  // geo + containedInPlace. contentLocation is the more specific signal
+  // Google's image SEO docs ask for; about stays for the unapproved case
+  // so the photo still has a topical anchor.
+  const sectionForGeo = sectionForSchema as unknown as {
+    title?: string
+    latitude?: number | null
+    longitude?: number | null
+    geoReviewStatus?: string | null
+    breadcrumbs?: Array<{ label?: string }> | null
+  } | undefined
+  const photoGeo = sectionForGeo
+    ? approvedGeo({
+        title: sectionForGeo.title || '',
+        latitude: sectionForGeo.latitude,
+        longitude: sectionForGeo.longitude,
+        geoReviewStatus: sectionForGeo.geoReviewStatus,
+        breadcrumbs: sectionForGeo.breadcrumbs,
+      })
+    : null
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
@@ -199,12 +231,11 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     license: licenseUrl,
     acquireLicensePage: licenseUrl,
     ...(photoYear && { dateCreated: String(photoYear), copyrightYear: photoYear }),
-    ...(sectionForSchema && {
-      about: {
-        '@type': 'Place',
-        name: sectionForSchema.title,
-      },
-    }),
+    ...(photoGeo
+      ? { contentLocation: placeJsonLd(photoGeo) }
+      : sectionForSchema
+        ? { about: { '@type': 'Place', name: sectionForSchema.title } }
+        : {}),
   }
 
   // Parent section for link-targeting: context section if the user
