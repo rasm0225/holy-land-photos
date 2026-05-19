@@ -160,6 +160,10 @@ export interface User {
  */
 export interface Section {
   id: number;
+  /**
+   * Uncheck to hide this section from the public site. Admins still see it everywhere.
+   */
+  published?: boolean | null;
   title: string;
   /**
    * Auto-generated from title if left blank
@@ -226,6 +230,10 @@ export interface Section {
  */
 export interface Photo {
   id: number;
+  /**
+   * Uncheck to hide this photo from the public site. Admins still see it everywhere.
+   */
+  published?: boolean | null;
   /**
    * Unique photo identifier (e.g. DLPLTROL01)
    */
@@ -553,6 +561,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "sections_select".
  */
 export interface SectionsSelect<T extends boolean = true> {
+  published?: T;
   title?: T;
   slug?: T;
   sectionType?: T;
@@ -586,6 +595,7 @@ export interface SectionsSelect<T extends boolean = true> {
  * via the `definition` "photos_select".
  */
 export interface PhotosSelect<T extends boolean = true> {
+  published?: T;
   imageId?: T;
   title?: T;
   description?: T;

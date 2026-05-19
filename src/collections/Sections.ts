@@ -33,6 +33,16 @@ export const Sections: CollectionConfig = {
   },
   fields: [
     {
+      name: 'published',
+      type: 'checkbox',
+      defaultValue: true,
+      index: true,
+      admin: {
+        description: 'Uncheck to hide this section from the public site. Admins still see it everywhere.',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

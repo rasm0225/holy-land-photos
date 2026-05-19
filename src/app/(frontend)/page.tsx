@@ -4,6 +4,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoSlideshow, { type Slide } from './components/PhotoSlideshow'
+import { publishedFilter } from '@/lib/viewer'
 import AskTheArchive from './components/AskTheArchive'
 
 export const dynamic = 'force-dynamic'
@@ -23,11 +24,12 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const payload = await getPayload({ config })
+  const published = await publishedFilter()
 
   const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }] = await Promise.all([
     payload.find({
       collection: 'sections',
-      where: { parent: { exists: false } },
+      where: { and: [{ parent: { exists: false } }, published] },
       sort: 'title',
       limit: 0,
       depth: 0,
@@ -55,10 +57,11 @@ export default async function HomePage() {
     }),
     payload.count({
       collection: 'photos',
+      where: published,
     }),
     payload.count({
       collection: 'sections',
-      where: { sectionType: { equals: 'site' } },
+      where: { and: [{ sectionType: { equals: 'site' } }, published] },
     }),
   ])
 

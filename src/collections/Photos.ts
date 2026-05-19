@@ -17,6 +17,16 @@ export const Photos: CollectionConfig = {
   // Upload was removed to allow editing metadata without re-uploading files.
   fields: [
     {
+      name: 'published',
+      type: 'checkbox',
+      defaultValue: true,
+      index: true,
+      admin: {
+        description: 'Uncheck to hide this photo from the public site. Admins still see it everywhere.',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'imageId',
       type: 'text',
       required: true,

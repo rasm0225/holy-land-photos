@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Anthropic from '@anthropic-ai/sdk'
 import { logSearch } from '@/lib/searchLog'
+import { publishedFilter } from '@/lib/viewer'
 
 export const maxDuration = 60
 export const runtime = 'nodejs'
@@ -119,13 +120,19 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const limit = Math.min(Number(input.limit) || 10, 25)
     if (!query) return JSON.stringify({ error: 'query required' })
 
+    const published = await publishedFilter()
     const { docs } = await payload.find({
       collection: 'sections',
       where: {
-        or: [
-          { title: { contains: query } },
-          { keywords: { contains: query } },
-          { internalKeywords: { contains: query } },
+        and: [
+          {
+            or: [
+              { title: { contains: query } },
+              { keywords: { contains: query } },
+              { internalKeywords: { contains: query } },
+            ],
+          },
+          published,
         ],
       },
       limit,
@@ -148,13 +155,19 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const limit = Math.min(Number(input.limit) || 10, 25)
     if (!query) return JSON.stringify({ error: 'query required' })
 
+    const published = await publishedFilter()
     const { docs } = await payload.find({
       collection: 'photos',
       where: {
-        or: [
-          { title: { contains: query } },
-          { keywords: { contains: query } },
-          { imageId: { contains: query } },
+        and: [
+          {
+            or: [
+              { title: { contains: query } },
+              { keywords: { contains: query } },
+              { imageId: { contains: query } },
+            ],
+          },
+          published,
         ],
       },
       limit,
@@ -175,9 +188,10 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     const slug = String(input.slug || '').trim()
     if (!slug) return JSON.stringify({ error: 'slug required' })
 
+    const published = await publishedFilter()
     const { docs } = await payload.find({
       collection: 'sections',
-      where: { slug: { equals: slug } },
+      where: { and: [{ slug: { equals: slug } }, published] },
       limit: 1,
       depth: 2,
       select: { title: true, slug: true, photos: true },
@@ -185,7 +199,10 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
 
     if (!docs[0]) return JSON.stringify({ error: 'section not found' })
 
-    const photos = ((docs[0].photos as unknown as Array<{ photo?: { title?: string; imageId?: string } | number }>) || [])
+    const photos = ((docs[0].photos as unknown as Array<{ photo?: { title?: string; imageId?: string; published?: boolean } | number }>) || [])
+      // Drop unpublished photos before showing them to the AI assistant —
+      // otherwise it might surface links that 404 for the public.
+      .filter((item) => (typeof item.photo === 'object' ? item.photo?.published !== false : true))
       .map((item) => {
         const p = typeof item.photo === 'object' ? item.photo : null
         return p ? { title: p.title, imageId: p.imageId } : null

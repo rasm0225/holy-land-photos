@@ -48,8 +48,14 @@ def main():
     load_env()
     db = open_db()
 
+    # Skip unpublished sections so their legacy /go.asp?s=N or
+    # /browse.asp?SiteID=N URLs land on /gone instead of redirecting to a
+    # section page that the public would 404 on.
     section_slugs = {}
-    for sid, slug in db.execute("SELECT id, slug FROM sections WHERE slug IS NOT NULL"):
+    for sid, slug in db.execute(
+        "SELECT id, slug FROM sections "
+        "WHERE slug IS NOT NULL AND (published IS NULL OR published != 0)"
+    ):
         section_slugs[sid] = slug
 
     page_slugs = {}

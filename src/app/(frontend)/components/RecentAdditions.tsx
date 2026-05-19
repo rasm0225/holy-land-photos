@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
+import { publishedFilter } from '@/lib/viewer'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -33,9 +34,12 @@ export default async function RecentAdditions({ range: requested }: { range?: st
   since.setDate(since.getDate() - range)
 
   const payload = await getPayload({ config })
+  const published = await publishedFilter()
   const { docs: photos, totalDocs } = await payload.find({
     collection: 'photos',
-    where: { createdAt: { greater_than: since.toISOString() } },
+    where: {
+      and: [{ createdAt: { greater_than: since.toISOString() } }, published],
+    },
     sort: '-createdAt',
     limit: 500,
     depth: 0,

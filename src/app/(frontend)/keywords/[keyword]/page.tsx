@@ -3,6 +3,7 @@ import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
+import { publishedFilter } from '@/lib/viewer'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -29,13 +30,12 @@ export default async function KeywordPage({ params }: Props) {
   const { keyword } = await params
   const decoded = decodeURIComponent(keyword)
   const payload = await getPayload({ config })
+  const published = await publishedFilter()
 
   // Search sections with this keyword
   const { docs: sections } = await payload.find({
     collection: 'sections',
-    where: {
-      keywords: { contains: decoded },
-    },
+    where: { and: [{ keywords: { contains: decoded } }, published] },
     limit: 0,
     depth: 0,
     select: { title: true, slug: true, sectionType: true },
@@ -45,9 +45,7 @@ export default async function KeywordPage({ params }: Props) {
   // Search photos with this keyword
   const { docs: photos } = await payload.find({
     collection: 'photos',
-    where: {
-      keywords: { contains: decoded },
-    },
+    where: { and: [{ keywords: { contains: decoded } }, published] },
     limit: 100,
     depth: 0,
     select: { title: true, imageId: true },

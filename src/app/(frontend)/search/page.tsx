@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { logSearch } from '@/lib/searchLog'
+import { publishedFilter } from '@/lib/viewer'
 
 const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
 
@@ -30,6 +31,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   if (query) {
     const payload = await getPayload({ config })
+    const published = await publishedFilter()
 
     // Split the query into whitespace-separated terms. Each term must match
     // (as a whole word, case-insensitive) somewhere in title/keywords/imageId.
@@ -43,14 +45,17 @@ export default async function SearchPage({ searchParams }: Props) {
       termRegexes.every((re) => texts.some((t) => !!t && re.test(t)))
 
     const sectionWhere: Where = {
-      and: terms.map(
-        (term): Where => ({
-          or: [
-            { title: { contains: term } } as Where,
-            { keywords: { contains: term } } as Where,
-          ],
-        }),
-      ),
+      and: [
+        ...terms.map(
+          (term): Where => ({
+            or: [
+              { title: { contains: term } } as Where,
+              { keywords: { contains: term } } as Where,
+            ],
+          }),
+        ),
+        published,
+      ],
     }
 
     const { docs: sectionDocs } = await payload.find({
@@ -66,15 +71,18 @@ export default async function SearchPage({ searchParams }: Props) {
       .slice(0, 50)
 
     const photoWhere: Where = {
-      and: terms.map(
-        (term): Where => ({
-          or: [
-            { title: { contains: term } } as Where,
-            { keywords: { contains: term } } as Where,
-            { imageId: { contains: term } } as Where,
-          ],
-        }),
-      ),
+      and: [
+        ...terms.map(
+          (term): Where => ({
+            or: [
+              { title: { contains: term } } as Where,
+              { keywords: { contains: term } } as Where,
+              { imageId: { contains: term } } as Where,
+            ],
+          }),
+        ),
+        published,
+      ],
     }
 
     const { docs: photoDocs } = await payload.find({
