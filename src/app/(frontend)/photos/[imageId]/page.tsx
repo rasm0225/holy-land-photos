@@ -215,14 +215,14 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       />
       {/* Back to section */}
       {contextSection && (
-        <div className="pln-pnav-up">
+        <nav className="pln-pnav-up" aria-label="Back to section">
           <a href={`/browse/${contextSection.slug}`}>&larr; {contextSection.title}</a>
-        </div>
+        </nav>
       )}
 
       {/* Prev/Next nav */}
       {contextSection && (
-        <div className="pln-pnav">
+        <nav className="pln-pnav" aria-label="Photo pagination">
           {prevPhoto ? (
             <a href={`/photos/${prevPhoto.imageId}?s=${sectionSlug}`}>&lsaquo; Previous</a>
           ) : (
@@ -234,7 +234,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
           ) : (
             <span style={{ color: 'var(--ink-faint)' }}>Next &rsaquo;</span>
           )}
-        </div>
+        </nav>
       )}
 
       {/* Two-column: image + description */}
@@ -265,7 +265,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
 
           {/* Found in */}
           {sectionLinks.length > 0 && (
-            <div style={{ marginTop: 24 }}>
+            <nav style={{ marginTop: 24 }} aria-label="Found in">
               <h3 className="pln-eyebrow" style={{ marginBottom: 8 }}>Found in</h3>
               <ul className="pln-list">
                 {sectionLinks.map((s) => (
@@ -274,7 +274,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           )}
 
           {/* Keywords */}
