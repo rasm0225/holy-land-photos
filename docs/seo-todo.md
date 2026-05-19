@@ -22,10 +22,13 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
   - `copyrightNotice` — `© 1995–{current year} Dr. Carl Rasmussen. All rights reserved.`
   - `copyrightHolder` — Person: Dr. Carl Rasmussen
   - `publisher` — Organization: HolyLandPhotos.org
-  - *(Done 2026-05-19 — wording confirmed by Carl via Peter. `contentLocation.geo` still pending — depends on the lat/long question below.)*
+  - *(Done 2026-05-19 — wording confirmed by Carl via Peter.)*
+  - *Note: upgrading `about: { Place, name }` to a full `contentLocation: { Place, name, geo }` is tracked as a separate item below now that coordinates exist.*
 
-- [ ] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long), `containedInPlace` (e.g. "Israel"), `photo` (array of ImageObjects on the page). Effect: knowledge-panel candidacy for 612 sites — biblical scholars searching "Caesarea Maritima photos" could see a panel, not just blue links.
-  - ⚠️ **Needs input from Peter** — see below.
+- [ ] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long — now available!), `containedInPlace` (e.g. "Israel"), `photo` (array of ImageObjects on the page). Effect: knowledge-panel candidacy for 612 sites — biblical scholars searching "Caesarea Maritima photos" could see a panel, not just blue links.
+  - **Coords now available** — see the "Geocoding for `geo` properties" section below. Render `geo` only when `geoReviewStatus = 'approved'`, omit the whole Place block when `excluded`, and fall back to no `geo` for `pending`/`needs_research`.
+
+- [ ] **Wire `contentLocation.geo` into `ImageObject` on `/photos/[imageId]`** — the existing ImageObject (already deployed with license/credit/copyright) currently only has `about: { @type: Place, name: <section title> }`. Upgrade it to `contentLocation: { @type: Place, name, geo: { latitude, longitude }, containedInPlace }` when the parent section has approved coords. Same gating as the Place schema above.
 
 - [x] **Add `WebSite` + `SearchAction` JSON-LD to the homepage.** Enables the Google Sitelinks Search Box (a search input directly inside the search result for the domain). One JSON-LD block pointing at `/search?q={search_term_string}`. *(Done 2026-05-19.)*
 
@@ -40,6 +43,27 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 - [ ] **Add `CollectionPage` + `ItemList` JSON-LD** on the thumbnail-grid pages and `/keywords/[keyword]`. Improves grid-style indexing of related photos.
 - [ ] **Bake IPTC metadata into the JPEGs themselves in S3** — `Creator`, `Copyright Notice`, `Description`, `Keywords`. Google reads these directly from the image bytes; they survive hotlinking and scraping. Highest-leverage single change for downstream attribution (AI training datasets, image reuse).
   - ⚠️ **Needs input from Carl + Peter** — see below.
+
+## Geocoding for `geo` properties — completed infrastructure
+
+Both the `Place` schema and `ImageObject.contentLocation.geo` items above need lat/long coordinates per site. That infrastructure now exists:
+
+- **Schema** — the `sections` collection has `latitude`, `longitude`, `geoReviewStatus` (pending / approved / excluded / needs_research), `geoSource`, and `geoNotes` fields (migration `20260519_150309_add_section_geo`).
+- **Three-pass geocoder** — `scripts/geocode_sites.py` (Wikidata SPARQL + Nominatim) and `scripts/geocode_pass3_llm.py` (Claude Haiku reading the site's body text) populated `docs/site-geocode-enriched.csv` with proposed coords for all 549 sites that have a real country in their ancestry.
+- **Import** — `scripts/import_geocode.py` seeded the proposed coords into the DB. Auto-approves Wikidata HIGH (226 sites, sample 100% accurate) and LLM HIGH (246 sites, description-anchored). Auto-excludes 48 regional/thematic sections that LLM correctly flagged as "not a single place." Leaves 25 lower-confidence sites + 4 unresolved + 63 thematic-no-country sites for manual review. Safety guard: only updates rows still at `status='pending'`, so re-runs never clobber manual edits.
+- **Approval app** — `/admin/geo-review` (custom Payload admin view) renders one pending site at a time on a Leaflet/OSM map with a draggable pin and Y/E/R keyboard shortcuts.
+
+**Current prod state (as of 2026-05-19):**
+| status | count |
+|---|---|
+| approved | 472 |
+| excluded | 55 |
+| needs_research | 4 |
+| pending | 81 |
+
+**What's left:**
+- Peter to clear the 81 pending sites via `/admin/geo-review` (mostly thematic sections needing `E`, plus ~25 LLM-medium real sites needing a quick look).
+- Wire `geo` into `Place` and `contentLocation` (the two items above) once the queue is small enough that most browse pages will have a usable coord.
 
 ## Tier 4 — Low priority / skip unless bored
 
@@ -73,8 +97,6 @@ These aren't structured-data issues but materially affect SEO performance:
 
 ### From Peter
 
-1. **Geographic coordinates for archaeological sites.** The `Place` schema (Tier 2) and `ImageObject.contentLocation` (Tier 2) both want `geo` lat/long. Questions:
-   - Does the Payload `sections` collection have lat/long fields? (If not, we'd need to add them.)
-   - If they're empty, what's the plan — manual entry for the most-visited 50? Geocode all 612 from site names (cheap but imprecise)? Skip `geo` and just emit `Place` with `name` + `containedInPlace`?
+1. ~~Geographic coordinates for archaeological sites.~~ **Resolved 2026-05-19.** Built a three-pass geocoder (Wikidata + Nominatim + Claude Haiku reading site descriptions), seeded all 549 sites with country ancestry, auto-approved 472 high-confidence rows, and stood up `/admin/geo-review` for the remaining manual pass. See the "Geocoding for `geo` properties" section above for the full breakdown.
 2. **S3 write access for IPTC batch update.** Confirm we have credentials in this project that can write to the photo bucket (not just read), and that re-uploading 7K images is acceptable from a bandwidth/cost standpoint.
-3. **Prioritization call.** Tier 1 is ~1 hour and pure infrastructure. Tier 2 is the big-impact structured-data work but blocks on the Carl/geo questions above. OK to proceed with Tier 1 immediately and queue Tier 2 behind the answers?
+3. ~~Prioritization call.~~ **Resolved 2026-05-19** — Tier 1 + the unblocked Tier 2 items are shipped. Remaining Tier 2 work (Place schema + contentLocation.geo) waits on Peter clearing the geo-review queue.
