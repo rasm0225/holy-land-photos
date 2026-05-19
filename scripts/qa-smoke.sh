@@ -53,8 +53,8 @@ printf '\nLegacy ASP redirects:\n'
 check "/search.asp → /search"              "[ \"\$(redirect '$BASE_URL/search.asp')\" = '$BASE_URL/search' ]"
 check "/whats_new.asp → /news"             "[ \"\$(redirect '$BASE_URL/whats_new.asp')\" = '$BASE_URL/news' ]"
 check "/go.asp?img=TWCSSM20 → /photos/…"   "[ \"\$(redirect '$BASE_URL/go.asp?img=TWCSSM20')\" = '$BASE_URL/photos/TWCSSM20' ]"
-check "/browse.asp?SiteID=13 → /browse/greece-north" \
-    "[ \"\$(redirect '$BASE_URL/browse.asp?SiteID=13')\" = '$BASE_URL/browse/greece-north' ]"
+check "/browse.asp?SiteID=96 → /browse/hazor" \
+    "[ \"\$(redirect '$BASE_URL/browse.asp?SiteID=96')\" = '$BASE_URL/browse/hazor' ]"
 
 printf '\nOrphan + relative-depth handling:\n'
 check "/browse.asp?SiteID=99999 → /gone"   "redirect '$BASE_URL/browse.asp?SiteID=99999' | grep -q '/gone'"
