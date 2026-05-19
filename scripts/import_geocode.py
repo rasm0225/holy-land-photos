@@ -6,8 +6,11 @@ status, then UPDATE the section. Idempotent — re-running with the same
 input produces the same result.
 
 Decision tree:
-  1. Wikidata "high" confidence    → trust the coords as-is, status=pending,
-                                      source=wikidata. User spot-checks.
+  1. Wikidata "high" confidence    → status=approved, source=wikidata.
+                                      Auto-approved — sample held at 100%
+                                      accuracy on this tier; user can still
+                                      filter to "approved" and unapprove if
+                                      anything looks off.
   2. LLM said not_a_single_point   → status=excluded, no coords,
                                       source=llm. User confirms.
   3. LLM "high" or "medium"        → use LLM coords, status=pending,
@@ -15,6 +18,10 @@ Decision tree:
   4. Pass 1/2 had ANY coords       → use them, status=pending,
                                       source=wikidata|nominatim.
   5. Nothing usable                → status=needs_research, no coords.
+
+Safety: this script only UPDATEs rows whose current geo_review_status
+is 'pending'. Rows you have already approved/excluded/marked-for-research
+in the admin will NOT be clobbered by a re-run.
 
 Run:
   python3 scripts/import_geocode.py             # dry-run, prints summary
@@ -39,12 +46,12 @@ def decide(row: dict) -> dict:
     llm_conf = row.get("llm_confidence", "").strip()
     llm_excluded = row.get("llm_excluded", "").strip()
 
-    # 1. Wikidata high — trust it
+    # 1. Wikidata high — trust it. Auto-approve.
     if conf == "high" and row["lat"] and row["lon"]:
         return {
             "lat": float(row["lat"]),
             "lon": float(row["lon"]),
-            "status": "pending",
+            "status": "approved",
             "source": src or "wikidata",
             "notes": row.get("notes", "")[:500],
         }
@@ -59,8 +66,20 @@ def decide(row: dict) -> dict:
             "notes": row.get("llm_notes", "")[:500],
         }
 
-    # 3. LLM produced a usable answer
-    if llm_conf in {"high", "medium"} and row.get("llm_lat") and row.get("llm_lon"):
+    # 3a. LLM high — auto-approve. Sample accuracy was strong (the description
+    # text usually anchors the location precisely). The occasional hallucination
+    # like Garden Tomb's wrong latitude is the user-spot-check trade-off.
+    if llm_conf == "high" and row.get("llm_lat") and row.get("llm_lon"):
+        return {
+            "lat": float(row["llm_lat"]),
+            "lon": float(row["llm_lon"]),
+            "status": "approved",
+            "source": "llm",
+            "notes": row.get("llm_notes", "")[:500],
+        }
+
+    # 3b. LLM medium — leave pending for manual review.
+    if llm_conf == "medium" and row.get("llm_lat") and row.get("llm_lon"):
         return {
             "lat": float(row["llm_lat"]),
             "lon": float(row["llm_lon"]),
@@ -129,20 +148,27 @@ def main():
     conn = sqlite3.connect(args.db)
     cur = conn.cursor()
     n = 0
+    skipped = 0
     for sid, _title, d in decisions:
+        # Only touch rows that haven't been manually reviewed yet. Re-running
+        # this script after the reviewer has clicked through some sites
+        # must not undo their work.
         cur.execute(
             """
             UPDATE sections
             SET latitude = ?, longitude = ?, geo_review_status = ?,
                 geo_source = ?, geo_notes = ?
-            WHERE id = ?
+            WHERE id = ? AND geo_review_status = 'pending'
             """,
             (d["lat"], d["lon"], d["status"], d["source"], d["notes"], sid),
         )
-        n += cur.rowcount
+        if cur.rowcount > 0:
+            n += cur.rowcount
+        else:
+            skipped += 1
     conn.commit()
     conn.close()
-    print(f"\nApplied {n} updates.", file=sys.stderr)
+    print(f"\nApplied {n} updates ({skipped} skipped — already reviewed).", file=sys.stderr)
 
 
 if __name__ == "__main__":
