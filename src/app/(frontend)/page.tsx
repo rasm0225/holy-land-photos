@@ -81,8 +81,28 @@ export default async function HomePage() {
   ])
 
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Holy Land Photos',
+    url: 'https://holylandphotos.org',
+    description: '7,000+ free, high-resolution photographs of biblical and archaeological sites across 612 locations in 12 countries.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://holylandphotos.org/search?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <p className="pln-home-intro">
         Free, high-resolution photographs of biblical and archaeological sites,
         taken by Dr. Carl Rasmussen across more than four decades —{' '}

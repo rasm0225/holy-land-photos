@@ -61,6 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} — Holy Land Photos`,
       description,
       type: 'article',
+      url: `/photos/${photo.imageId}`,
       images: [imageUrl],
     },
     twitter: {

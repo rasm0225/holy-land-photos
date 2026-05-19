@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${news.title} — Holy Land Photos`,
       description,
       type: 'article',
+      url: `/news/${news.id}`,
       ...(ogImage && { images: [ogImage] }),
     },
     twitter: {

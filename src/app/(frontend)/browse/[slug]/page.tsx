@@ -49,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${section.title} — Holy Land Photos`,
       description,
       type: 'website',
+      url: `/browse/${section.slug}`,
       ...(images.length > 0 && { images }),
     },
     twitter: {

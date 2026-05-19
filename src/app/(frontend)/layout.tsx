@@ -16,6 +16,7 @@ import '../styles/design.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://holylandphotos.org'),
   title: {
     default: 'Holy Land Photos',
     template: '%s — Holy Land Photos',

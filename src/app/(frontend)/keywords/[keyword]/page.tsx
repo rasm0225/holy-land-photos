@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `"${decoded}" — Holy Land Photos`,
       description: `Browse photos and sites tagged with "${decoded}".`,
       type: 'website',
+      url: `/keywords/${encodeURIComponent(decoded)}`,
     },
   }
 }

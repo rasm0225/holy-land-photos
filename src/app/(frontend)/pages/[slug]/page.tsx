@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${page.title} — Holy Land Photos`,
       description,
       type: 'website',
+      url: `/pages/${page.slug}`,
     },
   }
 }

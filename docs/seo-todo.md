@@ -8,10 +8,10 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 
 ## Tier 1 — Foundational (do first; small PR, unlocks everything else)
 
-- [ ] **Set `metadataBase` in the frontend root layout** (`src/app/(frontend)/layout.tsx`) to `new URL('https://holylandphotos.org')`. Currently all relative `og:image` and canonical URLs are technically broken — social crawlers need absolute URLs.
-- [ ] **Add `sitemap.ts` at the App Router root.** Query Payload for all photos, sections, news, and pages; emit URLs with `lastModified`. Without this, Google has to discover 7,000+ photos by crawling links — slow and incomplete.
-- [ ] **Add `robots.ts` at the App Router root** referencing the sitemap.
-- [ ] **Add `og:url` to every dynamic route's `generateMetadata()` return value** — disambiguates the canonical resource for social platforms.
+- [x] **Set `metadataBase` in the frontend root layout** (`src/app/(frontend)/layout.tsx`) to `new URL('https://holylandphotos.org')`. Currently all relative `og:image` and canonical URLs are technically broken — social crawlers need absolute URLs. *(Done 2026-05-19.)*
+- [x] **Add `sitemap.ts` at the App Router root.** Query Payload for all photos, sections, news, and pages; emit URLs with `lastModified`. Without this, Google has to discover 7,000+ photos by crawling links — slow and incomplete. *(Done 2026-05-19 — 7,969 URLs emitted.)*
+- [x] **Add `robots.ts` at the App Router root** referencing the sitemap. *(Done 2026-05-19.)*
+- [x] **Add `og:url` to every dynamic route's `generateMetadata()` return value** — disambiguates the canonical resource for social platforms. *(Done 2026-05-19: photos, browse, news, pages, keywords.)*
 
 ## Tier 2 — High-value structured data (one PR across photo, browse, homepage templates)
 
@@ -28,9 +28,9 @@ Goal: maximize visibility in Google Search, Google Image Search, and knowledge-p
 - [ ] **Add `Place` JSON-LD to leaf browse pages** (`/browse/[slug]` for archaeological sites). Properties: `name`, `description`, `geo` (lat/long), `containedInPlace` (e.g. "Israel"), `photo` (array of ImageObjects on the page). Effect: knowledge-panel candidacy for 612 sites — biblical scholars searching "Caesarea Maritima photos" could see a panel, not just blue links.
   - ⚠️ **Needs input from Peter** — see below.
 
-- [ ] **Add `WebSite` + `SearchAction` JSON-LD to the homepage.** Enables the Google Sitelinks Search Box (a search input directly inside the search result for the domain). One JSON-LD block pointing at `/search?q={search_term_string}`.
+- [x] **Add `WebSite` + `SearchAction` JSON-LD to the homepage.** Enables the Google Sitelinks Search Box (a search input directly inside the search result for the domain). One JSON-LD block pointing at `/search?q={search_term_string}`. *(Done 2026-05-19.)*
 
-- [ ] **Complete `BreadcrumbList` items on `/browse/[slug]`** — audit found `position` and `name` populated but `item` (URL) is missing. Without URLs, Google can't render breadcrumb-style search results.
+- [x] **Complete `BreadcrumbList` items on `/browse/[slug]`** — audit found `position` and `name` populated but `item` (URL) is missing. ~~Without URLs, Google can't render breadcrumb-style search results.~~ *On closer inspection of the code, item URLs were already being emitted (the audit was wrong on this one). No change needed.*
 
 ## Tier 3 — Medium impact
 
