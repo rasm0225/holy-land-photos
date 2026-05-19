@@ -2,6 +2,8 @@
 
 Last updated: 2026-05-13
 
+See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag improvements split out from this list.
+
 ---
 
 ## Functional / Must-do before launch
