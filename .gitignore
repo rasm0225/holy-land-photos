@@ -19,3 +19,6 @@ __pycache__/
 src/redirect-maps.generated.ts
 scripts/geocode-all.log
 scripts/geocode-pass3.log
+
+# Claude Code worktrees
+.claude/worktrees/
