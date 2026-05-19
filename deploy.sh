@@ -101,6 +101,12 @@ npm ci --production=false 2>&1 | tail -3
 echo "🗄  Running Payload migrations..."
 echo y | npx payload migrate 2>&1 | tail -8
 
+echo "🔄 Backfilling sections.legacy_old_id from archive CSV (idempotent)..."
+python3 scripts/backfill_legacy_old_id.py | tail -5
+
+echo "🩹 Repairing any mis-remapped ?SiteID/?SubRegionID links (idempotent)..."
+python3 scripts/repair_misremapped_site_links.py | tail -3
+
 echo "🗺  Regenerating middleware redirect maps from live DB..."
 python3 scripts/generate_redirect_maps.py
 

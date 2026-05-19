@@ -45,25 +45,52 @@ def get_db():
 
 
 def build_lookups(db):
+    """Build the lookup tables used to translate legacy ASP URLs.
+
+    Three section maps are needed because the old site mixed two ID systems
+    in its URLs:
+      - section_map: keyed by the modern section_ID (== sections.id). Used
+        for /go.asp?s= and /browse.asp?s=, which carry the modern ID.
+      - legacy_site_map: keyed by section_Old_ID, restricted to
+        sectionType='site'. Used for /browse.asp?SiteID=.
+      - legacy_subregion_map: keyed by section_Old_ID, restricted to
+        sectionType='region'. Used for /browse.asp?SubRegionID=.
+
+    legacy_old_id is backfilled by scripts/backfill_legacy_old_id.py.
+    """
     print("Building lookup tables...")
 
     section_map = {}
-    for row in db.execute("SELECT id, slug FROM sections").fetchall():
-        section_map[row[0]] = row[1]
-    print(f"  {len(section_map)} sections")
+    legacy_site_map = {}
+    legacy_subregion_map = {}
+    for sid, slug, section_type, legacy_old_id in db.execute(
+        "SELECT id, slug, section_type, legacy_old_id FROM sections"
+    ).fetchall():
+        section_map[sid] = slug
+        if legacy_old_id is None:
+            continue
+        if section_type == "site":
+            legacy_site_map[int(legacy_old_id)] = slug
+        elif section_type == "region":
+            legacy_subregion_map[int(legacy_old_id)] = slug
+    print(
+        f"  {len(section_map)} sections "
+        f"({len(legacy_site_map)} legacy sites, "
+        f"{len(legacy_subregion_map)} legacy subregions)"
+    )
 
     page_map = {}
     for row in db.execute("SELECT id, slug FROM pages").fetchall():
         page_map[row[0]] = row[1]
     print(f"  {len(page_map)} pages")
 
-    return section_map, page_map
+    return section_map, legacy_site_map, legacy_subregion_map, page_map
 
 
 _ASP_RE = re.compile(r"(?i)(go|browse|page)\.asp(?:\?([^#\s'\"]*))?")
 
 
-def remap_url(href, section_map, page_map, unmapped):
+def remap_url(href, section_map, legacy_site_map, legacy_subregion_map, page_map, unmapped):
     """Convert a single old URL to the new format. Returns new URL or None.
 
     Tolerant of any URL prefix (../, http://..., /control/, etc.) — locates
@@ -116,7 +143,7 @@ def remap_url(href, section_map, page_map, unmapped):
         if "SiteID" in params:
             try:
                 site_id = int(params["SiteID"][0])
-                slug = section_map.get(site_id)
+                slug = legacy_site_map.get(site_id)
                 if slug:
                     return f"/browse/{slug}"
                 unmapped.append(f"browse.asp?SiteID={site_id} — not found")
@@ -127,7 +154,7 @@ def remap_url(href, section_map, page_map, unmapped):
         if "SubRegionID" in params:
             try:
                 region_id = int(params["SubRegionID"][0])
-                slug = section_map.get(region_id)
+                slug = legacy_subregion_map.get(region_id)
                 if slug:
                     return f"/browse/{slug}"
                 unmapped.append(f"browse.asp?SubRegionID={region_id} — not found")
@@ -153,7 +180,7 @@ def remap_url(href, section_map, page_map, unmapped):
     return None
 
 
-def process_html(html, section_map, page_map, unmapped):
+def process_html(html, section_map, legacy_site_map, legacy_subregion_map, page_map, unmapped):
     if not html:
         return html, 0
 
@@ -165,7 +192,9 @@ def process_html(html, section_map, page_map, unmapped):
         old_url = match.group(2)
         suffix = match.group(3)
 
-        new_url = remap_url(old_url, section_map, page_map, unmapped)
+        new_url = remap_url(
+            old_url, section_map, legacy_site_map, legacy_subregion_map, page_map, unmapped
+        )
         if new_url:
             changes += 1
             return f'{prefix}{new_url}{suffix}'
@@ -176,7 +205,16 @@ def process_html(html, section_map, page_map, unmapped):
     return new_html, changes
 
 
-def process_table(db, table, column, section_map, page_map, dry_run):
+def process_table(
+    db,
+    table,
+    column,
+    section_map,
+    legacy_site_map,
+    legacy_subregion_map,
+    page_map,
+    dry_run,
+):
     print(f"\nProcessing {table}.{column}...")
 
     rows = db.execute(
@@ -196,7 +234,9 @@ def process_table(db, table, column, section_map, page_map, dry_run):
 
     for row_id, html in rows:
         unmapped = []
-        new_html, changes = process_html(html, section_map, page_map, unmapped)
+        new_html, changes = process_html(
+            html, section_map, legacy_site_map, legacy_subregion_map, page_map, unmapped
+        )
         all_unmapped.extend(unmapped)
 
         if changes > 0:
@@ -229,7 +269,7 @@ def main():
     db = get_db()
     if hasattr(db, "sync"):
         db.sync()
-    section_map, page_map = build_lookups(db)
+    section_map, legacy_site_map, legacy_subregion_map, page_map = build_lookups(db)
 
     tables = [
         ("sections", "html_body"),
@@ -243,7 +283,16 @@ def main():
     all_unmapped = []
 
     for table, column in tables:
-        changes, unmapped = process_table(db, table, column, section_map, page_map, dry_run)
+        changes, unmapped = process_table(
+            db,
+            table,
+            column,
+            section_map,
+            legacy_site_map,
+            legacy_subregion_map,
+            page_map,
+            dry_run,
+        )
         total += changes
         all_unmapped.extend(unmapped)
 

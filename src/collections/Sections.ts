@@ -135,6 +135,17 @@ export const Sections: CollectionConfig = {
       },
     },
     {
+      name: 'legacyOldId',
+      type: 'number',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description:
+          'Legacy section_Old_ID from the original ASP site. Used to resolve incoming ?SiteID= and ?SubRegionID= URLs.',
+        condition: (data) => Boolean(data?.legacyOldId),
+      },
+    },
+    {
       name: 'notes',
       type: 'textarea',
       admin: {

@@ -51,12 +51,26 @@ def main():
     # Skip unpublished sections so their legacy /go.asp?s=N or
     # /browse.asp?SiteID=N URLs land on /gone instead of redirecting to a
     # section page that the public would 404 on.
+    #
+    # SECTION_SLUGS is keyed by the modern section_ID (== sections.id) and
+    # used for ?s= URLs. LEGACY_SITE_SLUGS / LEGACY_SUBREGION_SLUGS are
+    # keyed by section_Old_ID (sections.legacy_old_id) and used for
+    # ?SiteID= and ?SubRegionID= URLs respectively — the old site used a
+    # different ID system for those params.
     section_slugs = {}
-    for sid, slug in db.execute(
-        "SELECT id, slug FROM sections "
+    legacy_site_slugs = {}
+    legacy_subregion_slugs = {}
+    for sid, slug, section_type, legacy_old_id in db.execute(
+        "SELECT id, slug, section_type, legacy_old_id FROM sections "
         "WHERE slug IS NOT NULL AND (published IS NULL OR published != 0)"
     ):
         section_slugs[sid] = slug
+        if legacy_old_id is None:
+            continue
+        if section_type == "site":
+            legacy_site_slugs[int(legacy_old_id)] = slug
+        elif section_type == "region":
+            legacy_subregion_slugs[int(legacy_old_id)] = slug
 
     page_slugs = {}
     for pid, slug in db.execute("SELECT id, slug FROM pages WHERE slug IS NOT NULL"):
@@ -70,6 +84,14 @@ def main():
         + json.dumps(section_slugs, sort_keys=True, indent=2)
         + ";",
         "",
+        "export const LEGACY_SITE_SLUGS: Readonly<Record<number, string>> = "
+        + json.dumps(legacy_site_slugs, sort_keys=True, indent=2)
+        + ";",
+        "",
+        "export const LEGACY_SUBREGION_SLUGS: Readonly<Record<number, string>> = "
+        + json.dumps(legacy_subregion_slugs, sort_keys=True, indent=2)
+        + ";",
+        "",
         "export const PAGE_SLUGS: Readonly<Record<number, string>> = "
         + json.dumps(page_slugs, sort_keys=True, indent=2)
         + ";",
@@ -78,7 +100,10 @@ def main():
     OUT_PATH.write_text("\n".join(lines))
     print(
         f"Wrote {OUT_PATH.relative_to(ROOT)} — "
-        f"{len(section_slugs)} sections, {len(page_slugs)} pages"
+        f"{len(section_slugs)} sections, "
+        f"{len(legacy_site_slugs)} legacy sites, "
+        f"{len(legacy_subregion_slugs)} legacy subregions, "
+        f"{len(page_slugs)} pages"
     )
 
 

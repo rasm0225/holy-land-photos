@@ -209,6 +209,10 @@ export interface Section {
    */
   sectionImage?: string | null;
   /**
+   * Legacy section_Old_ID from the original ASP site. Used to resolve incoming ?SiteID= and ?SubRegionID= URLs.
+   */
+  legacyOldId?: number | null;
+  /**
    * Internal notes (not shown on public site)
    */
   notes?: string | null;
@@ -597,6 +601,7 @@ export interface SectionsSelect<T extends boolean = true> {
       };
   htmlBody?: T;
   sectionImage?: T;
+  legacyOldId?: T;
   notes?: T;
   latitude?: T;
   longitude?: T;

@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SECTION_SLUGS, PAGE_SLUGS } from './redirect-maps.generated'
+import {
+  SECTION_SLUGS,
+  LEGACY_SITE_SLUGS,
+  LEGACY_SUBREGION_SLUGS,
+  PAGE_SLUGS,
+} from './redirect-maps.generated'
 
 /**
  * Middleware to redirect old ASP URLs to new routes.
@@ -17,9 +22,9 @@ import { SECTION_SLUGS, PAGE_SLUGS } from './redirect-maps.generated'
  * Mapping:
  *   go.asp?img=IMAGEID       → /photos/IMAGEID
  *   go.asp?s=N               → /browse/SLUG
- *   browse.asp?s=...,N       → /browse/SLUG (last id in the comma list)
- *   browse.asp?SiteID=N      → /browse/SLUG
- *   browse.asp?SubRegionID=N → /browse/SLUG
+ *   browse.asp?s=...,N       → /browse/SLUG (last id in the comma list; N is section_ID)
+ *   browse.asp?SiteID=N      → /browse/SLUG (N is section_Old_ID; looked up via LEGACY_SITE_SLUGS)
+ *   browse.asp?SubRegionID=N → /browse/SLUG (N is section_Old_ID; looked up via LEGACY_SUBREGION_SLUGS)
  *   browse.asp?img|ImageID=X → /photos/X
  *   page.asp?page_ID=N       → /pages/SLUG
  *   search.asp               → /search
@@ -41,6 +46,14 @@ function gone(request: NextRequest): NextResponse {
 
 function sectionSlug(id: number): string | null {
   return SECTION_SLUGS[id] ?? null
+}
+
+function legacySiteSlug(oldId: number): string | null {
+  return LEGACY_SITE_SLUGS[oldId] ?? null
+}
+
+function legacySubregionSlug(oldId: number): string | null {
+  return LEGACY_SUBREGION_SLUGS[oldId] ?? null
 }
 
 function pageSlug(id: number): string | null {
@@ -98,7 +111,7 @@ export function middleware(request: NextRequest) {
     if (siteId) {
       const id = parseInt(siteId, 10)
       if (Number.isInteger(id)) {
-        const slug = sectionSlug(id)
+        const slug = legacySiteSlug(id)
         if (slug) return NextResponse.redirect(new URL(`/browse/${slug}`, request.url), 301)
       }
     }
@@ -107,7 +120,7 @@ export function middleware(request: NextRequest) {
     if (subRegionId) {
       const id = parseInt(subRegionId, 10)
       if (Number.isInteger(id)) {
-        const slug = sectionSlug(id)
+        const slug = legacySubregionSlug(id)
         if (slug) return NextResponse.redirect(new URL(`/browse/${slug}`, request.url), 301)
       }
     }
