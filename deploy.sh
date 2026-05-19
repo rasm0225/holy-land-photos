@@ -92,16 +92,17 @@ git pull origin main 2>&1 | tail -3
 echo "📦 Installing dependencies..."
 npm ci --production=false 2>&1 | tail -3
 
-echo "🗺  Regenerating middleware redirect maps from live DB..."
-python3 scripts/generate_redirect_maps.py
-
-# Apply any new Payload migrations against the live DB before the build,
-# so the new code can query/insert against the new schema as soon as it
-# starts up. `npx payload migrate` is a no-op if everything is already
-# applied. The `echo y |` answers Payload's one-time "you've used dev
-# push mode in the past" warning that fires the first time migrate runs.
+# Apply any new Payload migrations against the live DB BEFORE anything
+# else that reads the schema (the redirect-map generator below queries
+# `published`, which only exists after the migration runs). `npx payload
+# migrate` is a no-op if everything is already applied. The `echo y |`
+# answers Payload's one-time "you've used dev push mode in the past"
+# warning that fires the first time migrate runs.
 echo "🗄  Running Payload migrations..."
 echo y | npx payload migrate 2>&1 | tail -8
+
+echo "🗺  Regenerating middleware redirect maps from live DB..."
+python3 scripts/generate_redirect_maps.py
 
 echo "🔨 Building..."
 if ! npm run build 2>&1 | tail -5; then
