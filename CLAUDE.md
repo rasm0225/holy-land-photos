@@ -253,6 +253,22 @@ The only things that still require Peter's explicit sign-off before proceeding:
 - **Always deploy via `./deploy.sh`** — never SSH to EC2 and run `git pull` / `npm run build` by hand. The script runs a local pre-flight build, atomic-ish EC2 deploy with auto-rollback on build or healthcheck failure, and then `scripts/qa-smoke.sh` against the live site. Bypassing it loses the safety net.
 - **Do not rely on image ID naming conventions for code logic.** The existing photos follow a pattern (e.g. `TEETHN02`, `FRPALOST04`) but this is a convention Dr. Rasmussen used, not a rule. Future uploads may not follow it. Always use database lookups (e.g. querying the photos collection) rather than filename pattern matching to determine whether a file is a photo, which section it belongs to, etc.
 
+### Schema migrations — read before running
+
+When adding a field to a collection, the workflow is:
+
+1. Edit the collection `.ts` to add the field.
+2. Run `npx payload migrate:create <description>`.
+3. **Open the generated `src/migrations/*.ts` file and read every statement.** If it contains `CREATE TABLE` for tables that already exist on the live DB (`photos`, `sections`, `pages`, `news`, `site_of_the_week`, etc.) — or `DROP TABLE` in its `down()` — **do not run it**. Payload's diff generator can't always tell that the live schema is already up to date for unrelated tables and will emit a full-from-scratch script. Running it would destroy data.
+4. When that happens (it did on the May 2026 `published`-field migration), replace the generated `.ts` with a hand-written minimal `ALTER TABLE … ADD COLUMN …` (+ matching `CREATE INDEX`) for only your intended change. Keep the `.json` snapshot file — it's the next baseline for `migrate:create`.
+5. Test locally: `echo y | npx payload migrate`, then verify with `sqlite3 data/payload.db "PRAGMA table_info(<table>);"`.
+6. Commit migration + collection change together.
+7. `./deploy.sh` runs `echo y | npx payload migrate` automatically before the build, against the live DB. The DB is backed up first via the standard backup protocol if the change is destructive.
+
+### `deploy.sh` step order matters
+
+Currently: pull → install → **migrate** → regenerate redirect maps → build → stop → start → healthcheck → smoke. Migrations must run before the redirect-map generator because that script queries `sections.published`. Don't reorder without thinking through what each step reads.
+
 ## QA Tools (confirmed working)
 - **metatags.io** — validates Open Graph and Twitter Card tags; confirms social share previews
 - **validator.schema.org** — validates Schema.org structured data markup
