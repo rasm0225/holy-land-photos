@@ -8,7 +8,7 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 
 ## Functional / Must-do before launch
 
-- [ ] **Fix newsletter MailChimp integration** — server error on submit (broken since April)
+- [x] **Fix newsletter MailChimp integration** — migrated to MailChimp Marketing API v3; classic `subscribe/post-json` was deprecated and 404'd. `MAILCHIMP_API_KEY` lives in EC2 `.env`.
 - [ ] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com`
   - [x] Registrar transfer complete (`holylandphotos.org` showing in Namecheap, 2026-05-18)
   - [x] DNS records re-entered in Namecheap BasicDNS, mirroring AIT exactly so the site keeps serving from Azure unchanged (see [`docs/dns-snapshot.md`](dns-snapshot.md) Phase 1)
