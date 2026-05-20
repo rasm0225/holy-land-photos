@@ -90,9 +90,11 @@ export default function AISearchChat() {
   const [error, setError] = useState('')
   const [searchCount, setSearchCountState] = useState(0)
   const endRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     setSearchCountState(getSearchCount())
+    inputRef.current?.focus()
   }, [])
 
   useEffect(() => {
@@ -186,6 +188,7 @@ export default function AISearchChat() {
 
       <form onSubmit={send} style={{ display: 'flex', gap: 8 }}>
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}

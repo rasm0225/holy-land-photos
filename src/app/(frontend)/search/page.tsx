@@ -123,6 +123,7 @@ export default async function SearchPage({ searchParams }: Props) {
           defaultValue={query}
           placeholder="Search photos and sites\u2026"
           aria-label="Search photos and sites"
+          autoFocus
         />
         <button id="search-btn" type="submit">Search</button>
       </form>
