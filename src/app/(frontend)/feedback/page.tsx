@@ -56,7 +56,7 @@ export default function FeedbackPage() {
       <h1 className="pln-h1">Feedback</h1>
       <p className="pln-lead" style={{ maxWidth: '62ch' }}>
         Have a question, correction, or comment about the site or a photo?
-        Send a message and Dr. Rasmussen will read it personally.
+        Have feedback on the new website? Send us a message.
       </p>
 
       {status === 'success' ? (
