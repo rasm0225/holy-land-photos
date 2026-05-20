@@ -115,6 +115,11 @@ export default async function SearchPage({ searchParams }: Props) {
   return (
     <div>
       <h1 className="pln-h1" style={{ fontSize: 28, marginBottom: 16 }}>Search</h1>
+      <p className="pln-ai-blurb">
+        Use one or more singular nouns separated by spaces. Examples:{' '}
+        &ldquo;Laodicea&rdquo;, &ldquo;Laodicea Theater&rdquo;,
+        &ldquo;Athena Statue&rdquo;, or &ldquo;Jerusalem Temple Model&rdquo;.
+      </p>
 
       <form id="search-form" action="/search" method="get" className="pln-searchbox">
         <input

@@ -33,14 +33,7 @@ export default async function HomePage() {
   const recentSince = new Date()
   recentSince.setDate(recentSince.getDate() - RECENT_DAYS)
 
-  const [{ docs: topLevel }, { docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }, { docs: recentPhotos }] = await Promise.all([
-    payload.find({
-      collection: 'sections',
-      where: { and: [{ parent: { exists: false } }, published] },
-      sort: 'title',
-      limit: 0,
-      depth: 0,
-    }),
+  const [{ docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }, { docs: recentPhotos }] = await Promise.all([
     payload.find({
       collection: 'news',
       where: { active: { equals: true } },
@@ -114,13 +107,25 @@ export default async function HomePage() {
         <section>
           <h2>Browse</h2>
           <ul className="pln-list">
-            {topLevel.map((section) => (
-              <li key={section.id}>
-                <a href={`/browse/${section.slug}`}>{section.title}</a>
-              </li>
-            ))}
-            <li><a href="/site-list">Complete Site List</a></li>
             <li><a href="/search">Search</a></li>
+            <li><a href="/site-list">Complete Site List</a></li>
+            <li>
+              <a href="/ai-search">AI Search</a>{' '}
+              <span style={{
+                fontSize: 11,
+                fontFamily: 'var(--sans)',
+                textTransform: 'uppercase',
+                letterSpacing: 0.5,
+                color: 'var(--accent, #B85C2C)',
+                fontWeight: 600,
+                verticalAlign: 'middle',
+              }}>new</span>
+            </li>
+            <li><a href="/browse/browse-by-countries">Browse by Country</a></li>
+            <li><a href="/browse/daily-life-and-artifacts">Daily Life</a></li>
+            <li><a href="/browse/people">People</a></li>
+            <li><a href="/browse/atlas-images">Zondervan Atlas Images</a></li>
+            <li><a href="/browse/museums-of-the-world">Museums of the World</a></li>
           </ul>
         </section>
         {displayPages.length > 0 && (
