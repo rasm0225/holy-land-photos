@@ -40,6 +40,8 @@ type LeafletAPI = {
     addTo: (m: unknown) => unknown
     on: (event: string, fn: (e: { target: { getLatLng: () => { lat: number; lng: number } } }) => void) => void
     bindPopup: (html: string) => unknown
+    setLatLng: (latlng: [number, number]) => unknown
+    remove: () => void
   }
   divIcon: (opts: unknown) => unknown
 }
@@ -49,8 +51,9 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
   const [filter, setFilter] = useState<Filter>('pending')
   const [index, setIndex] = useState(0)
   const [saving, setSaving] = useState(false)
-  const [draftLat, setDraftLat] = useState<number | null>(null)
-  const [draftLon, setDraftLon] = useState<number | null>(null)
+  const [latText, setLatText] = useState<string>('')
+  const [lonText, setLonText] = useState<string>('')
+  const [dirty, setDirty] = useState(false)
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<ReturnType<LeafletAPI['map']> | null>(null)
   const draggablePinRef = useRef<ReturnType<LeafletAPI['marker']> | null>(null)
@@ -62,6 +65,20 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
   }, [sites, filter])
 
   const current = filtered[index]
+
+  const parsedLat = useMemo(() => {
+    if (latText.trim() === '') return null
+    const n = parseFloat(latText)
+    return Number.isFinite(n) && n >= -90 && n <= 90 ? n : null
+  }, [latText])
+  const parsedLon = useMemo(() => {
+    if (lonText.trim() === '') return null
+    const n = parseFloat(lonText)
+    return Number.isFinite(n) && n >= -180 && n <= 180 ? n : null
+  }, [lonText])
+  const inputsInvalid =
+    (latText.trim() !== '' && parsedLat == null) ||
+    (lonText.trim() !== '' && parsedLon == null)
 
   // Lazy-load Leaflet on mount (it's window-dependent so can't be SSR'd).
   useEffect(() => {
@@ -126,8 +143,9 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
       pin.addTo(map)
       pin.on('dragend', (e) => {
         const ll = e.target.getLatLng()
-        setDraftLat(ll.lat)
-        setDraftLon(ll.lng)
+        setLatText(ll.lat.toFixed(6))
+        setLonText(ll.lng.toFixed(6))
+        setDirty(true)
       })
       draggablePinRef.current = pin
     } else {
@@ -135,14 +153,46 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
     }
 
     mapInstanceRef.current = map
-    setDraftLat(null)
-    setDraftLon(null)
+    setLatText(current.current.lat != null ? current.current.lat.toString() : '')
+    setLonText(current.current.lon != null ? current.current.lon.toString() : '')
+    setDirty(false)
 
     return () => {
       map.remove()
       mapInstanceRef.current = null
+      draggablePinRef.current = null
     }
   }, [current])
+
+  // Sync the draggable pin to the typed lat/lon inputs. Only kicks in once the
+  // user has edited (dirty); on site change the map effect handles initial pin
+  // placement, so we skip to avoid creating a duplicate or flicker.
+  useEffect(() => {
+    if (!dirty) return
+    const L = leafletRef.current
+    const map = mapInstanceRef.current
+    if (!L || !map) return
+    if (parsedLat == null || parsedLon == null) {
+      if (draggablePinRef.current) {
+        draggablePinRef.current.remove()
+        draggablePinRef.current = null
+      }
+      return
+    }
+    if (draggablePinRef.current) {
+      draggablePinRef.current.setLatLng([parsedLat, parsedLon])
+    } else {
+      const pin = L.marker([parsedLat, parsedLon], { draggable: true })
+      pin.addTo(map)
+      pin.on('dragend', (e) => {
+        const ll = e.target.getLatLng()
+        setLatText(ll.lat.toFixed(6))
+        setLonText(ll.lng.toFixed(6))
+        setDirty(true)
+      })
+      draggablePinRef.current = pin
+    }
+  }, [parsedLat, parsedLon, dirty])
 
   const updateSite = useCallback((id: number, patch: Partial<GeoSite['current']>) => {
     setSites((prev) =>
@@ -160,15 +210,12 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
   const save = useCallback(
     async (action: 'approved' | 'excluded' | 'needs_research') => {
       if (!current || saving) return
+      if (action === 'approved' && (parsedLat == null || parsedLon == null)) return
       setSaving(true)
-      const lat = action === 'approved' ? (draftLat ?? current.current.lat) : null
-      const lon = action === 'approved' ? (draftLon ?? current.current.lon) : null
+      const lat = action === 'approved' ? parsedLat : null
+      const lon = action === 'approved' ? parsedLon : null
       const source =
-        action === 'approved' && draftLat != null
-          ? 'adjusted'
-          : action === 'approved'
-            ? current.current.source
-            : current.current.source
+        action === 'approved' && dirty ? 'adjusted' : current.current.source
 
       try {
         const res = await fetch(`/api/sections/${current.id}`, {
@@ -200,7 +247,7 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
         setSaving(false)
       }
     },
-    [current, draftLat, draftLon, saving, advance, updateSite],
+    [current, parsedLat, parsedLon, dirty, saving, advance, updateSite],
   )
 
   // Keyboard shortcuts: Y=approve, E=exclude, R=needs research, ← →=nav.
@@ -276,9 +323,10 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
           <div>
             <div ref={mapRef} style={{ height: 520, borderRadius: 6, border: '1px solid var(--theme-elevation-200)' }} />
             <p style={{ fontSize: 12, color: 'var(--theme-elevation-500)', marginTop: 8 }}>
-              Drag the pin to adjust. Smaller pins are alternative candidates from the geocoder
-              (click them for details). Keyboard: <kbd>Y</kbd> approve · <kbd>E</kbd> exclude ·{' '}
-              <kbd>R</kbd> needs research · <kbd>←</kbd>/<kbd>→</kbd> navigate.
+              Drag the pin or type coords on the right to adjust. Smaller pins are alternative
+              candidates from the geocoder (click them for details). Keyboard: <kbd>Y</kbd>{' '}
+              approve · <kbd>E</kbd> exclude · <kbd>R</kbd> needs research ·{' '}
+              <kbd>←</kbd>/<kbd>→</kbd> navigate.
             </p>
           </div>
           <aside>
@@ -292,12 +340,11 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
 
             <div style={{ marginTop: 14, fontSize: 13 }}>
               <strong>Current:</strong>{' '}
-              {current.current.lat != null ? (
+              {parsedLat != null && parsedLon != null ? (
                 <>
-                  {(draftLat ?? current.current.lat).toFixed(5)},{' '}
-                  {(draftLon ?? current.current.lon!).toFixed(5)}{' '}
+                  {parsedLat.toFixed(5)}, {parsedLon.toFixed(5)}{' '}
                   <span style={{ color: 'var(--theme-elevation-500)' }}>
-                    ({draftLat != null ? 'adjusted' : current.current.source || 'unknown'})
+                    ({dirty ? 'adjusted' : current.current.source || 'unknown'})
                   </span>
                 </>
               ) : (
@@ -305,10 +352,64 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
               )}
             </div>
 
-            {current.current.lat != null && current.current.lon != null && (
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center', fontSize: 12 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Lat
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={latText}
+                  onChange={(e) => {
+                    setLatText(e.target.value)
+                    setDirty(true)
+                  }}
+                  style={inputStyle(latText.trim() !== '' && parsedLat == null)}
+                />
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                Lon
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={lonText}
+                  onChange={(e) => {
+                    setLonText(e.target.value)
+                    setDirty(true)
+                  }}
+                  style={inputStyle(lonText.trim() !== '' && parsedLon == null)}
+                />
+              </label>
+              {dirty && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLatText(current.current.lat != null ? current.current.lat.toString() : '')
+                    setLonText(current.current.lon != null ? current.current.lon.toString() : '')
+                    setDirty(false)
+                  }}
+                  style={{
+                    fontSize: 11,
+                    padding: '2px 6px',
+                    border: '1px solid var(--theme-elevation-200)',
+                    background: 'transparent',
+                    borderRadius: 3,
+                    cursor: 'pointer',
+                  }}
+                >
+                  reset
+                </button>
+              )}
+            </div>
+            {inputsInvalid && (
+              <div style={{ marginTop: 4, fontSize: 11, color: '#b00' }}>
+                Lat must be -90 to 90, lon must be -180 to 180.
+              </div>
+            )}
+
+            {parsedLat != null && parsedLon != null && (
               <div style={{ marginTop: 8, display: 'flex', gap: 8, fontSize: 12 }}>
                 <a
-                  href={`https://www.google.com/maps?q=${draftLat ?? current.current.lat},${draftLon ?? current.current.lon}`}
+                  href={`https://www.google.com/maps?q=${parsedLat},${parsedLon}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--theme-elevation-700)' }}
@@ -316,7 +417,7 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
                   Google Maps ↗
                 </a>
                 <a
-                  href={`https://www.openstreetmap.org/?mlat=${draftLat ?? current.current.lat}&mlon=${draftLon ?? current.current.lon}#map=15/${draftLat ?? current.current.lat}/${draftLon ?? current.current.lon}`}
+                  href={`https://www.openstreetmap.org/?mlat=${parsedLat}&mlon=${parsedLon}#map=15/${parsedLat}/${parsedLon}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--theme-elevation-700)' }}
@@ -359,7 +460,7 @@ export const GeoReviewClient: React.FC<{ sites: GeoSite[] }> = ({ sites: initial
 
             <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               <button
-                disabled={saving || current.current.lat == null}
+                disabled={saving || parsedLat == null || parsedLon == null}
                 onClick={() => save('approved')}
                 style={btnStyle('#2d6a4f', 'white')}
               >
@@ -409,5 +510,17 @@ function btnStyle(bg: string, color: string): React.CSSProperties {
     border: 'none',
     borderRadius: 4,
     cursor: 'pointer',
+  }
+}
+
+function inputStyle(invalid: boolean): React.CSSProperties {
+  return {
+    width: 110,
+    padding: '4px 6px',
+    fontSize: 12,
+    fontFamily: 'var(--font-mono, monospace)',
+    border: `1px solid ${invalid ? '#b00' : 'var(--theme-elevation-200)'}`,
+    borderRadius: 3,
+    background: 'var(--theme-input-bg, white)',
   }
 }
