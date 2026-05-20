@@ -37,8 +37,10 @@ truth when reconstructing records in the Namecheap panel.
 | Record | Value | Why |
 |---|---|---|
 | `holylandphotos.org. TXT` | `google-site-verification=aqnxcNYOUYvx6PUTJqLnGNudbpIjAvUEeWwSxpzdQPU` | Maintains Google Search Console ownership (SEO, sitemap submission, search analytics). Losing this loses Search Console access. |
-| `img.holylandphotos.org. CNAME` | `d2upgx86s50j0k.cloudfront.net.` | Legacy image CDN. The new site doesn't use it (it serves images directly from S3), but external inbound links from books, blogs, and Google Image Search reference `img.holylandphotos.org/…` URLs. Drop it and those URLs 404. |
+| `img.holylandphotos.org. CNAME` | `d2upgx86s50j0k.cloudfront.net.` | Legacy image CDN from the old site. The new site does not use it (it uses its own `photos.holylandphotos.org` CDN — see below). Kept because external inbound links from books, blogs, and Google Image Search reference `img.holylandphotos.org/…` URLs. Drop it and those URLs 404. |
 | `_5844cfa84ae6b823469967641c6bf44d.img.holylandphotos.org. CNAME` | `_21f11cf5a9155a645e55bfaba92d5527.zzxlnyslwt.acm-validations.aws.` | AWS Certificate Manager DNS validation for the `img.` SSL cert. Required ongoing for cert auto-renewal on CloudFront. Must keep if keeping the `img` CNAME above. |
+| `photos.holylandphotos.org. CNAME` | `d38bzcfj2cy9zm.cloudfront.net.` | **New site's image CDN** (added 2026-05-20). CloudFront distribution `E1LUVR8CWQDM5E` fronting the private S3 bucket via OAC. The Next.js codebase points every photo URL at this hostname, so removing it breaks every page that renders an image. |
+| `_dff33600efab8f56daf78b432ff19e0b.photos.holylandphotos.org. CNAME` | `_77df2da8081d044ac41f37491c90b373.jkddzztszm.acm-validations.aws.` | ACM cert DNS validation for `photos.holylandphotos.org`. Required ongoing for cert auto-renewal. |
 
 ### REPLACE (new records for EC2)
 
@@ -131,6 +133,8 @@ When ready to cut over to the Next.js rebuild on EC2:
    - Google site verification TXT (preserves Search Console ownership)
    - `img` CNAME → CloudFront (legacy inbound image URLs still work)
    - `_5844cfa84ae6b823469967641c6bf44d.img` CNAME (ACM cert validation for `img`)
+   - `photos` CNAME → `d38bzcfj2cy9zm.cloudfront.net.` (new site's image CDN — every photo URL on the rebuilt site resolves through this)
+   - `_dff33600efab8f56daf78b432ff19e0b.photos` CNAME (ACM cert validation for `photos`)
 6. Wait for propagation, then `./scripts/qa-smoke.sh https://holylandphotos.org`.
 7. Once stable for 24h, raise TTLs back to 1800s.
 

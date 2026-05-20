@@ -14,10 +14,11 @@ A photography and biblical scholarship website by Dr. Carl Rasmussen, rebuilt wi
 | Framework | [Next.js](https://nextjs.org/) 15 + React 19 | Full-stack web framework |
 | CMS | [Payload CMS](https://payloadcms.com/) 3.0 | Content management, embedded in the Next.js app |
 | Database | SQLite (local file) | Fast local database via @libsql/client |
-| Image Storage | [AWS S3](https://aws.amazon.com/s3/) | 7,000+ photos (6.3 GB) |
+| Image Storage | [AWS S3](https://aws.amazon.com/s3/) (private) + [CloudFront](https://aws.amazon.com/cloudfront/) | 7,000+ photos (6.3 GB), served via `photos.holylandphotos.org` over HTTP/2+3 with long-lived cache headers |
 | AI Search | [Claude Haiku 4.5](https://anthropic.com/) | Conversational search assistant via Anthropic API |
 | Analytics | GA4 + custom logging | Google Analytics + anonymous search/page load logs |
-| Email | [MailChimp](https://mailchimp.com/) | Newsletter signup |
+| Email | [MailChimp Marketing API v3](https://mailchimp.com/developer/marketing/api/) | Newsletter signup (key in `MAILCHIMP_API_KEY` env var) |
+| Feedback | Payload `feedback` collection + on-site form | `/feedback` page with honeypot + per-IP rate limit; submissions visible in admin |
 | Hosting | AWS EC2 (t3.small) | Always-on server with nginx + Let's Encrypt SSL |
 
 ## Content
@@ -33,9 +34,10 @@ The original SQL Server CSV exports that the site was migrated from are preserve
 ## Architecture
 
 ```
-Browser → nginx (SSL termination) → Next.js/Payload (port 3000) → SQLite (local file)
-                                                                 → S3 (images)
-                                                                 → Anthropic API (AI search)
+Browser ─→ nginx (HTTP/2, SSL termination) → Next.js/Payload (port 3000) ─→ SQLite (local file)
+       │                                                                  ├─→ Anthropic API (AI search)
+       │                                                                  └─→ MailChimp API v3 (newsletter)
+       └─→ CloudFront → S3 bucket (private, OAC-only)   (photos.holylandphotos.org)
 ```
 
 The site runs on a single EC2 instance. The database is a local SQLite file, eliminating the network latency that caused slow page loads when using a remote database (Turso). Page loads are typically under 200ms.
@@ -84,6 +86,9 @@ S3_REGION=us-east-2
 
 # Anthropic (for AI search)
 ANTHROPIC_API_KEY=sk-ant-...
+
+# MailChimp (newsletter signup; key suffix encodes the datacenter, e.g. -us15)
+MAILCHIMP_API_KEY=...
 ```
 
 ## Project Structure
@@ -100,6 +105,7 @@ holy-land-photos/
         search/                  # Keyword search with word-boundary matching
         ai-search/               # AI-powered conversational search (Claude Haiku)
         newsletter/              # MailChimp newsletter signup
+        feedback/                # On-site feedback form, writes to Payload `feedback` collection
         news/, news/[id]/        # News listing and detail
         site-of-the-week/        # STW listing
         site-list/               # Full section hierarchy
@@ -107,7 +113,8 @@ holy-land-photos/
         pages/[slug]/            # Static pages
         api/
           ai-search/             # Claude API endpoint with tool use
-          newsletter/            # MailChimp proxy endpoint
+          newsletter/            # MailChimp v3 subscribe proxy
+          feedback/              # Feedback-form endpoint (honeypot + per-IP rate limit)
           page-log/              # Anonymous page load timing collector
         components/
           PhotoSlideshow.tsx      # Auto-advancing carousel (News + SOTW on homepage)
@@ -122,6 +129,7 @@ holy-land-photos/
       Pages.ts                   # Static pages
       News.ts                    # News articles with image galleries
       SiteOfTheWeek.ts           # Featured sites
+      Feedback.ts                # Public feedback form submissions (admin-only read)
       Users.ts                   # Admin users
     components/
       SectionHierarchy/          # Custom admin tree view
@@ -221,9 +229,23 @@ ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13
 - **App directory:** /home/ec2-user/app
 - **Database:** /home/ec2-user/data/payload.db
 - **Process manager:** pm2 (process name: hlp)
-- **Reverse proxy:** nginx with Let's Encrypt SSL
+- **Reverse proxy:** nginx with Let's Encrypt SSL, HTTP/2 enabled (`http2 on;` in `/etc/nginx/conf.d/hlp.conf`)
 - **Backups:** Daily SQLite dump to S3 at 2 AM UTC (30-day retention)
 - **Backup location:** s3://hlp-dev-photos-335804564725-us-east-2-an/backups/db/
+
+### Image CDN (CloudFront)
+
+Photos are served via CloudFront at `photos.holylandphotos.org` (origin: the S3 bucket, locked to OAC-only). Configuration:
+
+- **CloudFront distribution:** `E1LUVR8CWQDM5E` (`d38bzcfj2cy9zm.cloudfront.net`)
+- **Origin Access Control:** `E37VLT7Z4KTS7M` — the bucket's only allowed reader
+- **Response headers policy:** `90554b79-04f1-4ec9-84cc-d607d770f642` — injects `Cache-Control: public, max-age=31536000` on every response
+- **ACM cert (us-east-1):** `arn:aws:acm:us-east-1:335804564725:certificate/80a19808-0710-455c-876f-5eaeb3fb0028` — DNS-validated via `_dff33600efab8f56daf78b432ff19e0b.photos.holylandphotos.org` CNAME (must stay in Namecheap for auto-renewal)
+- **DNS:** `photos.holylandphotos.org` CNAME → `d38bzcfj2cy9zm.cloudfront.net.` (Namecheap)
+- **HTTP versions served:** HTTP/2 + HTTP/3
+- **S3 bucket access:** Block Public Access enabled; only CloudFront can read (via signed `cloudfront.amazonaws.com` principal in the bucket policy).
+
+The CDN URL is referenced as the `S3_BASE` const in 12 page/component files plus `next.config.mjs` and `payload.config.ts`'s `s3Storage.generateFileURL`. If you ever switch CDNs, update all of them — there's no central helper today.
 
 ### Payload Commands
 
