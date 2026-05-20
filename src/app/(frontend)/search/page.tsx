@@ -121,7 +121,7 @@ export default async function SearchPage({ searchParams }: Props) {
           type="text"
           name="q"
           defaultValue={query}
-          placeholder="Search photos and sites\u2026"
+          placeholder="Search photos and sites…"
           aria-label="Search photos and sites"
           autoFocus
         />
