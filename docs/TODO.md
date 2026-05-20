@@ -9,12 +9,11 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 ## Functional / Must-do before launch
 
 - [x] **Fix newsletter MailChimp integration** — migrated to MailChimp Marketing API v3; classic `subscribe/post-json` was deprecated and 404'd. `MAILCHIMP_API_KEY` lives in EC2 `.env`.
-- [ ] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com`
-  - [x] Registrar transfer complete (`holylandphotos.org` showing in Namecheap, 2026-05-18)
+- [x] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com`
+  - [x] Registrar transfer complete for both domains (`holylandphotos.org` 2026-05-18; `holylandarchive.com` 2026-05-20)
   - [x] DNS records re-entered in Namecheap BasicDNS, mirroring AIT exactly so the site keeps serving from Azure unchanged (see [`docs/dns-snapshot.md`](dns-snapshot.md) Phase 1)
   - [x] Nameserver propagation complete (2026-05-18) — confirmed on local resolver + Google 8.8.8.8 + Cloudflare 1.1.1.1 + Quad9 9.9.9.9, all returning `dns1.registrar-servers.com` / `dns2.registrar-servers.com`. Site stayed HTTP 200 throughout.
   - [ ] Leave AIT cPanel records in place for ~1-2 weeks as a fallback, then close out the AIT account.
-  - [ ] `holylandarchive.com` still pending transfer.
 - [ ] **Launch: point holylandphotos.org at EC2** — follow the cut-over checklist at the bottom of [`docs/dns-snapshot.md`](dns-snapshot.md). Change A to `18.220.101.13`, get Let's Encrypt cert, update nginx.
 - [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects
 - [ ] **Decide on `holylandarchive.com`** — keep and redirect to holylandphotos.org, or let it lapse?
@@ -57,5 +56,5 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 - [x] **Recent Additions page** — `/pages/recent-additions` shows recently added photos with 7 / 30 / 60 day filters
 - [ ] **RSS feed at `/rss/`** — replicate the legacy ASP RSS 2.0 feed. Spec captured in [`docs/rss-feed-spec.md`](rss-feed-spec.md). Existing subscribers (RSS readers, aggregators) consume this URL today; we need it to keep working after the EC2 launch.
 - [ ] **AI-suggested alternate spellings/tags** — on-save hook for transliterations
-- [ ] **Feedback form** — replace mailto link with a web form
+- [x] **Feedback form** — on-site form at `/feedback` writes to a `Feedback` Payload collection. Footer/drawer "Feedback" links updated; mailto removed (except on `/gone` page). Honeypot + per-IP rate limit guard against bot spam.
 - [ ] **Payment/accounts for AI search** — Stripe integration if usage warrants it
