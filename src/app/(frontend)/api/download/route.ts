@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+const S3_BASE = 'https://photos.holylandphotos.org'
 
 export async function GET(req: NextRequest) {
   const imageId = req.nextUrl.searchParams.get('id')

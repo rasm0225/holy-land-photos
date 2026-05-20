@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 import { publishedFilter } from '@/lib/viewer'
 
-const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+const S3_BASE = 'https://photos.holylandphotos.org'
 
 const RANGES = [7, 30, 60] as const
 type Range = (typeof RANGES)[number]

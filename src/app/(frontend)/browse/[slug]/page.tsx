@@ -8,7 +8,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
 
-const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+const S3_BASE = 'https://photos.holylandphotos.org'
 
 type Props = {
   params: Promise<{ slug: string }>

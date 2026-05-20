@@ -13,7 +13,7 @@ import AskTheArchive from './components/AskTheArchive'
 
 export const dynamic = 'force-dynamic'
 
-const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+const S3_BASE = 'https://photos.holylandphotos.org'
 
 export const metadata: Metadata = {
   title: 'Holy Land Photos — Free High-Resolution Photos of the Biblical World',

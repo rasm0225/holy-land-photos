@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRowLabel } from '@payloadcms/ui'
 
-const S3_BASE = 'https://hlp-dev-photos-335804564725-us-east-2-an.s3.us-east-2.amazonaws.com'
+const S3_BASE = 'https://photos.holylandphotos.org'
 
 export const PhotoRowLabel: React.FC = () => {
   const { data } = useRowLabel<{ photo?: { title?: string; imageId?: string } | number | string }>()
