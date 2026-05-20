@@ -74,6 +74,7 @@ export interface Config {
     pages: Page;
     news: News;
     'site-of-the-week': SiteOfTheWeek;
+    feedback: Feedback;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -88,6 +89,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
     'site-of-the-week': SiteOfTheWeekSelect<false> | SiteOfTheWeekSelect<true>;
+    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -463,6 +465,27 @@ export interface SiteOfTheWeek {
   createdAt: string;
 }
 /**
+ * Messages submitted via the public /feedback form. Public can create via the API route; only logged-in admins can view or edit here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: number;
+  status?: ('new' | 'read' | 'replied' | 'archived') | null;
+  name: string;
+  email: string;
+  subject?: string | null;
+  message: string;
+  /**
+   * IP of the submitter (for spam triage).
+   */
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -513,6 +536,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'site-of-the-week';
         value: number | SiteOfTheWeek;
+      } | null)
+    | ({
+        relationTo: 'feedback';
+        value: number | Feedback;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -704,6 +731,21 @@ export interface SiteOfTheWeekSelect<T extends boolean = true> {
   body?: T;
   htmlBody?: T;
   isCurrent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback_select".
+ */
+export interface FeedbackSelect<T extends boolean = true> {
+  status?: T;
+  name?: T;
+  email?: T;
+  subject?: T;
+  message?: T;
+  ipAddress?: T;
+  userAgent?: T;
   updatedAt?: T;
   createdAt?: T;
 }

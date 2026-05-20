@@ -15,6 +15,7 @@ import { SectionPhotos } from './src/collections/SectionPhotos'
 import { Pages } from './src/collections/Pages'
 import { News } from './src/collections/News'
 import { SiteOfTheWeek } from './src/collections/SiteOfTheWeek'
+import { Feedback } from './src/collections/Feedback'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -65,6 +66,7 @@ export default buildConfig({
     Pages,
     News,
     SiteOfTheWeek,
+    Feedback,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

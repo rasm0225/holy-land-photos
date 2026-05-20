@@ -99,7 +99,8 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           <a href="/pages/about-this-site">About</a>
           <a href="/pages/permission-to-use">Permission to Use</a>
           <a href="/news">News</a>
-          <a href="mailto:holylandphotos@gmail.com?subject=Feedback">Feedback</a>
+          <a href="/newsletter">Newsletter</a>
+          <a href="/feedback">Feedback</a>
         </footer>
 
         <PageLogger />

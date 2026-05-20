@@ -82,7 +82,7 @@ export default function MobileDrawer() {
               <a className="mpln-drawer-link" href="/pages/permission-to-use" onClick={close}>Permission to Use</a>
               <a className="mpln-drawer-link" href="/news" onClick={close}>News</a>
               <a className="mpln-drawer-link" href="/newsletter" onClick={close}>Newsletter</a>
-              <a className="mpln-drawer-link" href="mailto:holylandphotos@gmail.com?subject=Feedback" onClick={close}>Feedback</a>
+              <a className="mpln-drawer-link" href="/feedback" onClick={close}>Feedback</a>
             </div>
 
             <div className="mpln-drawer-foot">
