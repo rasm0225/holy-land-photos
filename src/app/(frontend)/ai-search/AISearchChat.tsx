@@ -89,17 +89,51 @@ export default function AISearchChat() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searchCount, setSearchCountState] = useState(0)
+  const [freshIndex, setFreshIndex] = useState<number | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const latestAssistantRef = useRef<HTMLDivElement>(null)
+  const prevAssistantCount = useRef(0)
 
   useEffect(() => {
     setSearchCountState(getSearchCount())
     inputRef.current?.focus()
   }, [])
 
+  // Two scroll behaviors:
+  //  - User just sent a message (or is loading): pin to the bottom so the user
+  //    sees their own message and the "Searching…" indicator.
+  //  - A new assistant message just arrived: scroll the top of THAT message
+  //    into view so the user lands at the start of the new answer rather than
+  //    at the bottom of a long response. Also flag it as "fresh" for a few
+  //    seconds so a coloured border draws the eye.
   useEffect(() => {
+    const assistantCount = messages.filter((m) => m.role === 'assistant').length
+    const newAssistantArrived = assistantCount > prevAssistantCount.current
+    prevAssistantCount.current = assistantCount
+
+    if (newAssistantArrived) {
+      setFreshIndex(messages.length - 1)
+      // setTimeout lets the layout settle before measuring scroll positions.
+      const scrollT = setTimeout(() => {
+        latestAssistantRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 50)
+      const fadeT = setTimeout(() => setFreshIndex(null), 4000)
+      return () => {
+        clearTimeout(scrollT)
+        clearTimeout(fadeT)
+      }
+    }
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
+
+  function resetConversation() {
+    setMessages([])
+    setError('')
+    setInput('')
+    setFreshIndex(null)
+    inputRef.current?.focus()
+  }
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -138,8 +172,37 @@ export default function AISearchChat() {
 
   const hasContent = messages.length > 0 || loading || error
 
+  let lastAssistantIdx = -1
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].role === 'assistant') {
+      lastAssistantIdx = i
+      break
+    }
+  }
+
   return (
     <div style={{ maxWidth: 800 }}>
+      {hasContent && messages.length > 0 && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+          <button
+            type="button"
+            onClick={resetConversation}
+            disabled={loading}
+            style={{
+              fontSize: 12,
+              fontFamily: 'var(--sans)',
+              padding: '4px 10px',
+              background: 'transparent',
+              border: '1px solid #ccc',
+              borderRadius: 3,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              color: '#555',
+            }}
+          >
+            New conversation
+          </button>
+        </div>
+      )}
       {hasContent && (
         <div
           style={{
@@ -155,12 +218,17 @@ export default function AISearchChat() {
           {messages.map((m, i) => (
             <div
               key={i}
+              ref={i === lastAssistantIdx ? latestAssistantRef : null}
               style={{
                 marginBottom: '1rem',
                 padding: '0.75rem 1rem',
                 borderRadius: 4,
                 background: m.role === 'user' ? '#e6f0ff' : '#fff',
                 border: '1px solid #e0e0e0',
+                borderLeft: '3px solid',
+                borderLeftColor:
+                  i === freshIndex ? 'var(--accent, #B85C2C)' : 'transparent',
+                transition: 'border-left-color 1.5s ease-out',
               }}
             >
               <div style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', marginBottom: 4, display: 'flex', justifyContent: 'space-between' }}>
