@@ -7,7 +7,12 @@
 #   ./scripts/qa-smoke.sh https://localhost:3000   # tests local dev
 #   ./scripts/qa-smoke.sh https://staging...       # tests anything else
 
-set -uo pipefail
+# No `pipefail` here: the content checks rely on `body | grep -q PATTERN`,
+# and `grep -q` exits early once it finds the match. That sends SIGPIPE to
+# the upstream curl, which exits non-zero — under pipefail the whole pipe
+# then reads as a failure even though grep found what it was looking for.
+# The race depends on response size + timing, so it shows up intermittently.
+set -u
 
 BASE_URL="${1:-https://hlp.everyphere.com}"
 BASE_URL="${BASE_URL%/}"
