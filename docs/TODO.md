@@ -10,7 +10,7 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 
 ## Post-launch follow-ups
 
-- [ ] **Convert SSL cert to HTTP-01 auto-renewal.** Cert was issued via manual DNS-01 (so we could pre-stage before flipping DNS). It will not auto-renew. Either re-run with `--preferred-challenges http` now that DNS resolves to EC2, or just `sudo certbot certonly --webroot ... -d holylandphotos.org -d www.holylandphotos.org`. Expires **2026-08-20**.
+- [x] **Convert SSL cert to HTTP-01 auto-renewal** (done 2026-05-22). Cert re-issued via `certbot --nginx`, renewal config switched from `authenticator=manual` to `authenticator=nginx`, `certbot-renew.timer` enabled. Renewal runs daily; certbot only actually contacts Let's Encrypt when the cert is within 30 days of expiry.
 - [ ] **Raise TTLs back to 1800s** at Namecheap once the launch has stabilised (24h+). Currently 60s on both A records as a fast-rollback hedge.
 - [ ] **Email Carl the Azure fallback URL:** `https://hlp-web.azurewebsites.net/` (still functional until Jesse decommissions).
 - [ ] **+1 month: ping Jesse to decommission Azure App Service.** Confirms the old site is no longer needed and stops the monthly bill.
