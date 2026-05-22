@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 import { publishedFilter } from '@/lib/viewer'
 import { photoSrc } from '@/lib/photoSrc'
+import { EXCLUDE_FROM_RECENT_IMAGE_IDS } from '@/lib/recentExcludes'
 
 const RANGES = [7, 30, 60] as const
 type Range = (typeof RANGES)[number]
@@ -37,7 +38,13 @@ export default async function RecentAdditions({ range: requested }: { range?: st
   const { docs: photos, totalDocs } = await payload.find({
     collection: 'photos',
     where: {
-      and: [{ createdAt: { greater_than: since.toISOString() } }, published],
+      and: [
+        { createdAt: { greater_than: since.toISOString() } },
+        ...(EXCLUDE_FROM_RECENT_IMAGE_IDS.length > 0
+          ? [{ imageId: { not_in: EXCLUDE_FROM_RECENT_IMAGE_IDS } }]
+          : []),
+        published,
+      ],
     },
     sort: '-createdAt',
     limit: 500,

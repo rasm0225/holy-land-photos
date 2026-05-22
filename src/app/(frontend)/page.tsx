@@ -11,6 +11,7 @@ const RECENT_DAYS = 7
 const RECENT_LIMIT = 12
 import AskTheArchive from './components/AskTheArchive'
 import { S3_BASE, photoSrc } from '@/lib/photoSrc'
+import { EXCLUDE_FROM_RECENT_IMAGE_IDS } from '@/lib/recentExcludes'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,7 +65,15 @@ export default async function HomePage() {
     }),
     payload.find({
       collection: 'photos',
-      where: { and: [{ createdAt: { greater_than: recentSince.toISOString() } }, published] },
+      where: {
+        and: [
+          { createdAt: { greater_than: recentSince.toISOString() } },
+          ...(EXCLUDE_FROM_RECENT_IMAGE_IDS.length > 0
+            ? [{ imageId: { not_in: EXCLUDE_FROM_RECENT_IMAGE_IDS } }]
+            : []),
+          published,
+        ],
+      },
       sort: '-createdAt',
       limit: RECENT_LIMIT,
       depth: 0,
