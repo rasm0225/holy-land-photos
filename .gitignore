@@ -20,6 +20,11 @@ src/redirect-maps.generated.ts
 scripts/geocode-all.log
 scripts/geocode-pass3.log
 
-# Claude Code worktrees
+# Claude Code worktrees + runtime state
 .claude/worktrees/
+.claude/scheduled_tasks.lock
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
 scripts/lighthouse.log
