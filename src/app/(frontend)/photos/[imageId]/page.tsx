@@ -8,8 +8,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import DownloadButton from '../../components/DownloadButton'
 import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 type Props = {
   params: Promise<{ imageId: string }>
@@ -47,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sectionTitle = sections[0]?.title
 
   const title = sectionTitle ? `${photo.title} — ${sectionTitle}` : photo.title
-  const imageUrl = `${S3_BASE}/${photo.imageId}.jpg`
+  const imageUrl = photoSrc(photo)
 
   // Strip HTML tags for description
   const htmlDesc = (photo as unknown as Record<string, unknown>).htmlDescription as string | null
@@ -212,7 +211,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     '@context': 'https://schema.org',
     '@type': 'ImageObject',
     name: photo.title,
-    contentUrl: `${S3_BASE}/${photo.imageId}.jpg`,
+    contentUrl: photoSrc(photo),
     creator: {
       '@type': 'Person',
       name: photographerName || 'Dr. Carl Rasmussen',
@@ -275,9 +274,9 @@ export default async function PhotoPage({ params, searchParams }: Props) {
       {/* Two-column: image + description */}
       <div className="pln-photopage">
         <div className="pln-photo-main">
-          <PhotoLightbox src={`${S3_BASE}/${photo.imageId}.jpg`} alt={photo.title}>
+          <PhotoLightbox src={photoSrc(photo)} alt={photo.title}>
             <Image
-              src={`${S3_BASE}/${photo.imageId}.jpg`}
+              src={photoSrc(photo)}
               alt={photo.title}
               width={800}
               height={600}

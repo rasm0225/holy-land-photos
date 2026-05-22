@@ -4,8 +4,7 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { publishedFilter } from '@/lib/viewer'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 type Props = {
   params: Promise<{ keyword: string }>
@@ -49,7 +48,7 @@ export default async function KeywordPage({ params }: Props) {
     where: { and: [{ keywords: { contains: decoded } }, published] },
     limit: 100,
     depth: 0,
-    select: { title: true, imageId: true },
+    select: { title: true, imageId: true, filename: true },
     sort: 'title',
   })
 
@@ -138,7 +137,7 @@ export default async function KeywordPage({ params }: Props) {
               return (
                 <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
                   <Image
-                    src={`${S3_BASE}/${imageId}.jpg`}
+                    src={photoSrc(photo)}
                     alt={photo.title || imageId}
                     width={200}
                     height={150}

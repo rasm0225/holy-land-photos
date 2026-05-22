@@ -3,8 +3,7 @@ import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 export const metadata: Metadata = {
   title: 'News',
@@ -40,7 +39,7 @@ export default async function NewsIndexPage() {
             <div key={item.id} className="pln-section-result">
               {thumbId && (
                 <Image
-                  src={`${S3_BASE}/${thumbId}.jpg`}
+                  src={photoSrc({ imageId: thumbId })}
                   alt={item.title}
                   width={120}
                   height={90}

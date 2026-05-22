@@ -5,8 +5,7 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { logSearch } from '@/lib/searchLog'
 import { publishedFilter } from '@/lib/viewer'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 type Props = {
   searchParams: Promise<{ q?: string }>
@@ -90,10 +89,10 @@ export default async function SearchPage({ searchParams }: Props) {
       where: photoWhere,
       limit: 400,
       depth: 0,
-      select: { title: true, imageId: true, keywords: true },
+      select: { title: true, imageId: true, filename: true, keywords: true },
       sort: 'title',
     })
-    photos = (photoDocs as Array<{ id: number; title: string; imageId: string; keywords?: string | null }>)
+    photos = (photoDocs as Array<{ id: number; title: string; imageId: string; filename?: string | null; keywords?: string | null }>)
       .filter((p) => allTermsMatch([p.title, p.keywords, p.imageId]))
       .slice(0, 100)
   }
@@ -178,7 +177,7 @@ export default async function SearchPage({ searchParams }: Props) {
               return (
                 <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
                   <Image
-                    src={`${S3_BASE}/${imageId}.jpg`}
+                    src={photoSrc(photo)}
                     alt={photo.title || imageId}
                     width={200}
                     height={150}

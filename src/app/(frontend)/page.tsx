@@ -10,10 +10,9 @@ import { publishedFilter } from '@/lib/viewer'
 const RECENT_DAYS = 7
 const RECENT_LIMIT = 12
 import AskTheArchive from './components/AskTheArchive'
+import { S3_BASE, photoSrc } from '@/lib/photoSrc'
 
 export const dynamic = 'force-dynamic'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
 
 export const metadata: Metadata = {
   title: 'Holy Land Photos — Free High-Resolution Photos of the Biblical World',
@@ -69,7 +68,7 @@ export default async function HomePage() {
       sort: '-createdAt',
       limit: RECENT_LIMIT,
       depth: 0,
-      select: { title: true, imageId: true },
+      select: { title: true, imageId: true, filename: true },
     }),
   ])
 
@@ -183,7 +182,7 @@ export default async function HomePage() {
         const section = stw.section as {
           title?: string
           slug?: string
-          photos?: Array<{ photo?: { imageId?: string; title?: string } | number }>
+          photos?: Array<{ photo?: { imageId?: string; filename?: string | null; title?: string } | number }>
         } | null
         const stwHtmlBody = (stw as unknown as Record<string, unknown>).htmlBody as string | null
 
@@ -192,8 +191,8 @@ export default async function HomePage() {
         // other photos.
         const sectionSlides: Slide[] = (section?.photos || [])
           .map((p) => (typeof p.photo === 'object' && p.photo ? p.photo : null))
-          .filter((p): p is { imageId?: string; title?: string } => !!p && !!p.imageId)
-          .map((p) => ({ imageId: p.imageId!, caption: p.title }))
+          .filter((p): p is { imageId?: string; filename?: string | null; title?: string } => !!p && !!p.imageId)
+          .map((p) => ({ imageId: p.imageId!, filename: p.filename, caption: p.title }))
 
         const featured: Slide[] = stw.imageId
           ? [{ imageId: stw.imageId, caption: section?.title }]
@@ -259,7 +258,7 @@ export default async function HomePage() {
               return (
                 <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
                   <Image
-                    src={`${S3_BASE}/${imageId}.jpg`}
+                    src={photoSrc(photo)}
                     alt={photo.title || imageId}
                     width={200}
                     height={150}

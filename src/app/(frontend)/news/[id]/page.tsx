@@ -5,8 +5,7 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -31,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Use first gallery image for OG if available
   const gallery = (news.imageGallery || []) as Array<{ imageId?: string }>
-  const ogImage = gallery[0]?.imageId ? `${S3_BASE}/${gallery[0].imageId}.jpg` : undefined
+  const ogImage = gallery[0]?.imageId ? photoSrc({ imageId: gallery[0].imageId }) : undefined
 
   return {
     title: news.title,
@@ -76,7 +75,7 @@ export default async function NewsPage({ params }: Props) {
     ? htmlBody.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 280)
     : undefined
   const articleImage = gallery[0]?.imageId
-    ? `${S3_BASE}/${gallery[0].imageId}.jpg`
+    ? photoSrc({ imageId: gallery[0].imageId })
     : undefined
   const articleJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -128,7 +127,7 @@ export default async function NewsPage({ params }: Props) {
             const content = (
               <div key={i} className="pln-thumb">
                 <Image
-                  src={`${S3_BASE}/${imageId}.jpg`}
+                  src={photoSrc({ imageId })}
                   alt={item.caption || imageId}
                   width={400}
                   height={300}

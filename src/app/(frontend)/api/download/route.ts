@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+import { photoSrc } from '@/lib/photoSrc'
 
 export async function GET(req: NextRequest) {
   const imageId = req.nextUrl.searchParams.get('id')
@@ -9,7 +10,20 @@ export async function GET(req: NextRequest) {
   }
 
   const title = req.nextUrl.searchParams.get('title') || ''
-  const s3Url = `${S3_BASE}/${imageId}.jpg`
+
+  const payload = await getPayload({ config })
+  const { docs } = await payload.find({
+    collection: 'photos',
+    where: { imageId: { equals: imageId } },
+    limit: 1,
+    depth: 0,
+    select: { imageId: true, filename: true },
+  })
+  const photo = docs[0]
+  if (!photo) {
+    return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+  }
+  const s3Url = photoSrc(photo)
 
   // Build a clean filename: TWCSEP02-Library-of-Celsus.jpg
   let filename = imageId

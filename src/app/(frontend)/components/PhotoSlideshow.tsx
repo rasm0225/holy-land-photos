@@ -2,11 +2,11 @@
 
 import Image from 'next/image'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 export type Slide = {
   imageId: string
+  filename?: string | null
   caption?: string
   href?: string
   alt?: string
@@ -49,7 +49,7 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
   if (slides.length === 0) return null
 
   const slide = slides[index]
-  const imgSrc = `${S3_BASE}/${slide.imageId}.jpg`
+  const imgSrc = photoSrc(slide)
   const alt = slide.alt || slide.caption || slide.imageId
   const href = slide.href ?? `/photos/${slide.imageId}`
 

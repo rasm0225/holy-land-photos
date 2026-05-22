@@ -7,8 +7,7 @@ import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { S3_BASE, photoSrc } from '@/lib/photoSrc'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -119,12 +118,12 @@ export default async function SectionPage({ params }: Props) {
   // 2. sectionImage filename with matching photo record — use full-res from root
   // 3. sectionImage filename only — use low-res from section/ folder
   const primaryImage = typeof section.primaryImage === 'object' && section.primaryImage
-    ? (section.primaryImage as { imageId?: string })
+    ? (section.primaryImage as { imageId?: string; filename?: string | null })
     : null
   let sectionImageSrc: string | null = null
 
-  if (primaryImage?.imageId) {
-    sectionImageSrc = `${S3_BASE}/${primaryImage.imageId}.jpg`
+  if (primaryImage?.imageId || primaryImage?.filename) {
+    sectionImageSrc = photoSrc(primaryImage)
   } else if (sectionImage) {
     sectionImageSrc = `${S3_BASE}/section/${sectionImage}`
     const imageIdFromFilename = sectionImage.replace(/\.jpg$/i, '')
@@ -145,6 +144,7 @@ export default async function SectionPage({ params }: Props) {
     photo?: {
       id: number
       imageId?: string
+      filename?: string | null
       title?: string
       published?: boolean
     } | number
@@ -316,7 +316,7 @@ export default async function SectionPage({ params }: Props) {
               return (
                 <a key={i} className="pln-thumb" href={`/photos/${imageId}?s=${slug}`}>
                   <Image
-                    src={`${S3_BASE}/${imageId}.jpg`}
+                    src={photoSrc(photo)}
                     alt={photo.title || imageId}
                     width={200}
                     height={150}

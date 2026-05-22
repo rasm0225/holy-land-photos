@@ -3,8 +3,7 @@ import config from '@payload-config'
 import Image from 'next/image'
 import React from 'react'
 import { publishedFilter } from '@/lib/viewer'
-
-const S3_BASE = 'https://photos.holylandphotos.org'
+import { photoSrc } from '@/lib/photoSrc'
 
 const RANGES = [7, 30, 60] as const
 type Range = (typeof RANGES)[number]
@@ -43,7 +42,7 @@ export default async function RecentAdditions({ range: requested }: { range?: st
     sort: '-createdAt',
     limit: 500,
     depth: 0,
-    select: { title: true, imageId: true, createdAt: true },
+    select: { title: true, imageId: true, filename: true, createdAt: true },
   })
 
   const linkStyle = (active: boolean): React.CSSProperties => ({
@@ -92,7 +91,7 @@ export default async function RecentAdditions({ range: requested }: { range?: st
             return (
               <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
                 <Image
-                  src={`${S3_BASE}/${imageId}.jpg`}
+                  src={photoSrc(photo)}
                   alt={photo.title || imageId}
                   width={200}
                   height={150}
