@@ -6,7 +6,7 @@ Three flavors:
 2. **Per-deploy smoke** — 90 seconds after every `./deploy.sh`.
 3. **Per-feature** — when a specific area changes (lightbox, search, mobile nav, etc.).
 
-Run on the live URL (`https://hlp.everyphere.com` until launch, then `https://holylandphotos.org`). Use an **incognito window** for anything where logged-in vs logged-out matters — the admin "Edit" link in the nav is a good logged-in/logged-out canary.
+Run on the live URL (`https://holylandphotos.org`). Use an **incognito window** for anything where logged-in vs logged-out matters — the admin "Edit" link in the nav is a good logged-in/logged-out canary.
 
 Each item is tagged with who can do it: `[auto]` runs from `scripts/qa-smoke.sh`, `[claude]` is something Claude can do via the browser preview tool, `[you]` needs a real device or human judgment.
 
@@ -17,7 +17,7 @@ Each item is tagged with who can do it: `[auto]` runs from `scripts/qa-smoke.sh`
 Most of this runs automatically:
 
 ```bash
-./scripts/qa-smoke.sh                        # tests prod (hlp.everyphere.com)
+./scripts/qa-smoke.sh                        # tests prod (holylandphotos.org)
 ./scripts/qa-smoke.sh https://localhost:3000 # tests local dev
 ```
 

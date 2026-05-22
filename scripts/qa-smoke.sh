@@ -14,7 +14,7 @@
 # The race depends on response size + timing, so it shows up intermittently.
 set -u
 
-BASE_URL="${1:-https://hlp.everyphere.com}"
+BASE_URL="${1:-https://holylandphotos.org}"
 BASE_URL="${BASE_URL%/}"
 
 PASS=0
