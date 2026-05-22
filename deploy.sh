@@ -128,10 +128,6 @@ if [ "$STATUS" = "200" ]; then
   echo ""
   echo "✅ Deploy successful! Site is live."
   echo "   Homepage: ${LOAD}s"
-  # Warm the photo route — the post-deploy smoke check hits it, and a cold
-  # first render right after pm2 restart has been observed to return partial
-  # content that fails the "Added: YYYY" + ImageObject JSON-LD checks.
-  curl -s -o /dev/null http://localhost:3000/photos/IJNTMZSP09 || true
 else
   cleanup_failed_deploy "Homepage returned HTTP $STATUS after restart."
 fi
