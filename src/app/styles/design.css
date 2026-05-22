@@ -66,7 +66,7 @@ img { display: block; max-width: 100%; }
 }
 .pln-brand {
   display: flex; flex-direction: column; gap: 1px;
-  text-decoration: none !important; color: var(--ink); margin-right: auto;
+  text-decoration: none !important; color: var(--ink);
 }
 .pln-brand-name {
   font-family: var(--serif);
@@ -81,7 +81,11 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-.pln-nav-links { display: flex; gap: 24px; align-items: center; }
+.pln-nav-links {
+  display: flex; gap: 24px; align-items: center;
+  border-left: 1px solid var(--line);
+  padding-left: 28px;
+}
 .pln-nav-links a { color: var(--ink); font-weight: 500; text-decoration: none; }
 .pln-nav-links a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 
