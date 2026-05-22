@@ -43,6 +43,8 @@ if [ "${SKIP_LOCAL_BUILD:-0}" != "1" ]; then
   elif [ ! -f src/redirect-maps.generated.ts ]; then
     cat > src/redirect-maps.generated.ts <<'STUB'
 export const SECTION_SLUGS: Readonly<Record<number, string>> = {}
+export const LEGACY_SITE_SLUGS: Readonly<Record<number, string>> = {}
+export const LEGACY_SUBREGION_SLUGS: Readonly<Record<number, string>> = {}
 export const PAGE_SLUGS: Readonly<Record<number, string>> = {}
 STUB
   fi

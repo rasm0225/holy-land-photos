@@ -26,6 +26,8 @@ jobs:
         run: |
           cat > src/redirect-maps.generated.ts <<'EOF'
           export const SECTION_SLUGS: Readonly<Record<number, string>> = {}
+          export const LEGACY_SITE_SLUGS: Readonly<Record<number, string>> = {}
+          export const LEGACY_SUBREGION_SLUGS: Readonly<Record<number, string>> = {}
           export const PAGE_SLUGS: Readonly<Record<number, string>> = {}
           EOF
 
