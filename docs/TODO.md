@@ -16,7 +16,6 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
   - [ ] Leave AIT cPanel records in place for ~1-2 weeks as a fallback, then close out the AIT account.
 - [ ] **Launch: point holylandphotos.org at EC2** — follow the cut-over checklist at the bottom of [`docs/dns-snapshot.md`](dns-snapshot.md). Change A to `18.220.101.13`, get Let's Encrypt cert, update nginx.
 - [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects
-- [ ] **Decide on `holylandarchive.com`** — keep and redirect to holylandphotos.org, or let it lapse?
 
 ## Design / UI
 
@@ -58,3 +57,4 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 - [ ] **AI-suggested alternate spellings/tags** — on-save hook for transliterations
 - [x] **Feedback form** — on-site form at `/feedback` writes to a `Feedback` Payload collection. Footer/drawer "Feedback" links updated; mailto removed (except on `/gone` page). Honeypot + per-IP rate limit guard against bot spam.
 - [ ] **Payment/accounts for AI search** — Stripe integration if usage warrants it
+- [ ] **Decide on `holylandarchive.com`** — keep and redirect to holylandphotos.org, or let it lapse?
