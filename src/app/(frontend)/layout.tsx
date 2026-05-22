@@ -72,6 +72,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
               <span className="pln-brand-tag">Biblical &amp; Archaeological Archive</span>
             </a>
             <nav className="pln-nav-links">
+              <a href="/">Home</a>
               <a href="/search">Search</a>
               <a href="/ai-search">AI Search</a>
               <a href="/pages/about-this-site">About</a>
