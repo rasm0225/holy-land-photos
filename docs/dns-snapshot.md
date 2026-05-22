@@ -68,19 +68,18 @@ truth when reconstructing records in the Namecheap panel.
 
 ---
 
-## Current state (2026-05-18)
+## Current state (2026-05-22, post-launch)
 
-- **Registrar:** Namecheap ✓ (transferred from AIT/DMT)
-- **DNS authority:** still AIT — nameservers `ns0.nameservices.net` / `ns1.nameservices.net`. Namecheap's Advanced DNS panel is empty and prompts "Change DNS Type" to take over.
-- **A record:** still `20.40.202.31` (old Azure). Live site at `holylandphotos.org` continues to work because the AIT nameservers are still authoritative and the old hosting is still up.
-- **EC2:** running at `18.220.101.13`, currently reachable only as `hlp.everyphere.com`. **Not yet the production site.**
+- **Registrar:** Namecheap ✓
+- **DNS authority:** Namecheap (`dns1.registrar-servers.com` / `dns2.registrar-servers.com`) ✓
+- **A records:** `holylandphotos.org` and `www.holylandphotos.org` → `18.220.101.13` (EC2). TTL still 60s as a fast-rollback hedge; raise to 1800s a few days after launch.
+- **Azure records:** removed (`awverify` CNAME, `*` wildcard CNAME, `asuid` TXT, `hlp.azurewebsites.net` TXT, `test` TXT).
+- **Kept records:** `google-site-verification` TXT, `img` CNAME (legacy image-URL CDN), `photos` CNAME (new image CDN), the two ACM-validation CNAMEs, `images` CNAME (imgix).
+- **SSL:** Let's Encrypt cert for `holylandphotos.org` + `www.holylandphotos.org`, valid until 2026-08-20. Issued via manual DNS-01 challenge; auto-renewal **not** wired yet (post-launch follow-up — switch to HTTP-01 now that DNS resolves to EC2).
+- **EC2 nginx:** vhost in `/etc/nginx/conf.d/holylandphotos.conf` (apex serves, www 301→apex, HTTP 301→HTTPS). The old `hlp.conf` for `hlp.everyphere.com` is moved to `hlp.conf.bak-*` and the catch-all default server lives in `default.conf`.
+- **Old Azure site:** still reachable at `https://hlp-web.azurewebsites.net/` as Carl's fallback. To be decommissioned by Jesse ~1 month after launch.
 
-The migration is happening in two distinct phases:
-
-1. **Phase 1 (now):** Move DNS authority from AIT to Namecheap. Site keeps serving from Azure.
-2. **Phase 2 (later, on launch day):** Cut the A record over to EC2. Site moves from Azure to the Next.js rebuild.
-
-This separation lets the DNS move happen calmly without coupling it to the launch.
+The cut-over took place on **2026-05-22**. The phased plan below is preserved as historical record of how the move was sequenced.
 
 ## Phase 1 — DNS-only move to Namecheap (no launch yet)
 

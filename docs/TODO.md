@@ -1,21 +1,30 @@
 # Holy Land Photos — Consolidated TODO List
 
-Last updated: 2026-05-13
+Last updated: 2026-05-22 (post-launch)
+
+🚀 **Live at https://holylandphotos.org since 2026-05-22.**
 
 See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag improvements split out from this list.
 
 ---
 
-## Functional / Must-do before launch
+## Post-launch follow-ups
+
+- [ ] **Convert SSL cert to HTTP-01 auto-renewal.** Cert was issued via manual DNS-01 (so we could pre-stage before flipping DNS). It will not auto-renew. Either re-run with `--preferred-challenges http` now that DNS resolves to EC2, or just `sudo certbot certonly --webroot ... -d holylandphotos.org -d www.holylandphotos.org`. Expires **2026-08-20**.
+- [ ] **Raise TTLs back to 1800s** at Namecheap once the launch has stabilised (24h+). Currently 60s on both A records as a fast-rollback hedge.
+- [ ] **Email Carl the Azure fallback URL:** `https://hlp-web.azurewebsites.net/` (still functional until Jesse decommissions).
+- [ ] **+1 month: ping Jesse to decommission Azure App Service.** Confirms the old site is no longer needed and stops the monthly bill.
+- [ ] **Submit sitemap to Search Console.** `https://holylandphotos.org/sitemap.xml`. (Property ownership preserved via the kept `google-site-verification` TXT record.)
+- [ ] **Close out AIT cPanel account** after ~1-2 weeks of confirmed stability. Old DNS records there are no longer authoritative.
+- [ ] **Clean up the duplicate `google-site-verification` TXT** at Namecheap — the one with the prefix in the Host field. Harmless, but dead weight.
+
+## Functional (launch complete)
 
 - [x] **Fix newsletter MailChimp integration** — migrated to MailChimp Marketing API v3; classic `subscribe/post-json` was deprecated and 404'd. `MAILCHIMP_API_KEY` lives in EC2 `.env`.
-- [x] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com`
-  - [x] Registrar transfer complete for both domains (`holylandphotos.org` 2026-05-18; `holylandarchive.com` 2026-05-20)
-  - [x] DNS records re-entered in Namecheap BasicDNS, mirroring AIT exactly so the site keeps serving from Azure unchanged (see [`docs/dns-snapshot.md`](dns-snapshot.md) Phase 1)
-  - [x] Nameserver propagation complete (2026-05-18) — confirmed on local resolver + Google 8.8.8.8 + Cloudflare 1.1.1.1 + Quad9 9.9.9.9, all returning `dns1.registrar-servers.com` / `dns2.registrar-servers.com`. Site stayed HTTP 200 throughout.
-  - [ ] Leave AIT cPanel records in place for ~1-2 weeks as a fallback, then close out the AIT account.
-- [ ] **Launch: point holylandphotos.org at EC2** — follow the cut-over checklist at the bottom of [`docs/dns-snapshot.md`](dns-snapshot.md). Change A to `18.220.101.13`, get Let's Encrypt cert, update nginx.
-- [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects
+- [x] **Transfer domains to Namecheap** — `holylandphotos.org` and `holylandarchive.com` (both done 2026-05-18 / 2026-05-20).
+- [x] **Launch: point holylandphotos.org at EC2** — done 2026-05-22. A records flipped, Azure-specific records removed, Let's Encrypt cert issued, nginx serving on apex + www with HTTPS. See [`docs/dns-snapshot.md`](dns-snapshot.md).
+- [x] **Old ASP URL redirects** — middleware handles go.asp, browse.asp, page.asp, search.asp, whats_new.asp with 301 redirects. Also rewrote 222 in-content `.asp` URLs to modern routes via `scripts/rewrite_asp_links.py`.
+- [x] **Disconnect hlp.everyphere.com** — DNS record removed at everyphere.com; nginx vhost + Let's Encrypt cert removed on EC2.
 
 ## Design / UI
 
@@ -29,7 +38,11 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 - [ ] **242 records with inline `<img>` tags** — still rendering from htmlBody, not converted to Lexical (`docs/tricky-html-content.csv`)
 - [ ] **592 section images without photo records** — low-res thumbnails in S3 `section/` folder need uploading as proper photos (`docs/section-images-without-photo-record.csv`)
 - [ ] **10 pages with missing userfile images** — also missing on old site, need originals from Dr. Rasmussen (`docs/missing-userfile-images.csv`)
-- [ ] **27 unmapped old URLs** referencing deleted sections — flag to Dr. Rasmussen
+- [ ] **27 unmapped old URLs** referencing deleted sections — flag to Dr. Rasmussen. (Note: `scripts/rewrite_asp_links.py` left 14 of these untouched in DB content; they continue to work via middleware → /gone redirect.)
+- [ ] **2 sections with broken cover-image references** — DB has `sectionImage` filename but the file is missing from S3:
+  - [`central-turkey`](https://holylandphotos.org/browse/central-turkey) (region) — `PergeTarsusPA.jpg`
+  - [`views-to-and-from-masada`](https://holylandphotos.org/browse/views-to-and-from-masada) (site) — `534_ICDSMSVS01_400.jpg`
+- [ ] **37 sections with no cover image at all** — neither `primaryImage` nor `sectionImage` set. Mostly museums, people categories, and trip pages. Carl can pick one in the admin per section.
 - [ ] **Discuss photo metadata with Dr. Rasmussen** — `year` column (separate from added-date) and `photographer` column are both empty for all 7,025 rows; alt text strategy still TBD. (Note: `created_at` is now accurate from 2001-2026, repaired from the archived ASP `image_DateAdded`.)
 
 ## DevOps / Maintenance

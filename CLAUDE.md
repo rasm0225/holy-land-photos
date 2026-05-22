@@ -15,6 +15,8 @@ A modern rebuild of holylandphotos.org — a photography and Holy Land scholarsh
 - **Supervisor:** Peter (does QA and approvals)
 - **Builder:** Claude Code
 
+**Status:** Live in production at https://holylandphotos.org since 2026-05-22. The old Azure-hosted ASP site at `hlp-web.azurewebsites.net` is still up as a fallback until Jesse decommissions it (planned ~1 month post-launch). Post-launch work is tracked in [`docs/TODO.md`](docs/TODO.md).
+
 ---
 
 ## Guiding Principles

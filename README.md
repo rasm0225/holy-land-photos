@@ -2,10 +2,11 @@
 
 A photography and biblical scholarship website by Dr. Carl Rasmussen, rebuilt with modern web technology.
 
-**Live site:** https://hlp.everyphere.com
-**CMS admin:** https://hlp.everyphere.com/admin
-**Original site:** https://holylandphotos.org
+**Live site:** https://holylandphotos.org
+**CMS admin:** https://holylandphotos.org/admin
 **GitHub:** https://github.com/rasm0225/holy-land-photos
+
+Launched 2026-05-22, replacing the legacy Azure-hosted ASP site. See [`docs/dns-snapshot.md`](docs/dns-snapshot.md) for the cut-over record.
 
 ## Tech Stack
 
@@ -148,7 +149,8 @@ holy-land-photos/
     generate_breadcrumbs.py      # Generate section breadcrumbs
     generate_redirect_maps.py    # Build-time section/page slug map for middleware (run by deploy.sh)
     migrate_news_gallery.py      # Migrate news image galleries
-    remap_urls.py                # Rewrite legacy .asp links in HTML content to new routes
+    remap_urls.py                # (legacy) Rewrite legacy .asp links in HTML content to new routes
+    rewrite_asp_links.py         # Modern .asp content rewriter; covers Lexical JSON + HTML, handles typos, idempotent
     repair_photo_dates.py        # Restore photos.created_at from archive/ ASP CSV
   archive/
     dbo.holylandphotos_*.csv     # Original ASP DB exports (March 2026), source-of-truth for migrations
@@ -208,7 +210,7 @@ The script SSHs into EC2 and runs an atomic-ish deploy:
 
 ### No separate staging environment
 
-`hlp.everyphere.com` is the only deployed environment — there is no `staging.holylandphotos.org`. With release cadence expected to be ≤ once a day initially and then weekly-to-monthly, and a 30–300s outage tolerance, a separate $15/mo EC2 instance wasn't justified. Three things take its place:
+`holylandphotos.org` is the only deployed environment — there is no `staging.holylandphotos.org`. With release cadence expected to be ≤ once a day initially and then weekly-to-monthly, and a 30–300s outage tolerance, a separate $15/mo EC2 instance wasn't justified. Three things take its place:
 
 - **Reliable local dev.** `payload.config.ts` sets `push: false` on the SQLite adapter so `npm run dev` no longer prompts to rewrite the schema and risk data loss. Local dev is the primary way to catch breakage.
 - **CI build check.** [`.github/workflows/build.yml`](.github/workflows/build.yml) runs `npm run build` on every push to `main` and every PR. Catches build/config errors (e.g. an unsupported `next.config.mjs` flag) before they hit EC2.
@@ -229,7 +231,7 @@ ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13
 - **App directory:** /home/ec2-user/app
 - **Database:** /home/ec2-user/data/payload.db
 - **Process manager:** pm2 (process name: hlp)
-- **Reverse proxy:** nginx with Let's Encrypt SSL, HTTP/2 enabled (`http2 on;` in `/etc/nginx/conf.d/hlp.conf`)
+- **Reverse proxy:** nginx with Let's Encrypt SSL, HTTP/2 enabled. Main vhost config in `/etc/nginx/conf.d/holylandphotos.conf`; default catch-all in `default.conf`.
 - **Backups:** Daily SQLite dump to S3 at 2 AM UTC (30-day retention)
 - **Backup location:** s3://hlp-dev-photos-335804564725-us-east-2-an/backups/db/
 
@@ -260,7 +262,7 @@ Schema changes go through `migrate:create` + `migrate` because Drizzle's auto-pu
 
 ## QA
 
-See [`docs/QA.md`](docs/QA.md) for the manual checklists — a 90-second per-deploy smoke test, a full pre-launch sweep, and per-feature focus runs.
+See [`docs/QA.md`](docs/QA.md) for the manual checklists — a 90-second per-deploy smoke test and per-feature focus runs.
 
 ## Pending Work
 
