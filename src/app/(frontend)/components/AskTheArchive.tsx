@@ -37,7 +37,7 @@ function renderInline(text: string): React.ReactNode[] {
   while ((m = re.exec(text)) !== null) {
     if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index))
     if (m[1] && m[2]) {
-      parts.push(<a key={key++} href={m[2]} style={{ color: 'var(--link)' }}>{m[1]}</a>)
+      parts.push(<a key={key++} href={m[2]} target="_blank" rel="noopener" style={{ color: 'var(--link)' }}>{m[1]}</a>)
     } else if (m[3]) {
       parts.push(<strong key={key++}>{renderInline(m[3])}</strong>)
     } else if (m[4]) {

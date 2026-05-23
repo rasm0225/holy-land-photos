@@ -53,7 +53,7 @@ function renderInline(text: string): React.ReactNode[] {
     if (m[1] && m[2]) {
       // Link
       parts.push(
-        <a key={key++} href={m[2]} style={{ color: '#0066cc' }}>
+        <a key={key++} href={m[2]} target="_blank" rel="noopener" style={{ color: '#0066cc' }}>
           {m[1]}
         </a>,
       )
