@@ -67,6 +67,10 @@ When adding a field to a collection, the workflow is:
 
 Currently: pull → install → **migrate** → regenerate redirect maps → build → stop → start → healthcheck → smoke. Migrations must run before the redirect-map generator because that script queries `sections.published`. Don't reorder without thinking through what each step reads.
 
+### Server-side config is NOT auto-deployed
+
+`./deploy.sh` deploys the Next.js app only. nginx configs, the cron job that refreshes the IP blocklists, and Let's Encrypt certs all live on EC2 and have to be updated manually (`scp` + `nginx -t` + `systemctl reload nginx`). Reference copies and a runbook are at [`server/README.md`](server/README.md). If you touch nginx, sync the repo afterward — and if the repo's `server/nginx/*.conf` look out of date relative to EC2, pull the EC2 versions back in (the runbook covers the exact commands).
+
 ---
 
 ## QA Tools (confirmed working)
