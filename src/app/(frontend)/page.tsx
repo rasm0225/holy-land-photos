@@ -33,17 +33,10 @@ export default async function HomePage() {
   const recentSince = new Date()
   recentSince.setDate(recentSince.getDate() - RECENT_DAYS)
 
-  const [{ docs: activeNews }, { docs: displayPages }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }, { docs: recentPhotos }] = await Promise.all([
+  const [{ docs: activeNews }, { docs: currentSTW }, { totalDocs: photoCount }, { totalDocs: siteCount }, { docs: recentPhotos }] = await Promise.all([
     payload.find({
       collection: 'news',
       where: { active: { equals: true } },
-      limit: 0,
-      depth: 0,
-    }),
-    payload.find({
-      collection: 'pages',
-      where: { display: { equals: true } },
-      sort: 'sortOrder',
       limit: 0,
       depth: 0,
     }),
@@ -105,82 +98,78 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
       <p className="pln-home-intro">
-        Free, high-resolution photographs of biblical and archaeological sites,
-        taken by Dr. Carl Rasmussen across more than four decades —{' '}
+        Free, high-resolution photographs of biblical and archaeological sites —{' '}
         {photoCount.toLocaleString()} images from {siteCount.toLocaleString()} locations in 12 countries.
       </p>
 
-      {/* Browse + Pages two-column */}
-      <div className="pln-home-cols">
-        <section>
-          <h2>Browse</h2>
-          <ul className="pln-list">
-            <li><a href="/search">Search</a></li>
-            <li><a href="/site-list">Complete Site List</a></li>
-            <li>
-              <a href="/ai-search">AI Search</a>{' '}
-              <span style={{
-                fontSize: 11,
-                fontFamily: 'var(--sans)',
-                textTransform: 'uppercase',
-                letterSpacing: 0.5,
-                color: 'var(--accent, #B85C2C)',
-                fontWeight: 600,
-                verticalAlign: 'middle',
-              }}>new</span>
-            </li>
-            <li><a href="/browse/browse-by-countries">Browse by Country</a></li>
-            <li><a href="/browse/daily-life-and-artifacts">Daily Life</a></li>
-            <li><a href="/browse/people">People</a></li>
-            <li><a href="/browse/atlas-images">Zondervan Atlas Images</a></li>
-            <li><a href="/browse/museums-of-the-world">Museums of the World</a></li>
-          </ul>
-        </section>
-        {displayPages.length > 0 && (
+      {/* Browse list — shown standalone when there's no active news,
+          or as the right column next to the news block when there is. */}
+      {(() => {
+        const browse = (
           <section>
-            <h2>Pages</h2>
+            <h2>Browse</h2>
             <ul className="pln-list">
-              {displayPages.map((page) => (
-                <li key={page.id}>
-                  <a href={`/pages/${page.slug}`}>{page.title}</a>
-                </li>
-              ))}
+              <li><a href="/search">Search</a></li>
+              <li><a href="/site-list">Complete Site List</a></li>
+              <li>
+                <a href="/ai-search">AI Search</a>{' '}
+                <span style={{
+                  fontSize: 11,
+                  fontFamily: 'var(--sans)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 0.5,
+                  color: 'var(--accent, #B85C2C)',
+                  fontWeight: 600,
+                  verticalAlign: 'middle',
+                }}>new</span>
+              </li>
+              <li><a href="/browse/browse-by-countries">Browse by Country</a></li>
+              <li><a href="/browse/daily-life-and-artifacts">Daily Life</a></li>
+              <li><a href="/browse/people">People</a></li>
+              <li><a href="/browse/atlas-images">Zondervan Atlas Images</a></li>
+              <li><a href="/browse/museums-of-the-world">Museums of the World</a></li>
             </ul>
           </section>
-        )}
-      </div>
-
-      {/* News — carousel left, body right */}
-      {activeNews.map((n) => {
-        const htmlBody = (n as unknown as Record<string, unknown>).htmlBody as string | null
-        const gallery = (n.imageGallery || []) as Array<{ imageId?: string; caption?: string; url?: string }>
-        return (
-          <section key={n.id} className="pln-feature">
-            <div>
-              <h2 className="pln-h2">
-                <a href={`/news/${n.id}`} className="muted">{n.title}</a>
-              </h2>
-              {gallery.length > 0 && (
-                <PhotoSlideshow
-                  slides={gallery
-                    .filter((g) => g.imageId)
-                    .map((g): Slide => ({
-                      imageId: g.imageId!,
-                      caption: g.caption,
-                      href: g.url,
-                    }))}
-                />
-              )}
-            </div>
-            <div>
-              {n.body && <RichText data={n.body} />}
-              {!n.body && htmlBody && (
-                <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
-              )}
-            </div>
-          </section>
         )
-      })}
+
+        if (activeNews.length === 0) {
+          return <div className="pln-home-cols">{browse}</div>
+        }
+
+        return (
+          <div className="pln-news-browse">
+            <div>
+              {activeNews.map((n) => {
+                const htmlBody = (n as unknown as Record<string, unknown>).htmlBody as string | null
+                const gallery = (n.imageGallery || []) as Array<{ imageId?: string; caption?: string; url?: string }>
+                return (
+                  <section key={n.id}>
+                    <h2 className="pln-h2">
+                      <a href={`/news/${n.id}`} className="muted">{n.title}</a>
+                    </h2>
+                    {gallery.length > 0 && (
+                      <PhotoSlideshow
+                        slides={gallery
+                          .filter((g) => g.imageId)
+                          .map((g): Slide => ({
+                            imageId: g.imageId!,
+                            caption: g.caption,
+                            href: g.url,
+                          }))}
+                      />
+                    )}
+                    {n.body && <RichText data={n.body} />}
+                    {!n.body && htmlBody && (
+                      <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
+                    )}
+                  </section>
+                )
+              })}
+            </div>
+            <aside>{browse}</aside>
+          </div>
+        )
+      })()}
 
       {/* Ask the Archive — AI Search */}
       <AskTheArchive />

@@ -8,6 +8,7 @@ import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
 import ExternalLinkHandler from './components/ExternalLinkHandler'
 import MobileDrawer from './components/MobileDrawer'
+import AboutDropdown, { type AboutDropdownItem } from './components/AboutDropdown'
 import '../styles/design.css'
 
 // All frontend routes are content-driven and need a fresh DB read on every
@@ -47,8 +48,33 @@ async function getIsLoggedIn(): Promise<boolean> {
   }
 }
 
+// Items for the desktop About dropdown — same source as the homepage
+// "Pages" section so the two stay in sync if Carl toggles `display`
+// on a page in the admin.
+async function getAboutDropdownItems(): Promise<AboutDropdownItem[]> {
+  try {
+    const payload = await getPayload({ config })
+    const { docs } = await payload.find({
+      collection: 'pages',
+      where: { display: { equals: true } },
+      sort: 'sortOrder',
+      limit: 0,
+      depth: 0,
+      select: { title: true, slug: true },
+    })
+    return docs
+      .filter((p) => p.slug)
+      .map((p) => ({ href: `/pages/${p.slug}`, label: p.title }))
+  } catch {
+    return []
+  }
+}
+
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const isLoggedIn = await getIsLoggedIn()
+  const [isLoggedIn, aboutItems] = await Promise.all([
+    getIsLoggedIn(),
+    getAboutDropdownItems(),
+  ])
 
   return (
     <html lang="en">
@@ -75,8 +101,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
               <a href="/">Home</a>
               <a href="/search">Search</a>
               <a href="/ai-search">AI Search</a>
-              <a href="/pages/about-this-site">About</a>
-              <a href="/pages/permission-to-use">Permission</a>
+              <AboutDropdown items={aboutItems} />
               <EditLink isLoggedIn={isLoggedIn} />
             </nav>
           </div>
