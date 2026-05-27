@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `"${decoded}" — Keyword`,
     description: `Browse photos and sites tagged with "${decoded}" on Holy Land Photos.`,
+    robots: { index: false, follow: true },
     openGraph: {
       title: `"${decoded}" — Holy Land Photos`,
       description: `Browse photos and sites tagged with "${decoded}".`,
