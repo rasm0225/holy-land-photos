@@ -120,19 +120,22 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
         )}
       </div>
 
-      {/* Reserve a fixed 2-line block for caption + counter so the page
+      {/* Reserve an exact 2-line block for caption + counter so the page
           below the slideshow doesn't shift as slides cycle. Caption and
           counter flow inline; if a caption is long enough to fill both
           lines, it gets ellipsis-truncated and the counter may be hidden
-          (acceptable since captions are author-controlled). */}
+          (acceptable since captions are author-controlled). Uses fixed
+          `height` (not min-height) + explicit `lineHeight` so the box
+          stays at exactly 2 × 1.3em regardless of content length. */}
       <div
         style={{
           marginTop: 4,
+          lineHeight: 1.3,
+          height: '2.6em',
           display: '-webkit-box',
           WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
           overflow: 'hidden',
-          minHeight: '2.6em',
         }}
       >
         {slide.caption && <span>{slide.caption}</span>}
