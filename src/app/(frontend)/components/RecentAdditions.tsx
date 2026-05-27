@@ -5,6 +5,7 @@ import React from 'react'
 import { publishedFilter } from '@/lib/viewer'
 import { photoSrc } from '@/lib/photoSrc'
 import { EXCLUDE_FROM_RECENT_IMAGE_IDS } from '@/lib/recentExcludes'
+import { getOneSectionPerPhoto } from '@/lib/photoSections'
 
 const RANGES = [7, 30, 60] as const
 type Range = (typeof RANGES)[number]
@@ -52,6 +53,8 @@ export default async function RecentAdditions({ range: requested }: { range?: st
     select: { title: true, imageId: true, filename: true, createdAt: true },
   })
 
+  const sectionByPhotoId = await getOneSectionPerPhoto(photos.map((p) => p.id))
+
   const linkStyle = (active: boolean): React.CSSProperties => ({
     padding: '6px 14px',
     borderRadius: 4,
@@ -95,8 +98,9 @@ export default async function RecentAdditions({ range: requested }: { range?: st
         <div className="pln-grid">
           {photos.map((photo) => {
             const imageId = photo.imageId || ''
+            const section = sectionByPhotoId.get(photo.id)
             return (
-              <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
+              <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}${section ? `?s=${section.slug}` : ''}`}>
                 <Image
                   src={photoSrc(photo)}
                   alt={photo.title || imageId}
@@ -106,6 +110,9 @@ export default async function RecentAdditions({ range: requested }: { range?: st
                   className="pln-thumb-img"
                 />
                 <span className="pln-thumb-cap">{photo.title || imageId}</span>
+                {section && (
+                  <span className="pln-thumb-cap-sub">{section.title}</span>
+                )}
                 {photo.createdAt && (
                   <span className="pln-thumb-cap-sub">{formatDate(photo.createdAt)}</span>
                 )}

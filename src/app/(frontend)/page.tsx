@@ -12,6 +12,7 @@ const RECENT_LIMIT = 12
 import AskTheArchive from './components/AskTheArchive'
 import { S3_BASE, photoSrc } from '@/lib/photoSrc'
 import { EXCLUDE_FROM_RECENT_IMAGE_IDS } from '@/lib/recentExcludes'
+import { getOneSectionPerPhoto } from '@/lib/photoSections'
 
 export const dynamic = 'force-dynamic'
 
@@ -73,6 +74,11 @@ export default async function HomePage() {
       select: { title: true, imageId: true, filename: true },
     }),
   ])
+
+  // Look up one section per recent photo to display next to the title.
+  const recentSectionByPhotoId = await getOneSectionPerPhoto(
+    recentPhotos.map((p) => p.id),
+  )
 
 
   const websiteJsonLd = {
@@ -253,8 +259,9 @@ export default async function HomePage() {
           <div className="pln-grid">
             {recentPhotos.map((photo) => {
               const imageId = photo.imageId || ''
+              const section = recentSectionByPhotoId.get(photo.id)
               return (
-                <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}`}>
+                <a key={photo.id} className="pln-thumb" href={`/photos/${imageId}${section ? `?s=${section.slug}` : ''}`}>
                   <Image
                     src={photoSrc(photo)}
                     alt={photo.title || imageId}
@@ -264,6 +271,9 @@ export default async function HomePage() {
                     className="pln-thumb-img"
                   />
                   <span className="pln-thumb-cap">{photo.title || imageId}</span>
+                  {section && (
+                    <span className="pln-thumb-cap-sub">{section.title}</span>
+                  )}
                 </a>
               )
             })}

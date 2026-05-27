@@ -61,15 +61,19 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div style={{ position: 'relative' }}>
-        <a href={href}>
+      {/* Fixed 8:5 aspect ratio so the page below doesn't jump as slides
+          cycle through images with different dimensions. object-fit: cover
+          crops to the box; portrait images get sides trimmed, landscape
+          ones get top/bottom trimmed — but the box stays put. */}
+      <div style={{ position: 'relative', aspectRatio: '8 / 5', overflow: 'hidden', background: 'var(--bg-alt)' }}>
+        <a href={href} style={{ display: 'block', width: '100%', height: '100%' }}>
           <Image
             src={imgSrc}
             alt={alt}
             width={800}
             height={500}
             sizes="(max-width: 680px) 100vw, 50vw"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         </a>
 
