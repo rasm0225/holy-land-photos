@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly refresh of nginx country + bot-ASN blocklists
+
+[Timer]
+OnCalendar=Mon *-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

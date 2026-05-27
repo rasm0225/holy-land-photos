@@ -6,10 +6,12 @@ node_modules/
 .env.local
 *.db
 .vercel
-hlp-remap*
+/hlp-remap*
 
-# Local SQLite working files (hlp-*, including -info, -shm, -wal variants)
-hlp-*
+# Local SQLite working files (hlp-*, including -info, -shm, -wal variants).
+# Anchored to repo root so we don't accidentally swallow legitimately-named
+# files under subdirectories (e.g. server/systemd/hlp-blocklist-refresh.*).
+/hlp-*
 
 # Python cache
 __pycache__/

@@ -1,0 +1,7 @@
+[Unit]
+Description=Refresh nginx country + bot-ASN blocklists
+Documentation=https://github.com/rasm0225/holy-land-photos/blob/main/server/README.md
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/refresh-country-blocklist

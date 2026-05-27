@@ -231,7 +231,7 @@ ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13
 - **App directory:** /home/ec2-user/app
 - **Database:** /home/ec2-user/data/payload.db
 - **Process manager:** pm2 (process name: hlp)
-- **Reverse proxy:** nginx with Let's Encrypt SSL, HTTP/2 enabled. Main vhost config in `/etc/nginx/conf.d/holylandphotos.conf`; default catch-all in `default.conf`. Also runs two blocklists (`00-bot-block.conf` for AI-crawler user agents and `01-country-block.conf` for Singapore + bot-ASN CIDRs, regenerated weekly by `/etc/cron.weekly/refresh-country-blocklist`). Reference copies + runbook in [`server/README.md`](server/README.md). **These are NOT auto-deployed** by `./deploy.sh` — see the runbook for the manual sync workflow.
+- **Reverse proxy:** nginx with Let's Encrypt SSL, HTTP/2 enabled. Main vhost config in `/etc/nginx/conf.d/holylandphotos.conf`; default catch-all in `default.conf`. Also runs two blocklists (`00-bot-block.conf` for AI-crawler user agents and `01-country-block.conf` for Singapore + China + Vietnam + bot-ASN CIDRs, regenerated weekly by the `hlp-blocklist-refresh.timer` systemd timer). Reference copies + runbook in [`server/README.md`](server/README.md). **These are NOT auto-deployed** by `./deploy.sh` — see the runbook for the manual sync workflow.
 - **Backups:** Daily SQLite dump to S3 at 2 AM UTC (30-day retention)
 - **Backup location:** s3://hlp-dev-photos-335804564725-us-east-2-an/backups/db/
 
