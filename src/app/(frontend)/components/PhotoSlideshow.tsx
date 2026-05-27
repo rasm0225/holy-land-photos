@@ -62,9 +62,10 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
       onBlur={() => setPaused(false)}
     >
       {/* Fixed 8:5 aspect ratio so the page below doesn't jump as slides
-          cycle through images with different dimensions. object-fit: cover
-          crops to the box; portrait images get sides trimmed, landscape
-          ones get top/bottom trimmed — but the box stays put. */}
+          cycle through images with different dimensions. object-fit: contain
+          keeps the full image visible (important for portrait shots and any
+          non-8:5 ratio) at the cost of small letterbox/pillarbox bars
+          against the background. */}
       <div style={{ position: 'relative', aspectRatio: '8 / 5', overflow: 'hidden', background: 'var(--bg-alt)' }}>
         <a href={href} style={{ display: 'block', width: '100%', height: '100%' }}>
           <Image
@@ -73,7 +74,7 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
             width={800}
             height={500}
             sizes="(max-width: 680px) 100vw, 50vw"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
           />
         </a>
 
@@ -119,7 +120,21 @@ export default function PhotoSlideshow({ slides, autoAdvanceMs = 3000 }: Props) 
         )}
       </div>
 
-      <div style={{ marginTop: 4 }}>
+      {/* Reserve a fixed 2-line block for caption + counter so the page
+          below the slideshow doesn't shift as slides cycle. Caption and
+          counter flow inline; if a caption is long enough to fill both
+          lines, it gets ellipsis-truncated and the counter may be hidden
+          (acceptable since captions are author-controlled). */}
+      <div
+        style={{
+          marginTop: 4,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          minHeight: '2.6em',
+        }}
+      >
         {slide.caption && <span>{slide.caption}</span>}
         {slides.length > 1 && (
           <span style={{ marginLeft: 8, color: '#888' }}>
