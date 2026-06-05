@@ -1,7 +1,7 @@
 import React from 'react'
 import Script from 'next/script'
 import type { Metadata } from 'next'
-import { headers as getHeaders } from 'next/headers'
+import { headers as getHeaders, cookies } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { EditLink } from './components/EditLink'
@@ -71,21 +71,41 @@ async function getAboutDropdownItems(): Promise<AboutDropdownItem[]> {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, aboutItems] = await Promise.all([
+  const [isLoggedIn, aboutItems, cookieStore] = await Promise.all([
     getIsLoggedIn(),
     getAboutDropdownItems(),
+    cookies(),
   ])
+
+  // Exclude internal (staff) traffic from Google Analytics. Anyone with a live
+  // CMS session is internal, and we stamp a long-lived `hlp_optout` cookie so
+  // that exclusion persists on that browser even after they log out. Net: the
+  // first time Carl/Peter views the live site while logged into the admin, the
+  // browser is flagged and GA ignores it from then on. Note this is per-browser
+  // — a device that never logs into the CMS still gets tracked (cover those via
+  // the GA internal-traffic IP filter instead).
+  const optedOut = cookieStore.get('hlp_optout')?.value === '1'
+  const excludeAnalytics = isLoggedIn || optedOut
 
   return (
     <html lang="en">
       <head>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-8NL9MZ67TD" strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-8NL9MZ67TD');
-        `}</Script>
+        {!excludeAnalytics && (
+          <>
+            <Script src="https://www.googletagmanager.com/gtag/js?id=G-8NL9MZ67TD" strategy="afterInteractive" />
+            <Script id="gtag-init" strategy="afterInteractive">{`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-8NL9MZ67TD');
+            `}</Script>
+          </>
+        )}
+        {isLoggedIn && (
+          <Script id="hlp-optout-set" strategy="afterInteractive">{`
+            document.cookie = "hlp_optout=1; max-age=63072000; path=/; samesite=lax";
+          `}</Script>
+        )}
       </head>
       <body>
         <a href="#main-content" className="pln-skip">Skip to content</a>

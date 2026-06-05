@@ -137,6 +137,11 @@ export interface User {
   id: number;
   name: string;
   role?: ('admin' | 'editor') | null;
+  /**
+   * Client IP recorded at last login. Use to exclude internal traffic in GA (Admin → Data Streams → Define internal traffic).
+   */
+  lastLoginIp?: string | null;
+  lastLoginAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -590,6 +595,8 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  lastLoginIp?: T;
+  lastLoginAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

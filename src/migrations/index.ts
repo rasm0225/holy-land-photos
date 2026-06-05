@@ -4,6 +4,7 @@ import * as migration_20260519_150309_add_section_geo from './20260519_150309_ad
 import * as migration_20260519_180000_add_section_legacy_old_id from './20260519_180000_add_section_legacy_old_id';
 import * as migration_20260520_202524_add_feedback_collection from './20260520_202524_add_feedback_collection';
 import * as migration_20260520_fix_keyword_statute_typo from './20260520_fix_keyword_statute_typo';
+import * as migration_20260605_160435_add_user_login_ip from './20260605_160435_add_user_login_ip';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260520_fix_keyword_statute_typo.up,
     down: migration_20260520_fix_keyword_statute_typo.down,
-    name: '20260520_fix_keyword_statute_typo'
+    name: '20260520_fix_keyword_statute_typo',
+  },
+  {
+    up: migration_20260605_160435_add_user_login_ip.up,
+    down: migration_20260605_160435_add_user_login_ip.down,
+    name: '20260605_160435_add_user_login_ip'
   },
 ];
