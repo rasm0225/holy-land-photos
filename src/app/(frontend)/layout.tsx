@@ -7,6 +7,7 @@ import config from '@payload-config'
 import { EditLink } from './components/EditLink'
 import PageLogger from './components/PageLogger'
 import ExternalLinkHandler from './components/ExternalLinkHandler'
+import FloatingAISearch from './components/FloatingAISearch'
 import MobileDrawer from './components/MobileDrawer'
 import AboutDropdown, { type AboutDropdownItem } from './components/AboutDropdown'
 import '../styles/design.css'
@@ -151,6 +152,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
         <PageLogger />
         <ExternalLinkHandler />
+        <FloatingAISearch />
       </body>
     </html>
   )
