@@ -61,6 +61,5 @@ export default function robots(): MetadataRoute.Robots {
       })),
     ],
     sitemap: 'https://holylandphotos.org/sitemap.xml',
-    host: 'https://holylandphotos.org',
   }
 }
