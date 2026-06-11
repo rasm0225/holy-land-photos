@@ -17,6 +17,30 @@ const COOKIE_NAME = 'hlp_ai_searches'
 // Remembers, per-browser, that the user has opened the bubble before, so the
 // "New — try it" attention nudge only shows to people who have never used it.
 const SEEN_COOKIE = 'hlp_ai_fab_seen'
+// The site navigates with full page loads (plain <a href>, force-dynamic), so
+// React state is wiped on every navigation. We mirror the panel's open state
+// and conversation into sessionStorage so following an answer link keeps the
+// overlay open with the conversation intact. Cleared when the tab closes.
+const STATE_KEY = 'hlp_ai_fab_state'
+
+type PersistedState = { open: boolean; messages: Message[] }
+
+function loadState(): PersistedState | null {
+  try {
+    const raw = sessionStorage.getItem(STATE_KEY)
+    return raw ? (JSON.parse(raw) as PersistedState) : null
+  } catch {
+    return null
+  }
+}
+
+function saveState(state: PersistedState) {
+  try {
+    sessionStorage.setItem(STATE_KEY, JSON.stringify(state))
+  } catch {
+    // sessionStorage may be unavailable (private mode quota) — degrade quietly.
+  }
+}
 
 function getCount(name: string): number {
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=(\\d+)`))
@@ -59,7 +83,18 @@ function renderInline(text: string): React.ReactNode[] {
   while ((m = re.exec(text)) !== null) {
     if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index))
     if (m[1] && m[2]) {
-      parts.push(<a key={key++} href={m[2]} target="_blank" rel="noopener" style={{ color: 'var(--link)' }}>{m[1]}</a>)
+      const href = m[2]
+      // Internal links navigate in the same tab so the overlay (restored from
+      // sessionStorage on the next page) stays open. External links open in a
+      // new tab so the user keeps their place on the site.
+      const external = /^https?:\/\//i.test(href) && !/holylandphotos\.org/i.test(href)
+      parts.push(
+        external ? (
+          <a key={key++} href={href} target="_blank" rel="noopener" style={{ color: 'var(--link)' }}>{m[1]}</a>
+        ) : (
+          <a key={key++} href={href} style={{ color: 'var(--link)' }}>{m[1]}</a>
+        ),
+      )
     } else if (m[3]) {
       parts.push(<strong key={key++}>{renderInline(m[3])}</strong>)
     } else if (m[4]) {
@@ -86,11 +121,25 @@ export default function FloatingAISearch() {
   const inputRef = useRef<HTMLInputElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  // Show the "new — try it" nudge only to people who have never opened it.
+  // Restore any in-progress conversation / open panel from a prior page in
+  // this tab, and decide whether to show the first-time nudge.
   useEffect(() => {
     setSearchCountState(getCount(COOKIE_NAME))
+    const saved = loadState()
+    if (saved) {
+      if (saved.messages?.length) setMessages(saved.messages)
+      if (saved.open) {
+        setOpen(true)
+        return // restored an open panel — never show the nudge over it
+      }
+    }
     if (!getCount(SEEN_COOKIE)) setShowNudge(true)
   }, [])
+
+  // Persist open state + conversation so it survives full-page navigation.
+  useEffect(() => {
+    saveState({ open, messages })
+  }, [open, messages])
 
   useEffect(() => {
     if (open) {
