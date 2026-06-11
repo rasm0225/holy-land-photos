@@ -342,7 +342,7 @@ export default function FloatingAISearch() {
         ) : (
           <>
             <span className="pln-fab-spark" aria-hidden="true">✦</span>
-            <span className="pln-fab-btn-label">Ask AI</span>
+            <span className="pln-fab-btn-label">Ask the archive</span>
           </>
         )}
       </button>
