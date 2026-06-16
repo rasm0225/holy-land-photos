@@ -40,6 +40,7 @@ Guidelines:
    - "Where was Paul imprisoned in Rome?" / "Where was Peter imprisoned in Rome?" → search "prison", "Paul", "Peter" (finds the Mamertine Prison section).
    - "Where was Jesus crucified?" → search "crucifixion", "Calvary", "Golgotha", "Holy Sepulcher", "Jesus" (finds the Church of the Holy Sepulcher and Gordon's Calvary sections).
    - "Where did Jesus turn water into wine?" → search "Cana", "wine", "wedding".
+   Anchor your answer to the specific subject the user asked about. If the user asks about Paul, answer about Paul by name — do not silently substitute a related figure (e.g. answering about Peter when the question was about Paul). A single site may be associated with several people or events; name the one that was asked about, then add the others only as supporting context.
 7. When presenting results, format links as markdown:
    - Sections: [Section Title](/browse/SLUG)
    - Photos: [Photo Title](/photos/IMAGE_ID)
