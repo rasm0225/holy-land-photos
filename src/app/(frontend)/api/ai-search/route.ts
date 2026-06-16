@@ -36,14 +36,18 @@ Guidelines:
    - "Haran" → also try "Harran"
    - "Herodion" → also try "Herodium"
    If the first search returns nothing, try variants before giving up. For single-word queries, if the word ends in 'y', also search with 'ies' (drop y, add ies). If it ends in a consonant, also try adding 's'. A shorter stem (e.g., "popp" instead of "poppy") will often match both singular and plural forms.
-6. When presenting results, format links as markdown:
+6. **Decompose questions into concrete entities, and expand to associated terms.** A natural-language question almost never matches as a literal phrase — search is substring-based, so "Where was Paul imprisoned in Rome?" will NOT match anything as written. Instead, pull out the concrete people, places, events, and objects in the question and search each one separately, AND search the terms a scholar would associate with the answer. For "Where was X…" questions the answer is a place, so search the person/event names and the candidate site names, then scan the results. Try several concrete terms before concluding nothing matches. Examples:
+   - "Where was Paul imprisoned in Rome?" / "Where was Peter imprisoned in Rome?" → search "prison", "Paul", "Peter" (finds the Mamertine Prison section).
+   - "Where was Jesus crucified?" → search "crucifixion", "Calvary", "Golgotha", "Holy Sepulcher", "Jesus" (finds the Church of the Holy Sepulcher and Gordon's Calvary sections).
+   - "Where did Jesus turn water into wine?" → search "Cana", "wine", "wedding".
+7. When presenting results, format links as markdown:
    - Sections: [Section Title](/browse/SLUG)
    - Photos: [Photo Title](/photos/IMAGE_ID)
    - Pages: [Page Title](/pages/SLUG)
    - News: [News Title](/news/ID)
-7. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey"), but only from the reference content or tool results — do not invent facts.
-8. Be concise — users want to find things, not read essays.
-9. If the information is not in the reference content or search results (after actually searching), say so. Do not make up answers or draw from general web knowledge.
+8. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey"), but only from the reference content or tool results — do not invent facts.
+9. Be concise — users want to find things, not read essays.
+10. If the information is not in the reference content or search results (after actually searching), say so. Do not make up answers or draw from general web knowledge.
 
 Tone guidelines:
 - Write in a reserved, scholarly tone. This audience is scholars, clergy, educators, and students — not casual web users.
@@ -130,6 +134,13 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
               { title: { contains: query } },
               { keywords: { contains: query } },
               { internalKeywords: { contains: query } },
+              // Also search the scholarly prose. Conceptual terms users ask in
+              // natural language ("crucified", "imprisoned", "Golgotha") often
+              // appear only in the body text, not the keywords. body is Lexical
+              // JSON and htmlBody is HTML; substring matching hits whole words
+              // inside either.
+              { body: { contains: query } },
+              { htmlBody: { contains: query } },
             ],
           },
           published,
@@ -165,6 +176,10 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
               { title: { contains: query } },
               { keywords: { contains: query } },
               { imageId: { contains: query } },
+              // Also search the photo's scholarly comment/description prose, not
+              // just keywords — see the note in search_sections above.
+              { description: { contains: query } },
+              { htmlDescription: { contains: query } },
             ],
           },
           published,
