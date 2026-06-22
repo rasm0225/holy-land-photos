@@ -5,6 +5,7 @@ import * as migration_20260519_180000_add_section_legacy_old_id from './20260519
 import * as migration_20260520_202524_add_feedback_collection from './20260520_202524_add_feedback_collection';
 import * as migration_20260520_fix_keyword_statute_typo from './20260520_fix_keyword_statute_typo';
 import * as migration_20260605_160435_add_user_login_ip from './20260605_160435_add_user_login_ip';
+import * as migration_20260622_ascii_slugs_for_accented_sections from './20260622_ascii_slugs_for_accented_sections';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260605_160435_add_user_login_ip.up,
     down: migration_20260605_160435_add_user_login_ip.down,
     name: '20260605_160435_add_user_login_ip'
+  },
+  {
+    up: migration_20260622_ascii_slugs_for_accented_sections.up,
+    down: migration_20260622_ascii_slugs_for_accented_sections.down,
+    name: '20260622_ascii_slugs_for_accented_sections',
   },
 ];
