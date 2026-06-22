@@ -46,9 +46,10 @@ Guidelines:
    - Photos: [Photo Title](/photos/IMAGE_ID)
    - Pages: [Page Title](/pages/SLUG)
    - News: [News Title](/news/ID)
-8. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey"), but only from the reference content or tool results — do not invent facts.
-9. Be concise — users want to find things, not read essays.
-10. If the information is not in the reference content or search results (after actually searching), say so. Do not make up answers or draw from general web knowledge.
+8. **Always include the section (site) link when one matches, and lead with it.** If search_sections returns a section for the query, your answer MUST contain a markdown link to that section page, and it MUST be the FIRST link — it is the single most useful destination, the page for the whole site (e.g. for "Letoon", link [Letoön/Letoon](/browse/letoon) up front). This is required even when you also write a prose summary: never describe a site in words without linking its section page, and never present only a list of photos. List individual photos AFTER the section link, as supporting detail. If multiple sections match, lead with the most relevant one (or list them all if genuinely distinct, e.g. Caesarea Maritima vs Caesarea Philippi).
+9. Add brief scholarly context when helpful (e.g., "associated with Paul's 3rd missionary journey"), but only from the reference content or tool results — do not invent facts.
+10. Be concise — users want to find things, not read essays.
+11. If the information is not in the reference content or search results (after actually searching), say so. Do not make up answers or draw from general web knowledge.
 
 Tone guidelines:
 - Write in a reserved, scholarly tone. This audience is scholars, clergy, educators, and students — not casual web users.
@@ -399,6 +400,12 @@ export async function POST(req: NextRequest) {
     let iterations = 0
     const maxIterations = 5
 
+    // Track every section returned by search_sections across the loop, in the
+    // order they were found. Used as a deterministic safety net below: the
+    // model is instructed to always lead with the matching section link, but a
+    // small model occasionally lists only photos and omits it. We re-insert it.
+    const foundSections: Array<{ title: string; slug: string }> = []
+
     while (iterations < maxIterations) {
       iterations++
 
@@ -420,6 +427,20 @@ export async function POST(req: NextRequest) {
         for (const block of response.content) {
           if (block.type === 'tool_use') {
             const result = await runTool(block.name, block.input as ToolInput)
+            if (block.name === 'search_sections') {
+              try {
+                const parsed = JSON.parse(result) as Array<{ title?: string; slug?: string }>
+                if (Array.isArray(parsed)) {
+                  for (const s of parsed) {
+                    if (s?.slug && s?.title && !foundSections.some((f) => f.slug === s.slug)) {
+                      foundSections.push({ title: s.title, slug: s.slug })
+                    }
+                  }
+                }
+              } catch {
+                // result wasn't a section array (e.g. an error object) — ignore
+              }
+            }
             toolResults.push({
               type: 'tool_result',
               tool_use_id: block.id,
@@ -433,10 +454,24 @@ export async function POST(req: NextRequest) {
       }
 
       // Final response — extract text
-      const text = response.content
+      let text = response.content
         .filter((b): b is Anthropic.Messages.TextBlock => b.type === 'text')
         .map((b) => b.text)
         .join('\n')
+
+      // Safety net: if the answer references the archive but contains no
+      // section link at all, while search_sections did find one, prepend the
+      // most relevant section. Prefer a section whose title contains the
+      // user's query; otherwise use the first one found. Only fires when there
+      // is genuinely no /browse/ link, so it never disturbs answers where the
+      // model already linked a (possibly more specific) section.
+      if (foundSections.length > 0 && !/\]\(\/browse\//.test(text)) {
+        const q = latestUserMessage.trim().toLowerCase()
+        const best =
+          (q && foundSections.find((s) => s.title.toLowerCase().includes(q))) ||
+          foundSections[0]
+        text = `**Section:** [${best.title}](/browse/${best.slug})\n\n${text}`
+      }
 
       // Log the search asynchronously
       if (latestUserMessage) {
