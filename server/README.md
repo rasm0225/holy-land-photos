@@ -37,6 +37,9 @@ runbook below covers how to stay in sync.
 | `nginx/refresh-country-blocklist.sh` | `/usr/local/sbin/refresh-country-blocklist` | Regenerates `/etc/nginx/conf.d/01-country-block.conf` from upstream IP lists (ipdeny.com + RADB). Invoked by the systemd timer below. Safe to run by hand as root. |
 | `systemd/hlp-blocklist-refresh.service` | `/etc/systemd/system/hlp-blocklist-refresh.service` | Oneshot service that runs the refresh script. |
 | `systemd/hlp-blocklist-refresh.timer` | `/etc/systemd/system/hlp-blocklist-refresh.timer` | Weekly timer (Mon 03:30 UTC + random delay). `Persistent=true` so a missed run fires on next boot. Matches the pattern of `hlp-backup.timer`. |
+| `scripts/backup-db.sh` | `/home/ec2-user/scripts/backup-db.sh` | Nightly DB backup: `sqlite3 .backup` (WAL-safe) → S3 `backups/db/` with timestamped name, prunes S3 copies older than 30 days. |
+| `systemd/hlp-backup.service` | `/etc/systemd/system/hlp-backup.service` | Oneshot service running the backup script as `ec2-user`, appending output to `/home/ec2-user/logs/backup.log`. **That `logs/` dir must exist** — if it's missing, systemd fails with `status=209/STDOUT` before the script even runs (this silently broke every nightly backup from launch until 2026-07-04). |
+| `systemd/hlp-backup.timer` | `/etc/systemd/system/hlp-backup.timer` | Daily at 02:00 UTC, `Persistent=true`. |
 
 **NOT committed:**
 
@@ -179,6 +182,34 @@ What to look for:
   check `systemctl status hlp-blocklist-refresh.timer` and
   `journalctl -u hlp-blocklist-refresh.service`.
 
+### Verify the nightly DB backup is healthy
+
+```bash
+ssh -i ~/.ssh/hlp-ec2-key.pem ec2-user@18.220.101.13 \
+  'systemctl list-timers hlp-backup.timer --no-pager; \
+   tail -5 /home/ec2-user/logs/backup.log; \
+   aws s3 ls s3://hlp-dev-photos-335804564725-us-east-2-an/backups/db/ | tail -5'
+```
+
+What to look for:
+- The most recent `backup.log` line should say `Backup complete` with
+  a timestamp from the last 24h.
+- S3 should show one `payload-YYYY-MM-DD_HHMM.db` per day, roughly
+  the size of the live DB (~65 MB as of 2026-07), up to 30 days deep.
+- If the log is stale but the timer shows a recent `LAST`, check
+  `journalctl -u hlp-backup.service` — a `status=209/STDOUT` failure
+  means `/home/ec2-user/logs/` is missing (recreate it; this exact
+  failure ate every nightly backup between launch and 2026-07-04).
+
+To restore: `aws s3 cp` the chosen backup down, stop the app
+(`pm2 stop hlp`), replace `/home/ec2-user/data/payload.db`, remove any
+stale `payload.db-wal`/`payload.db-shm`, `pm2 start hlp`.
+
+Note the backup covers the **database only**. The EC2 `.env` (Payload
+secret, S3 keys, MailChimp + Anthropic API keys) is not in the backup
+or the repo — if the box is lost, those come from the credential
+locations documented in the project notes, or get re-issued.
+
 ### Debug "is this IP/UA being blocked?"
 
 ```bash
@@ -252,6 +283,20 @@ sudo systemctl enable --now hlp-blocklist-refresh.timer
 # Populate the blocklists for the first time (the timer would do this
 # next Monday otherwise; this gets you protected immediately)
 sudo systemctl start hlp-blocklist-refresh.service
+```
+
+And the nightly DB backup:
+
+```bash
+# The logs dir MUST exist or the service fails at stdout setup (209/STDOUT)
+mkdir -p /home/ec2-user/logs /home/ec2-user/scripts
+install -m 0755 server/scripts/backup-db.sh /home/ec2-user/scripts/backup-db.sh
+sudo install -m 0644 -o root -g root server/systemd/hlp-backup.service /etc/systemd/system/
+sudo install -m 0644 -o root -g root server/systemd/hlp-backup.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now hlp-backup.timer
+sudo systemctl start hlp-backup.service   # take a backup right now
+tail -2 /home/ec2-user/logs/backup.log    # expect "Backup complete"
 ```
 
 Note: do NOT install the refresh script into `/etc/cron.weekly/`. AL2023

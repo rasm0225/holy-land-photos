@@ -1,0 +1,9 @@
+[Unit]
+Description=Holy Land Photos daily database backup to S3
+
+[Service]
+Type=oneshot
+User=ec2-user
+ExecStart=/home/ec2-user/scripts/backup-db.sh
+StandardOutput=append:/home/ec2-user/logs/backup.log
+StandardError=append:/home/ec2-user/logs/backup.log
