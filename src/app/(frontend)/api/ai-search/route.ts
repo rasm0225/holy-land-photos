@@ -4,11 +4,19 @@ import config from '@payload-config'
 import Anthropic from '@anthropic-ai/sdk'
 import { logSearch } from '@/lib/searchLog'
 import { publishedFilter } from '@/lib/viewer'
+import { makeRateLimiter, getClientIp } from '@/lib/rateLimit'
 
 export const maxDuration = 60
 export const runtime = 'nodejs'
 
 const MODEL = 'claude-haiku-4-5-20251001'
+
+// Each request fans out to up to `maxIterations` Claude calls on our API
+// key, so this endpoint is the one place unthrottled traffic costs real
+// money. 20 requests per IP per 10 minutes is generous for a human asking
+// scholarly follow-ups but kills a scripted loop. An Anthropic-side spend
+// cap on the key is the backstop if someone rotates IPs.
+const isRateLimited = makeRateLimiter({ windowMs: 10 * 60 * 1000, max: 20 })
 
 const SYSTEM_PROMPT_STATIC = `You are a helpful search assistant for HolyLandPhotos.org, a scholarly photo archive of biblical and archaeological sites.
 
@@ -367,6 +375,13 @@ export async function POST(req: NextRequest) {
     const { messages } = (await req.json()) as { messages: Msg[] }
     if (!Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'messages required' }, { status: 400 })
+    }
+
+    if (isRateLimited(getClientIp(req))) {
+      return NextResponse.json(
+        { error: 'Too many requests — please wait a moment and try again.' },
+        { status: 429 },
+      )
     }
 
     // Log the latest user query (ignore conversation history)
