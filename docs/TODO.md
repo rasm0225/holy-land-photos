@@ -12,10 +12,9 @@ See also: [SEO TODO](seo-todo.md) — structured-data, sitemap, and meta-tag imp
 
 - [x] **Convert SSL cert to HTTP-01 auto-renewal** (done 2026-05-22). Cert re-issued via `certbot --nginx`, renewal config switched from `authenticator=manual` to `authenticator=nginx`, `certbot-renew.timer` enabled. Renewal runs daily; certbot only actually contacts Let's Encrypt when the cert is within 30 days of expiry.
 - [ ] **Raise TTLs back to 1800s** at Namecheap once the launch has stabilised (24h+). Currently 60s on both A records as a fast-rollback hedge.
-- [ ] **Email Carl the Azure fallback URL:** `https://hlp-web.azurewebsites.net/` (still functional until Jesse decommissions).
-- [ ] **+1 month: ping Jesse to decommission Azure App Service.** Confirms the old site is no longer needed and stops the monthly bill.
-- [ ] **Submit sitemap to Search Console.** `https://holylandphotos.org/sitemap.xml`. (Property ownership preserved via the kept `google-site-verification` TXT record.)
-- [ ] **Close out AIT cPanel account** after ~1-2 weeks of confirmed stability. Old DNS records there are no longer authoritative.
+- [ ] **+1 month: ping Jesse to decommission Azure App Service.** Confirms the old site is no longer needed and stops the monthly bill. (Dropped the related "email Carl the Azure fallback URL" item 2026-07-04 — six weeks of stable production made the fallback moot.)
+- [x] **Submit sitemap to Search Console** (done 2026-07-04). `https://holylandphotos.org/sitemap.xml`. (Property ownership preserved via the kept `google-site-verification` TXT record.)
+- [x] **Close out AIT cPanel account** (done 2026-07-04). Old DNS records there are no longer authoritative.
 - [ ] **Clean up the duplicate `google-site-verification` TXT** at Namecheap — the one with the prefix in the Host field. Harmless, but dead weight.
 
 ## Functional (launch complete)
