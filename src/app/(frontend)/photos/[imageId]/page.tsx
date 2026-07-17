@@ -9,6 +9,7 @@ import PhotoLightbox from '../../components/PhotoLightbox'
 import DownloadButton from '../../components/DownloadButton'
 import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
 import { photoSrc } from '@/lib/photoSrc'
+import { richTextConverters } from '../../components/richTextConverters'
 
 type Props = {
   params: Promise<{ imageId: string }>
@@ -81,7 +82,10 @@ export default async function PhotoPage({ params, searchParams }: Props) {
     collection: 'photos',
     where: { imageId: { equals: imageId } },
     limit: 1,
-    depth: 0,
+    // depth 1 (not 0) so `upload` nodes inside the rich-text description
+    // populate their referenced photo doc — richTextConverters needs the
+    // imageId/filename to build the CDN URL.
+    depth: 1,
   })
 
   const photo = docs[0]
@@ -291,7 +295,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
           <span className="pln-badge">photo</span>
 
           {photo.description && (
-            <RichText data={photo.description} />
+            <RichText data={photo.description} converters={richTextConverters} />
           )}
           {!photo.description && htmlDescription && (
             <div dangerouslySetInnerHTML={{ __html: htmlDescription }} />
