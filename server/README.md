@@ -33,7 +33,7 @@ runbook below covers how to stay in sync.
 |---|---|---|
 | `nginx/00-bot-block.conf` | `/etc/nginx/conf.d/00-bot-block.conf` | User-agent map: returns `$blocked_ua=1` for AI training crawlers and heavy SEO scrapers (Meta, OpenAI, Anthropic, DataForSeo, Semrush, etc.) |
 | `nginx/holylandphotos.conf` | `/etc/nginx/conf.d/holylandphotos.conf` | Main vhost. Serves apex on 443, redirects www→apex, redirects HTTP→HTTPS. Has `if ($blocked_ua) { return 403; }` and `if ($blocked_country) { return 403; }` lines. |
-| `nginx/default.conf` | `/etc/nginx/conf.d/default.conf` | Catch-all default server for HTTP requests with unknown hostnames or direct-IP access. |
+| `nginx/default.conf` | `/etc/nginx/conf.d/default.conf` | Catch-all default server for HTTP requests with unknown hostnames or direct-IP access. Has the same `$blocked_ua` / `$blocked_country` checks as the named vhosts — without them, direct-by-IP requests bypass every blocklist (found the hard way in July 2026 when Singapore scrapers reappeared via `http://18.220.101.13/`). |
 | `nginx/refresh-country-blocklist.sh` | `/usr/local/sbin/refresh-country-blocklist` | Regenerates `/etc/nginx/conf.d/01-country-block.conf` from upstream IP lists (ipdeny.com + RADB). Invoked by the systemd timer below. Safe to run by hand as root. |
 | `systemd/hlp-blocklist-refresh.service` | `/etc/systemd/system/hlp-blocklist-refresh.service` | Oneshot service that runs the refresh script. |
 | `systemd/hlp-blocklist-refresh.timer` | `/etc/systemd/system/hlp-blocklist-refresh.timer` | Weekly timer (Mon 03:30 UTC + random delay). `Persistent=true` so a missed run fires on next boot. Matches the pattern of `hlp-backup.timer`. |
