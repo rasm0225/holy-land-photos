@@ -9,9 +9,9 @@ import { photoSrc } from '@/lib/photoSrc'
 // depth >= 1 — at depth 0 the node's `value` is a bare ID and there is
 // nothing to render.
 //
-// Embedded photos render even when unpublished: `published` controls
-// gallery/search visibility, while embedding one in a body is a
-// deliberate editorial act (e.g. the ElahDiag00 diagram inside ICSHEL12).
+// Unpublished photos are skipped: the `published` flag hides a photo
+// everywhere on the public site, including rich-text embeds. Publish the
+// referenced photo in /admin to make an embed appear.
 export const richTextConverters: JSXConvertersFunction = ({ defaultConverters }) => ({
   ...defaultConverters,
   upload: ({ node }) => {
@@ -24,6 +24,10 @@ export const richTextConverters: JSXConvertersFunction = ({ defaultConverters })
       title?: string
       width?: number | null
       height?: number | null
+      published?: boolean
+    }
+    if (photo.published === false) {
+      return null
     }
     return (
       // Plain <img> to match how imported htmlDescription bodies render
