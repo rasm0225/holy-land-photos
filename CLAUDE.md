@@ -32,14 +32,16 @@ A modern rebuild of holylandphotos.org — a photography and Holy Land scholarsh
 Peter has pre-authorized the following actions. Do them without asking for confirmation:
 
 - **`git commit` and `git push` to `main`** — commit and push whenever completing a task Peter requested. No need to ask "should I push this?"
-- **`./deploy.sh`** — run after pushing changes that should go live; the script handles local pre-flight build, EC2 deploy with auto-rollback, and post-deploy smoke check.
 - **Reading, editing, and writing any file in this repo** — no confirmation needed
 - **Running any bash command scoped to this project directory** — grep, ls, cat, etc.
 
 The only things that still require Peter's explicit sign-off before proceeding:
+- **Deploying (`./deploy.sh`) — always ask first.** Present what will ship and wait for Peter's explicit go-ahead before every deploy, even for changes he requested. (Changed 2026-07-17; deploys were previously pre-authorized.)
 - Deleting files (use caution; ask first)
 - Force-pushing or rewriting git history
 - Any action that affects external services (MailChimp, PayPal, DNS, S3/CloudFront)
+
+When Peter gives a sequencing instruction ("tell me X before you do Y", "show me first"), treat it as a hard checkpoint: deliver X, then stop and wait for his reply before doing Y — regardless of the pre-authorizations above.
 
 ---
 
