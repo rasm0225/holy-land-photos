@@ -327,6 +327,46 @@ img { display: block; max-width: 100%; }
   max-width: 62ch;
 }
 
+/* ─── Smart Search fallback on zero results ─── */
+.pln-ssf {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent, #B85C2C);
+  background: var(--bg-alt);
+}
+.pln-ssf-head {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+/* Deliberately large and high-contrast rather than a subtle spinner:
+   this state is on screen for a median 5.5s, and the site owner has
+   low vision. Ambiguity here is where people give up and leave. */
+.pln-ssf-loading {
+  font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  color: var(--ink-muted); margin: 0;
+}
+.pln-ssf-loading::after {
+  content: '';
+  display: inline-block; vertical-align: middle;
+  margin-left: 8px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent, #B85C2C);
+  animation: pln-ssf-pulse 1.1s ease-in-out infinite;
+}
+@keyframes pln-ssf-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pln-ssf-loading::after { animation: none; opacity: 0.8; }
+}
+.pln-ssf-more {
+  display: inline-block; margin-top: 6px;
+  font-family: var(--sans); font-size: 14px;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    KEYWORDS
    ═══════════════════════════════════════════════════════════════ */

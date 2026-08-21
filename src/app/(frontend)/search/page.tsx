@@ -7,6 +7,7 @@ import { logSearch } from '@/lib/searchLog'
 import { publishedFilter } from '@/lib/viewer'
 import { photoSrc } from '@/lib/photoSrc'
 import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
+import SmartSearchFallback from '../components/SmartSearchFallback'
 
 type Props = {
   searchParams: Promise<{ q?: string }>
@@ -208,6 +209,9 @@ export default async function SearchPage({ searchParams }: Props) {
             (Caesarea / Cesarea), and plain-English questions, and it will
             search the archive for you.
           </p>
+          {/* Auto-runs Smart Search and shows the answer inline.
+              To remove this experiment, delete the next line. */}
+          <SmartSearchFallback query={query} />
         </div>
       )}
 
