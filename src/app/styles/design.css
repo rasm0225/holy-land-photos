@@ -290,9 +290,13 @@ img { display: block; max-width: 100%; }
 .pln-photo-side .pln-p { font-size: 17px; }
 
 /* ─── Prev/Next ─── */
+/* Centered at Carl's request, so it shares an axis with the .pln-pnav
+   prev/next bar that sits directly beneath it. Only used by the photo
+   page's "back to section" link. */
 .pln-pnav-up {
   font-family: var(--sans); font-size: 13px;
   color: var(--ink-muted); margin-bottom: 10px;
+  text-align: center;
 }
 .pln-pnav {
   display: flex; justify-content: center; align-items: baseline; gap: 16px;
