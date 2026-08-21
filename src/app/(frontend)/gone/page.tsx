@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Metadata } from 'next'
+import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
 
 type Props = {
   searchParams: Promise<{ from?: string }>
@@ -40,7 +41,7 @@ export default async function GonePage({ searchParams }: Props) {
       <ul>
         <li><a href="/">Browse the homepage</a></li>
         <li><a href="/search">Search the archive</a></li>
-        <li><a href="/ai-search">Ask the Archive (AI search)</a></li>
+        <li><a href="/ai-search">Ask the Archive ({AI_SEARCH_LABEL})</a></li>
         <li><a href="/site-list">Full site directory</a></li>
       </ul>
 

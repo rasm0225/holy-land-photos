@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { AI_SEARCH_LABEL_PLURAL } from '@/lib/aiSearch'
 
 type Message = { role: 'user' | 'assistant'; content: string; durationMs?: number }
 
@@ -296,7 +297,7 @@ export default function AISearchChat() {
           fontSize: 14,
           color: '#555',
         }}>
-          You&apos;ve used {searchCount} AI searches this month. If you find this feature
+          You&apos;ve used {searchCount} {AI_SEARCH_LABEL_PLURAL.toLowerCase()} this month. If you find this feature
           valuable, please consider supporting Holy Land Photos to help keep it running.
         </div>
       )}

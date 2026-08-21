@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { AI_ASSISTANT_TAG, AI_DISCLOSURE_SHORT, AI_SEARCH_FULL_PAGE_LINK } from '@/lib/aiSearch'
 
 type Message = { role: 'user' | 'assistant'; content: string; durationMs?: number }
 
@@ -101,7 +102,7 @@ export default function AskTheArchive() {
         Have a question about a site, a Bible passage, or where to find a photo?
         Ask in plain English.{' '}
         <span className="pln-ai-disclaimer-inline">
-          Powered by Claude AI; verify with primary sources.
+          {AI_DISCLOSURE_SHORT}
         </span>
       </p>
 
@@ -139,7 +140,7 @@ export default function AskTheArchive() {
                   <div className="pln-ai-user-bubble">{m.content}</div>
                 ) : (
                   <div>
-                    <div className="pln-ai-assistant-tag">Holy Land Photos · AI</div>
+                    <div className="pln-ai-assistant-tag">{AI_ASSISTANT_TAG}</div>
                     <div className="pln-ai-md">{renderMarkdown(m.content)}</div>
                     {m.durationMs != null && (
                       <div className="pln-ai-foot">— answered in {(m.durationMs / 1000).toFixed(1)}s</div>
@@ -150,7 +151,7 @@ export default function AskTheArchive() {
             ))}
             {loading && (
               <div className="pln-ai-msg">
-                <div className="pln-ai-assistant-tag">Holy Land Photos · AI</div>
+                <div className="pln-ai-assistant-tag">{AI_ASSISTANT_TAG}</div>
                 <div className="pln-ai-loading">Searching the archive…</div>
               </div>
             )}
@@ -159,7 +160,7 @@ export default function AskTheArchive() {
         )}
 
         <a className="pln-ai-open-full" href="/ai-search">
-          Open the full AI Search page →
+          {AI_SEARCH_FULL_PAGE_LINK}
         </a>
       </div>
     </section>

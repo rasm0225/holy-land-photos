@@ -13,6 +13,7 @@ import AskTheArchive from './components/AskTheArchive'
 import { S3_BASE, photoSrc } from '@/lib/photoSrc'
 import { EXCLUDE_FROM_RECENT_IMAGE_IDS } from '@/lib/recentExcludes'
 import { getOneSectionPerPhoto } from '@/lib/photoSections'
+import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
 
 export const dynamic = 'force-dynamic'
 
@@ -118,7 +119,7 @@ export default async function HomePage() {
               <li><a href="/search">Search</a></li>
               <li><a href="/site-list">Complete Site List</a></li>
               <li>
-                <a href="/ai-search">AI Search</a>{' '}
+                <a href="/ai-search">{AI_SEARCH_LABEL}</a>{' '}
                 <span style={{
                   fontSize: 11,
                   fontFamily: 'var(--sans)',
@@ -177,7 +178,7 @@ export default async function HomePage() {
         )
       })()}
 
-      {/* Ask the Archive — AI Search */}
+      {/* Ask the Archive — conversational search embed */}
       <AskTheArchive />
 
       {/* Site of the Week */}

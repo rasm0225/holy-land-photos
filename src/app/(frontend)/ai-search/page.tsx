@@ -1,16 +1,17 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import AISearchChat from './AISearchChat'
+import { AI_SEARCH_LABEL, AI_DISCLOSURE_FULL } from '@/lib/aiSearch'
 
 export const metadata: Metadata = {
-  title: 'AI Search — Holy Land Photos',
+  title: AI_SEARCH_LABEL,
   description: 'Chat with an AI assistant to find biblical and archaeological photos.',
 }
 
 export default function AISearchPage() {
   return (
     <div>
-      <h1 className="pln-h1" style={{ fontSize: 28, marginBottom: 16 }}>AI Search</h1>
+      <h1 className="pln-h1" style={{ fontSize: 28, marginBottom: 16 }}>{AI_SEARCH_LABEL}</h1>
       <p className="pln-ai-blurb">
         Ask about biblical sites, archaeological places, or specific photos.
         The assistant will search the archive and suggest matches. Try things like
@@ -18,8 +19,7 @@ export default function AISearchPage() {
         &ldquo;show me the Rolling Stone Tomb&rdquo;.
       </p>
       <p className="pln-ai-disclaimer-inline">
-        Powered by Claude AI. Responses are based on content from
-        this website but are not written by or endorsed by Dr. Carl Rasmussen.
+        {AI_DISCLOSURE_FULL}
       </p>
 
       <AISearchChat />

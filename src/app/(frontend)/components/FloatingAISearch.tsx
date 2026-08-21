@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { AI_ASSISTANT_TAG, AI_SEARCH_FULL_PAGE_LINK, AI_SEARCH_LABEL, AI_SEARCH_LABEL_PLURAL } from '@/lib/aiSearch'
 
 type Message = { role: 'user' | 'assistant'; content: string; durationMs?: number }
 
@@ -228,13 +229,13 @@ export default function FloatingAISearch() {
           className="pln-fab-panel"
           ref={panelRef}
           role="dialog"
-          aria-label="AI Search"
+          aria-label={AI_SEARCH_LABEL}
           aria-modal="false"
         >
           <div className="pln-fab-head">
             <div className="pln-fab-head-title">
               <span className="pln-fab-spark" aria-hidden="true">✦</span>
-              AI Search
+              {AI_SEARCH_LABEL}
             </div>
             <div className="pln-fab-head-actions">
               {messages.length > 0 && (
@@ -242,7 +243,7 @@ export default function FloatingAISearch() {
                   New
                 </button>
               )}
-              <button type="button" className="pln-fab-head-btn pln-fab-close" onClick={() => setOpen(false)} aria-label="Close AI Search">
+              <button type="button" className="pln-fab-head-btn pln-fab-close" onClick={() => setOpen(false)} aria-label={`Close ${AI_SEARCH_LABEL}`}>
                 ✕
               </button>
             </div>
@@ -272,7 +273,7 @@ export default function FloatingAISearch() {
                       <div className="pln-ai-user-bubble">{m.content}</div>
                     ) : (
                       <div>
-                        <div className="pln-ai-assistant-tag">Holy Land Photos · AI</div>
+                        <div className="pln-ai-assistant-tag">{AI_ASSISTANT_TAG}</div>
                         <div className="pln-ai-md">{renderMarkdown(m.content)}</div>
                         {m.durationMs != null && (
                           <div className="pln-ai-foot" style={{ fontFamily: 'var(--sans)', fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 6 }}>
@@ -285,7 +286,7 @@ export default function FloatingAISearch() {
                 ))}
                 {loading && (
                   <div className="pln-ai-msg">
-                    <div className="pln-ai-assistant-tag">Holy Land Photos · AI</div>
+                    <div className="pln-ai-assistant-tag">{AI_ASSISTANT_TAG}</div>
                     <div className="pln-ai-loading" style={{ color: 'var(--ink-faint)', fontStyle: 'italic' }}>Searching the archive…</div>
                   </div>
                 )}
@@ -297,7 +298,7 @@ export default function FloatingAISearch() {
 
           {searchCount >= AI_SEARCH_LIMIT && (
             <div className="pln-fab-limit">
-              You&apos;ve used {searchCount} AI searches this month. If you find this
+              You&apos;ve used {searchCount} {AI_SEARCH_LABEL_PLURAL.toLowerCase()} this month. If you find this
               valuable, please consider supporting Holy Land Photos to help keep it running.
             </div>
           )}
@@ -318,7 +319,7 @@ export default function FloatingAISearch() {
           </form>
 
           <a className="pln-fab-fulllink" href="/ai-search">
-            Open the full AI Search page →
+            {AI_SEARCH_FULL_PAGE_LINK}
           </a>
         </div>
       )}
@@ -335,7 +336,7 @@ export default function FloatingAISearch() {
         className={`pln-fab-btn${open ? ' pln-fab-btn-open' : ''}`}
         onClick={toggle}
         aria-expanded={open}
-        aria-label={open ? 'Close AI Search' : 'Open AI Search'}
+        aria-label={open ? `Close ${AI_SEARCH_LABEL}` : `Open ${AI_SEARCH_LABEL}`}
       >
         {open ? (
           <span className="pln-fab-icon" aria-hidden="true">✕</span>

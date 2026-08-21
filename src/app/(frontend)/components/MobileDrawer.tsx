@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
 
 export default function MobileDrawer() {
   const [open, setOpen] = useState(false)
@@ -65,7 +66,7 @@ export default function MobileDrawer() {
             <div className="mpln-drawer-section">
               <span className="mpln-drawer-label">Search</span>
               <a className="mpln-drawer-link" href="/search" onClick={close}>Search photos</a>
-              <a className="mpln-drawer-link" href="/ai-search" onClick={close}>AI Search</a>
+              <a className="mpln-drawer-link" href="/ai-search" onClick={close}>{AI_SEARCH_LABEL}</a>
             </div>
 
             <div className="mpln-drawer-section">

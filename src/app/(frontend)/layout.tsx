@@ -11,6 +11,7 @@ import FloatingAISearch from './components/FloatingAISearch'
 import MobileDrawer from './components/MobileDrawer'
 import AboutDropdown, { type AboutDropdownItem } from './components/AboutDropdown'
 import '../styles/design.css'
+import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
 
 // All frontend routes are content-driven and need a fresh DB read on every
 // request — there is no benefit to prerendering them at build time, and it
@@ -121,7 +122,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             <nav className="pln-nav-links">
               <a href="/">Home</a>
               <a href="/search">Search</a>
-              <a href="/ai-search">AI Search</a>
+              <a href="/ai-search">{AI_SEARCH_LABEL}</a>
               <AboutDropdown items={aboutItems} />
               <EditLink isLoggedIn={isLoggedIn} />
             </nav>
