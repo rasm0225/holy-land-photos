@@ -1,6 +1,6 @@
 import { buildConfig } from 'payload'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { lexicalEditor, LinkFeature } from '@payloadcms/richtext-lexical'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { s3Storage } from '@payloadcms/storage-s3'
 import sharp from 'sharp'
@@ -68,7 +68,30 @@ export default buildConfig({
     SiteOfTheWeek,
     Feedback,
   ],
-  editor: lexicalEditor(),
+  // The rich-text "Internal Link" picker searches every collection unless
+  // told otherwise. Two reasons to restrict it:
+  //
+  //  1. It was broken. The picker POSTs a search to /api/<slug> for each
+  //     enabled collection. Our public feedback form owns a custom route at
+  //     src/app/(frontend)/api/feedback/route.ts, and in Next.js a specific
+  //     segment beats Payload's /api/[...slug] catch-all — so that POST hit
+  //     the form handler instead of Payload, which 500'd on a payload it
+  //     couldn't parse. One failing collection makes the whole picker render
+  //     "An error has occurred", so internal linking never worked at all.
+  //     `feedback` is the only collection slug that collides with a custom
+  //     route, but listing collections explicitly means a future /api/<x>
+  //     route can't silently break this again.
+  //
+  //  2. Nothing in a photo caption should link to a user account, a feedback
+  //     message, or a section-photo join row. Offering them is just noise.
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures,
+      LinkFeature({
+        enabledCollections: ['sections', 'photos', 'pages', 'news'],
+      }),
+    ],
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
