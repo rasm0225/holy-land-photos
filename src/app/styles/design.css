@@ -282,6 +282,10 @@ img { display: block; max-width: 100%; }
 }
 .pln-download:hover { background: var(--ink); color: #fff; }
 
+/* Relocated below the keywords in the side column, so it needs its own
+   separation rather than the 10px that sat it under the image. */
+.pln-photo-side .pln-photo-meta { margin-top: 24px; }
+
 .pln-photo-side .pln-h1 { font-size: 30px; }
 .pln-photo-side .pln-p { font-size: 17px; }
 
@@ -838,7 +842,10 @@ img { display: block; max-width: 100%; }
   /* Full-bleed images on mobile */
   .pln-figure { margin-left: -18px; margin-right: -18px; }
   .pln-figure img { border-left: none; border-right: none; border-radius: 0; }
-  .pln-figcaption { padding: 8px 18px 0; }
+  /* Scoped to .pln-figure: this padding exists only to cancel the
+     full-bleed negative margins above. The photo page reuses
+     .pln-figcaption without full-bleed, and must not inherit it. */
+  .pln-figure > .pln-figcaption { padding: 8px 18px 0; }
 
   .pln-crumbs { font-size: 13px; margin-bottom: 16px; }
   .pln-badge { margin-bottom: 16px; }

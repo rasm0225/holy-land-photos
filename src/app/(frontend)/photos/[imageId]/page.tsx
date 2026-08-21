@@ -287,7 +287,7 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               sizes="(max-width: 767px) 100vw, 52vw"
             />
           </PhotoLightbox>
-          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; {photographerName || 'Carl Rasmussen'}{yearAdded ? ` · Added: ${yearAdded}` : ''}</div>
+          <div className="pln-figcaption">Click image to enlarge</div>
           <DownloadButton imageId={photo.imageId} title={photo.title} />
         </div>
         <div className="pln-photo-side">
@@ -331,6 +331,11 @@ export default async function PhotoPage({ params, searchParams }: Props) {
               })}
             </div>
           )}
+
+          {/* ID / copyright / year-added. Lives at the foot of the side
+              column rather than under the image so the photo and its
+              "click to enlarge" affordance stay visually adjacent. */}
+          <div className="pln-photo-meta">ID: {photo.imageId} &middot; &copy; {photographerName || 'Carl Rasmussen'}{yearAdded ? ` · Added: ${yearAdded}` : ''}</div>
         </div>
       </div>
     </div>
