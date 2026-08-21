@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import { logSearch } from '@/lib/searchLog'
 import { publishedFilter } from '@/lib/viewer'
 import { photoSrc } from '@/lib/photoSrc'
+import { AI_SEARCH_LABEL } from '@/lib/aiSearch'
 
 type Props = {
   searchParams: Promise<{ q?: string }>
@@ -193,7 +194,21 @@ export default async function SearchPage({ searchParams }: Props) {
       )}
 
       {query && totalResults === 0 && (
-        <p className="pln-p">No results found. Try different keywords.</p>
+        <div className="pln-noresults">
+          <p className="pln-p" style={{ marginBottom: 10 }}>
+            No results found for &ldquo;{query}&rdquo;.
+          </p>
+          <p className="pln-noresults-tip">
+            This search matches whole words in titles and keywords, so an
+            alternate spelling or a small typo will miss.{' '}
+            <a href={`/ai-search?q=${encodeURIComponent(query)}`}>
+              Try {AI_SEARCH_LABEL}
+            </a>{' '}
+            instead — it understands misspellings, alternate spellings
+            (Caesarea / Cesarea), and plain-English questions, and it will
+            search the archive for you.
+          </p>
+        </div>
       )}
 
       <p style={{ marginTop: 48, fontSize: '12.5px', color: 'var(--ink-faint)', fontFamily: 'var(--sans)' }}>

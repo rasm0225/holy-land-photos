@@ -313,6 +313,20 @@ img { display: block; max-width: 100%; }
 }
 .pln-pnav a { color: var(--ink); }
 
+/* ─── Zero-result help ─── */
+.pln-noresults {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 8px;
+}
+.pln-noresults-tip {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: 62ch;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    KEYWORDS
    ═══════════════════════════════════════════════════════════════ */

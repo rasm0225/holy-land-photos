@@ -98,6 +98,12 @@ export default function AISearchChat() {
 
   useEffect(() => {
     setSearchCountState(getSearchCount())
+    // Prefill from ?q= so a visitor arriving from a zero-result keyword
+    // search doesn't have to retype what they just typed. Deliberately
+    // does NOT auto-send: arriving here is a redirect, not a request to
+    // spend an API call, and the visitor may want to reword first.
+    const q = new URLSearchParams(window.location.search).get('q')?.trim()
+    if (q) setInput(q.slice(0, 200))
     inputRef.current?.focus()
   }, [])
 
