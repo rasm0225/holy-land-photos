@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Anthropic from '@anthropic-ai/sdk'
 import { logSearch } from '@/lib/searchLog'
+import { parseTerms, termsWhere } from '@/lib/searchTerms'
 import { publishedFilter } from '@/lib/viewer'
 import { makeRateLimiter, getClientIp } from '@/lib/rateLimit'
 
@@ -36,15 +37,12 @@ Guidelines:
 2. **Only say "I don't have that information" after actually searching and getting empty results.** Never refuse to search based on your own judgment about topical relevance.
 3. **Single-word queries are valid searches.** Do not ask for clarification on single-word topical queries — search first, then present results. Only ask for clarification if the tools return results that are genuinely ambiguous (e.g., "Caesarea" returns multiple distinct cities).
 4. For questions about Dr. Rasmussen, copyright/permissions, how to use the site, upcoming tours, or news — answer from the REFERENCE CONTENT section below.
-5. Consider alternate spellings AND singular/plural variants. Search is substring-based, so "poppy" will NOT match "Poppies" — you must try both forms. Examples:
-   - "poppy" → also try "poppies" (or just "popp")
-   - "coin" → also try "coins"
+5. Consider alternate spellings. Singular/plural is handled for you ("poppy" finds "Poppies", "synagogues" finds "Synagogue"), but spelling variants are not. If the first search returns nothing, try variants before giving up. Examples:
    - "Hierapolis" → also try "Ierapolis"
    - "Caesarea Maritima" vs "Caesarea Philippi"
    - "Haran" → also try "Harran"
    - "Herodion" → also try "Herodium"
-   If the first search returns nothing, try variants before giving up. For single-word queries, if the word ends in 'y', also search with 'ies' (drop y, add ies). If it ends in a consonant, also try adding 's'. A shorter stem (e.g., "popp" instead of "poppy") will often match both singular and plural forms.
-6. **Decompose questions into concrete entities, and expand to associated terms.** A natural-language question almost never matches as a literal phrase — search is substring-based, so "Where was Paul imprisoned in Rome?" will NOT match anything as written. Instead, pull out the concrete people, places, events, and objects in the question and search each one separately, AND search the terms a scholar would associate with the answer. For "Where was X…" questions the answer is a place, so search the person/event names and the candidate site names, then scan the results. Try several concrete terms before concluding nothing matches. Examples:
+6. **Decompose questions into concrete entities, and expand to associated terms.** Search matches every word of the query, in any order, so a short topic phrase like "golan synagogues" works as-is — pass it whole. But a full natural-language question rarely matches, because every word must appear: "Where was Paul imprisoned in Rome?" will NOT match anything as written. Instead, pull out the concrete people, places, events, and objects in the question and search each one separately, AND search the terms a scholar would associate with the answer. For "Where was X…" questions the answer is a place, so search the person/event names and the candidate site names, then scan the results. Try several concrete terms before concluding nothing matches. Examples:
    - "Where was Paul imprisoned in Rome?" / "Where was Peter imprisoned in Rome?" → search "prison", "Paul", "Peter" (finds the Mamertine Prison section).
    - "Where was Jesus crucified?" → search "crucifixion", "Calvary", "Golgotha", "Holy Sepulcher", "Jesus" (finds the Church of the Holy Sepulcher and Gordon's Calvary sections).
    - "Where did Jesus turn water into wine?" → search "Cana", "wine", "wedding".
@@ -72,13 +70,13 @@ const tools: Anthropic.Messages.Tool[] = [
   {
     name: 'search_sections',
     description:
-      'Search for sections (sites, regions, countries, artifacts) by title or keywords. Returns matching sections with their slugs for linking.',
+      'Search for sections (sites, regions, countries, artifacts) by title, keywords, or body text. Multi-word queries match every word as a whole word, in any order, singular or plural — "golan synagogues" and "synagogue golan" return the same sections. Returns matching sections with their slugs for linking.',
     input_schema: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
-          description: 'Search term — matches against section title and keywords',
+          description: 'One or more words. Every word must match (whole word, singular/plural handled) in the title, keywords or body. Order does not matter. Use a single word for the broadest search.',
         },
         limit: {
           type: 'number',
@@ -91,13 +89,13 @@ const tools: Anthropic.Messages.Tool[] = [
   {
     name: 'search_photos',
     description:
-      'Search for individual photos by title, keywords, or image ID. Returns matching photos with their image IDs for linking.',
+      'Search for individual photos by title, keywords, image ID, or description text. Multi-word queries match every word as a whole word, in any order, singular or plural. Returns matching photos with their image IDs for linking.',
     input_schema: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
-          description: 'Search term — matches against photo title, keywords, or image ID',
+          description: 'One or more words. Every word must match (whole word, singular/plural handled) in the title, keywords, image ID or description. Order does not matter. Use a single word for the broadest search.',
         },
         limit: {
           type: 'number',
@@ -135,24 +133,20 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     if (!query) return JSON.stringify({ error: 'query required' })
 
     const published = publishedFilter()
+    // Same term rules as the public search page (src/lib/searchTerms.ts):
+    // split into words, drop stop words, every word must appear (any stem)
+    // in one of the fields. Order-independent, so "Golan Synagogues" and
+    // "Synagogues Golan" produce the same result set. Also searches the
+    // scholarly prose: conceptual terms users ask in natural language
+    // ("crucified", "imprisoned", "Golgotha") often appear only in the body
+    // text, not the keywords. body is Lexical JSON and htmlBody is HTML;
+    // substring matching hits words inside either.
+    const terms = parseTerms(query)
     const { docs } = await payload.find({
       collection: 'sections',
       where: {
         and: [
-          {
-            or: [
-              { title: { contains: query } },
-              { keywords: { contains: query } },
-              { internalKeywords: { contains: query } },
-              // Also search the scholarly prose. Conceptual terms users ask in
-              // natural language ("crucified", "imprisoned", "Golgotha") often
-              // appear only in the body text, not the keywords. body is Lexical
-              // JSON and htmlBody is HTML; substring matching hits whole words
-              // inside either.
-              { body: { contains: query } },
-              { htmlBody: { contains: query } },
-            ],
-          },
+          ...termsWhere(terms, ['title', 'keywords', 'internalKeywords', 'body', 'htmlBody']),
           published,
         ],
       },
@@ -177,21 +171,14 @@ async function runTool(name: string, input: ToolInput): Promise<string> {
     if (!query) return JSON.stringify({ error: 'query required' })
 
     const published = publishedFilter()
+    // Same term rules as search_sections above; also searches the photo's
+    // scholarly comment/description prose, not just keywords.
+    const terms = parseTerms(query)
     const { docs } = await payload.find({
       collection: 'photos',
       where: {
         and: [
-          {
-            or: [
-              { title: { contains: query } },
-              { keywords: { contains: query } },
-              { imageId: { contains: query } },
-              // Also search the photo's scholarly comment/description prose, not
-              // just keywords — see the note in search_sections above.
-              { description: { contains: query } },
-              { htmlDescription: { contains: query } },
-            ],
-          },
+          ...termsWhere(terms, ['title', 'keywords', 'imageId', 'description', 'htmlDescription']),
           published,
         ],
       },
