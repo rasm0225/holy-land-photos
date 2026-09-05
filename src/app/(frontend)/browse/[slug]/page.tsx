@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { richTextConverters } from '@/app/(frontend)/components/richTextConverters'
 import PhotoLightbox from '../../components/PhotoLightbox'
 import { approvedGeo, placeJsonLd } from '@/lib/sectionGeo'
 import { S3_BASE, photoSrc } from '@/lib/photoSrc'
@@ -282,7 +283,7 @@ export default async function SectionPage({ params }: Props) {
             </figure>
           )}
           <div>
-            {section.body && <RichText data={section.body} />}
+            {section.body && <RichText data={section.body} converters={richTextConverters} />}
             {!section.body && htmlBody && (
               <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
             )}

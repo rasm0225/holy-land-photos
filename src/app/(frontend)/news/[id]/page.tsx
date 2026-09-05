@@ -5,6 +5,7 @@ import Image from 'next/image'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { richTextConverters } from '@/app/(frontend)/components/richTextConverters'
 import { photoSrc } from '@/lib/photoSrc'
 
 type Props = {
@@ -57,7 +58,7 @@ export default async function NewsPage({ params }: Props) {
   const news = await payload.findByID({
     collection: 'news',
     id: parseInt(id, 10),
-    depth: 0,
+    depth: 1, // populate internal-link targets in body
   }).catch(() => null)
 
   if (!news) return notFound()
@@ -164,7 +165,7 @@ export default async function NewsPage({ params }: Props) {
       )}
 
       {/* Body content */}
-      {news.body && <RichText data={news.body} />}
+      {news.body && <RichText data={news.body} converters={richTextConverters} />}
       {!news.body && htmlBody && (
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       )}

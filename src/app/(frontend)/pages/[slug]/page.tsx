@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { richTextConverters } from '@/app/(frontend)/components/richTextConverters'
 import RecentAdditions from '../../components/RecentAdditions'
 
 type Props = {
@@ -59,7 +60,7 @@ export default async function StaticPage({ params, searchParams }: Props) {
     collection: 'pages',
     where: { slug: { equals: slug } },
     limit: 1,
-    depth: 0,
+    depth: 1, // populate internal-link targets in body
   })
 
   const page = docs[0]
@@ -83,7 +84,7 @@ export default async function StaticPage({ params, searchParams }: Props) {
 
       <h1 className="pln-h1">{page.title}</h1>
 
-      {page.body && <RichText data={page.body} />}
+      {page.body && <RichText data={page.body} converters={richTextConverters} />}
       {!page.body && htmlBody && (
         <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
       )}

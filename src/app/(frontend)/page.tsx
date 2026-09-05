@@ -3,6 +3,7 @@ import config from '@payload-config'
 import React from 'react'
 import type { Metadata } from 'next'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { richTextConverters } from '@/app/(frontend)/components/richTextConverters'
 import Image from 'next/image'
 import PhotoSlideshow, { type Slide } from './components/PhotoSlideshow'
 import { publishedFilter } from '@/lib/viewer'
@@ -40,7 +41,7 @@ export default async function HomePage() {
       collection: 'news',
       where: { active: { equals: true } },
       limit: 0,
-      depth: 0,
+      depth: 1, // populate internal-link targets in body
     }),
     payload.find({
       collection: 'site-of-the-week',
@@ -165,7 +166,7 @@ export default async function HomePage() {
                           }))}
                       />
                     )}
-                    {n.body && <RichText data={n.body} />}
+                    {n.body && <RichText data={n.body} converters={richTextConverters} />}
                     {!n.body && htmlBody && (
                       <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
                     )}
@@ -220,7 +221,7 @@ export default async function HomePage() {
                     <a href={`/browse/${section.slug}`}>{section.title}</a>
                   </h3>
                 )}
-                {stw.body && <RichText data={stw.body} />}
+                {stw.body && <RichText data={stw.body} converters={richTextConverters} />}
                 {!stw.body && stwHtmlBody && (
                   <div dangerouslySetInnerHTML={{ __html: stwHtmlBody }} />
                 )}
