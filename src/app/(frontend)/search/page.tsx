@@ -21,6 +21,44 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   }
 }
 
+// Function words dropped from a query before matching. Kept short and
+// English-only; the dataset's titles/keywords are proper nouns and terms,
+// none of which are on this list.
+const STOP_WORDS = new Set([
+  'a', 'an', 'and', 'the', 'of', 'in', 'on', 'at', 'to', 'for', 'from', 'with',
+  'by', 'near', 'is', 'are', 'was', 'were', 'or', 'photos', 'photo', 'pictures', 'picture',
+])
+
+const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+// Candidate singular stems for a search term. Deliberately light: only
+// regular English plurals (-s, -es, -ies). "synagogues" -> synagogue;
+// "churches" -> church; "cities" -> city. The term itself is always kept.
+// Used only for the loose DB pre-filter; termRegex() does the real match.
+function stemsFor(term: string): string[] {
+  const t = term.toLowerCase()
+  const out = new Set([t])
+  if (t.length > 4 && t.endsWith('ies')) out.add(t.slice(0, -3) + 'y')
+  if (t.length > 3 && t.endsWith('es')) out.add(t.slice(0, -2))
+  if (t.length > 2 && t.endsWith('s') && !t.endsWith('ss')) out.add(t.slice(0, -1))
+  return [...out]
+}
+
+// Whole-word, case-insensitive regex that accepts the term in singular or
+// plural form. Built from the stems so "synagogue" matches "Synagogues"
+// and "synagogues" matches "Synagogue"; "city" and "cities" match each
+// other. Whole-word boundaries are kept so "Athen" still does not match
+// "Athenian".
+function termRegex(term: string): RegExp {
+  const alts = stemsFor(term).flatMap((st) => {
+    const e = escapeRegex(st)
+    const forms = [`${e}(?:s|es)?`]
+    if (st.endsWith('y')) forms.push(`${escapeRegex(st.slice(0, -1))}ies`)
+    return forms
+  })
+  return new RegExp(`\\b(?:${alts.join('|')})\\b`, 'i')
+}
+
 export default async function SearchPage({ searchParams }: Props) {
   const { q } = await searchParams
   const query = q?.trim() || ''
@@ -34,29 +72,32 @@ export default async function SearchPage({ searchParams }: Props) {
     const payload = await getPayload({ config })
     const published = publishedFilter()
 
-    // Split the query into whitespace-separated terms. Each term must match
-    // (as a whole word, case-insensitive) somewhere in title/keywords/imageId.
-    // This lets "Patara Lighthouse" find rows where "Patara" is in keywords
-    // and "Lighthouse" is in the title — the common case for multi-word
-    // queries against this dataset.
-    const terms = query.split(/\s+/).filter(Boolean)
-    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const termRegexes = terms.map((t) => new RegExp(`\\b${escapeRegex(t)}\\b`, 'i'))
+    // Split the query into whitespace-separated terms, dropping short
+    // function words ("synagogues in the golan" -> synagogues, golan) so a
+    // natural phrase is not sunk by "in"/"the" needing a whole-word match.
+    // If the whole query is stop words, keep them rather than search for
+    // nothing.
+    const rawTerms = query.split(/\s+/).filter(Boolean)
+    const meaningful = rawTerms.filter((t) => !STOP_WORDS.has(t.toLowerCase()))
+    const terms = meaningful.length > 0 ? meaningful : rawTerms
+
+    // Each term must match (as a whole word, case-insensitive, singular or
+    // plural) somewhere in title/keywords/imageId. "Patara Lighthouse"
+    // finds rows where "Patara" is in keywords and "Lighthouse" is in the
+    // title; "synagogues" finds rows keyworded "Synagogue" and vice versa.
+    const stemmed = terms.map((t) => ({ stems: stemsFor(t), regex: termRegex(t) }))
     const allTermsMatch = (texts: Array<string | null | undefined>) =>
-      termRegexes.every((re) => texts.some((t) => !!t && re.test(t)))
+      stemmed.every(({ regex }) => texts.some((t) => !!t && regex.test(t)))
+
+    // DB pre-filter: a row must contain some stem of every term in one of
+    // the searched fields. Substring match is deliberately loose; the
+    // whole-word regex above does the precise cut afterwards.
+    const containsAny = (fields: string[], stems: string[]): Where => ({
+      or: fields.flatMap((f) => stems.map((st): Where => ({ [f]: { contains: st } }))),
+    })
 
     const sectionWhere: Where = {
-      and: [
-        ...terms.map(
-          (term): Where => ({
-            or: [
-              { title: { contains: term } } as Where,
-              { keywords: { contains: term } } as Where,
-            ],
-          }),
-        ),
-        published,
-      ],
+      and: [...stemmed.map(({ stems }) => containsAny(['title', 'keywords'], stems)), published],
     }
 
     const { docs: sectionDocs } = await payload.find({
@@ -72,18 +113,7 @@ export default async function SearchPage({ searchParams }: Props) {
       .slice(0, 50)
 
     const photoWhere: Where = {
-      and: [
-        ...terms.map(
-          (term): Where => ({
-            or: [
-              { title: { contains: term } } as Where,
-              { keywords: { contains: term } } as Where,
-              { imageId: { contains: term } } as Where,
-            ],
-          }),
-        ),
-        published,
-      ],
+      and: [...stemmed.map(({ stems }) => containsAny(['title', 'keywords', 'imageId'], stems)), published],
     }
 
     const { docs: photoDocs } = await payload.find({
@@ -117,7 +147,7 @@ export default async function SearchPage({ searchParams }: Props) {
     <div>
       <h1 className="pln-h1" style={{ fontSize: 28, marginBottom: 16 }}>Search</h1>
       <p className="pln-ai-blurb">
-        Use one or more singular nouns separated by spaces. Examples:{' '}
+        Use one or more nouns separated by spaces. Examples:{' '}
         &ldquo;Laodicea&rdquo;, &ldquo;Laodicea Theater&rdquo;,
         &ldquo;Athena Statue&rdquo;, or &ldquo;Athena Statue Bronze&rdquo;.
       </p>
